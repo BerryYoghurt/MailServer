@@ -1,7 +1,5 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-
-
 /**
  * Interface of Mail. Sender and date should be set in constructor*/
 public interface IMail {
@@ -23,4 +21,5 @@ public interface IMail {
 	public IAttachement removeAttachement(int index);
 	
 	public IAttachement[] getAttachements();
+
 }
