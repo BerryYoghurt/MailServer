@@ -1,0 +1,8 @@
+****https://www.reddit.com/r/explainlikeimfive/comments/1x4cfn/eli5_what_happens_to_an_email_when_it_is_sent_to/
+
+****https://www.quora.com/What-would-happen-if-I-send-an-email-to-a-non-existent-account-And-if-I-activation-it-after-I-send-my-email-can-I-receive-it%EF%BC%9F
+
+****https://forums.asp.net/t/1565440.aspx?Sending+email+but+what+when+email+address+doesn+t+exist+
+	Checking email addresses for validity is a tricky process. EmailValidator.Net has made this process incredibly simple and powerful.
+The only correct way to verify an email address exists is to send a mailbox an email and see if you receive a bounce back email or NDR (Non-Deliverable Receipt).
+	Or you can use socket to ping the dns server before you send the emai to user.
