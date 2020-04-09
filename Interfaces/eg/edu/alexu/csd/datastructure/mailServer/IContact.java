@@ -15,6 +15,9 @@ public interface IContact {
 	 * @return whether the process has been "successfull"*/
 	public boolean setAddress(String address);
 	/**
+	 * @return the address (if an account) or addresses(if a contact)*/
+	public String[] getAddresses();
+	/**
 	 * removes an email address whose order is give as parameter
 	 * @param order
 	 */

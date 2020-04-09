@@ -20,7 +20,6 @@ public interface IMail {
 	
 	public boolean changePath(IFolder newFolder);
 	
-	//public boolean setSender(IContact sender);
 	/**
 	 * sets and edits the receivers, it is up to the author how the queue
 	 * should be implemented*/
