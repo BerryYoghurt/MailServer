@@ -9,15 +9,16 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 
 public interface IContact {
 	/**
-	 * sets the email address of the conact and validates it depending on whether
+	 * sets (or adds) the email address of the conact and validates it depending on whether
 	 * it's a new account or an existing user
 	 * @param address new email address
 	 * @return whether the process has been "successfull"*/
 	public boolean setAddress(String address);
-	//edit address
 	/**
-	 * @return the address (if an account) or addresses(if a contact)*/
-	public String[] getAddresses();
+	 * removes an email address whose order is give as parameter
+	 * @param order
+	 */
+	void removeAddress(int order);
 	/**
 	 * sets password, only if IConact is instance of Account
 	 * @param password the new password
