@@ -1,0 +1,6 @@
+
+IApp + GUI
+
+IMail + IAttachement + Priority Queue
+IFolder + IFilter + ISort +IIndex
+IContact + database
