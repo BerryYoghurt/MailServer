@@ -14,7 +14,7 @@ public interface IContact {
 	 * @param address new email address
 	 * @return whether the process has been "successfull"*/
 	public boolean setAddress(String address);
-	
+	//edit address
 	/**
 	 * @return the address (if an account) or addresses(if a contact)*/
 	public String[] getAddresses();
