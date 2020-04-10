@@ -44,13 +44,13 @@ public interface IContact {
 	/**
 	 * add the new account to the server's database
 	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	public int addToDataBase();
+	/*public int addToDataBase();*/
 	/**
-	 * add the new contact to the user's database of contacts
+	 * add the new contact to the index file (contacts of another user, receivers, etc)
 	 * @param contact 
 	 * 		new contact
 	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	public int addToDataBase(IContact contact);
+	public int appendIndex(IIndex indexFile);
 	/**
 	 * @return draft folder*/
 	public IFolder getDraftPath();
