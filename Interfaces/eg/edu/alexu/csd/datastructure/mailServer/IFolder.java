@@ -13,8 +13,9 @@ public interface IFolder {
 	/**
 	 * adds an item into this folder and its index file
 	 * @param item (email, contact, ..etc)  
-	 */
-	public <T> boolean add(T item);
+	 * @return the new folder created inside this folder, could be null if the added item is 
+	 * just a file*/
+	public <T> IFolder add(T item);
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
