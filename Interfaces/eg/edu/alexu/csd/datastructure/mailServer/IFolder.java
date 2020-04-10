@@ -15,12 +15,12 @@ public interface IFolder {
 	 * @param item (email, contact, ..etc)  
 	 * @return the new folder created inside this folder, could be null if the added item is 
 	 * just a file*/
-	public <T> IFolder add(T item);
+	public IFolder add(Object item);
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
 	 */
-	public <T> T remove(T item);
+	public Object remove(Object item);
 	/**
 	 * deletes the whole folder and removes it from the index file (if any)
 	 * @return if deleted successfully*/
@@ -29,5 +29,5 @@ public interface IFolder {
 	 * adds a list of items to the index file of the folder
 	 * @param L
 	 */
-	void uploadToIndex(ILinkedList L); //what does this function do? --jehad
+	//void uploadToIndex(ILinkedList L); //what does this function do? --jehad
 }

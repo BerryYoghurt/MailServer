@@ -5,6 +5,7 @@ import java.util.Date;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 import eg.edu.alexu.csd.datastructure.queue.IQueue;
@@ -15,13 +16,15 @@ public class Mail implements IMail{
 	 * 
 	 */
 	private static final long serialVersionUID = 3338519294912333094L;
-	private static final int lifetime = 30;
-	transient private IFolder containingFolder;
+	//private static final int lifetime = 30; not needed, will be used other way
+	transient private IFolder containingFolder = null;
+	transient private IFolder receiversFolder = null;
+	transient private IFolder attFolder = null;
 	private IContact composer;
 	private Date date;
 	private String subject;
-	private SLinkedList attachements;
-	transient private File bodyTxt;
+	transient private SLinkedList attachements;
+	private File bodyTxt;
 	
 	
 	public Mail(IContact from) {
@@ -86,8 +89,15 @@ public class Mail implements IMail{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public boolean addAttachement(IAttachement attachement) {
+		if(this.attFolder == null) {
+			attFolder = containingFolder.add(attachement);
+		}
+		else {
+			attFolder.add(attachement);
+		}
 		this.attachements.add(attachement);
 		return false;
 	}
@@ -119,5 +129,7 @@ public class Mail implements IMail{
 		return this.composer;
 	}
 	
-
+	private void writeObject(ObjectOutputStream oos) throws IOException{
+		
+	}
 }

@@ -1,22 +1,27 @@
 Folders:
-1. User folder
-	1.1. sent folder -- contains emails
-	1.2. inbox -- contains emails
-	1.3. trash -- contains emails
-	1.4. draft -- contains emails
-	1.5. contacts -- contains contacts
+
+1. Top level folder -- Has database of contacts
+	1.1. User folders
+
+2. User folder --No Index
+	2.1. sent folder -- contains emails
+	2.2. inbox -- contains emails
+	2.3. trash -- contains emails
+	2.4. draft -- contains emails
+	2.5. contacts -- contains contacts HOW WILL CONTACTS BE STORED?! Serial, maybe?
 		1.5.1. filter folder
 
-2. Emails folder
-	2.1. single email
-		2.1.1 Attachement folder
-		2.1.1 receivers folder
-	2.2. filter folder
+3. Emails folder -- Has index file of emails (large) HOW TO SORT BASED ON BODY? SORT SHOULD READ FROM INDEX.
+	3.1. single email folder
+		3.1.1 Attachement folder
+		3.1.1 receivers folder
+	3.2. filter folder
 
-3. Contacts folder
+4. Contacts folder -- Has index file of..
 
-4. Single Email folder
+5. Single Email folder -- No Index
+	
 
-5. Attachement folder
+6. Attachement folder -- Has index, small, max 10 attachements
 
-6. filter folder
+7. filter folder -- What should be done with filtered emails? deletion? forwarding(not required)? 
