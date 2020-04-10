@@ -51,4 +51,16 @@ public interface IContact {
 	 * 		new contact
 	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
 	public int addToDataBase(IContact contact);
+	/**
+	 * @return draft folder*/
+	public IFolder getDraftPath();
+	/**
+	 * @return trash folder*/
+	public IFolder getTrashPath();
+	/**
+	 * @return inbox folder*/
+	public IFolder getInboxPath();
+	/**
+	 * @return sent folder*/
+	public IFolder getSentPath();
 }
