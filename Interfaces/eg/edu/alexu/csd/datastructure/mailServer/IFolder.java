@@ -4,7 +4,8 @@ import java.io.File;
 
 public interface IFolder {
 	/**
-	 * @return the path of this folder*/
+	 * @return the path of this folder
+	 */
 	public File getPath();
 	/**
 	 * @return true if the folder is empty
@@ -26,8 +27,7 @@ public interface IFolder {
 	 * @return if deleted successfully*/
 	public boolean delete();
 	/**
-	 * adds a list of items to the index file of the folder
-	 * @param L
+	 * @return number of items in the folder
 	 */
-	//void uploadToIndex(ILinkedList L); //what does this function do? --jehad
+	public int getSize();
 }
