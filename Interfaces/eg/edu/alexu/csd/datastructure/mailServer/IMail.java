@@ -17,6 +17,8 @@ public interface IMail extends Serializable{
 	 */
 	public void setSubject(String s);
 	
+	public String getSubject();
+	
 	/**
 	 * appends s to the end of the body of the email
 	 * @param s
