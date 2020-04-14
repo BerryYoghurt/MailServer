@@ -1,5 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,11 +21,29 @@ public interface IMail extends Serializable{
 	
 	public String getSubject();
 	
+	public static IMail loadMail(IFolder thisMailFolder) {return null;}	
+	
+	public boolean setPriority(Priority p);
+	
+	public Priority getPriority();
+	
 	/**
 	 * appends s to the end of the body of the email
+	 * maximum length of s is 256 characters (1 KB)
 	 * @param s
 	 * @return true if saved successfully */
 	public boolean appendBody(String s);
+	/**
+	 * deletes part of body, seek to <b>character<\b> number n and delete k characters after it
+	 * @param n offset
+	 * @param k number of characters to be deleted
+	 * @return if deletion successful*/
+	public boolean deleteBody(long n, long k);
+	/**
+	 * adds text after n characters of body
+	 * @param n offset
+	 * @param addendum string to be added*/
+	public boolean addBody(long n, String addendum);
 	/**
 	 * copies the email to newFolder
 	 * @param newFolder destination*/
@@ -35,12 +55,18 @@ public interface IMail extends Serializable{
 	
 	/**
 	 * sets and edits the receivers, it is up to the author how the queue
-	 * should be implemented*/
-	public boolean addReceiver(IContact receiver);
+	 * should be implemented
+	 * @param receiverEmail
+	 * 			the receiver's email
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public boolean addReceiver(String receiverEmail) throws FileNotFoundException, IOException;
 	/**
 	 * removes receiver #index
-	 * @param index of removed receiver*/
-	public IContact removeReceiver(int index);
+	 * @param index of removed receiver
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public String removeReceiver(int index) throws FileNotFoundException, IOException;
 	/**
 	 * @return receiver queue*/
 	public IQueue getReceivers();
@@ -57,4 +83,6 @@ public interface IMail extends Serializable{
 	public Date getDate();
 	
 	public IContact getSender();
+	
+	public boolean save();
 }

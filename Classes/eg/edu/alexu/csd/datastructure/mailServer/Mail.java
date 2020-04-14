@@ -10,9 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.io.RandomAccessFile;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
@@ -28,11 +26,13 @@ public class Mail implements IMail{
 	private static final long serialVersionUID = 3338519294912333094L;
 	//private static final int lifetime = 30; not needed, will be used other way
 	transient private IFolder containingFolder = null;// no need to save
-	transient private IFolder receiversFolder = null;//no need to save, do we need index here and in att?
 	transient private IFolder attFolder = null;//no need to save
+	transient private File receiversFile;
 	private IContact composer;//how to read or write?
 	private Date date;//serial
 	private String subject;//serial
+	private Priority p;//serial
+	transient private String identifier;
 	transient private SLinkedList attachements;//no need to save
 	transient private DLinkedList receivers;
 	transient private File metadata;//no need to save, carries the serial data
@@ -42,11 +42,16 @@ public class Mail implements IMail{
 	public Mail(IContact from) {
 		this.date = new Date();
 		this.composer = from;
+		this.p = Priority.NORMAL;
 		containingFolder = from.getDraftPath().add(this);
-		bodyTxt = new File(containingFolder.getPath(), "body.txt");
+		bodyTxt = new File(containingFolder.getPath(), "bodyTxt.txt");
 		metadata = new File(containingFolder.getPath(), "metadata.ser");
 		this.attachements = new SLinkedList();
 		this.receivers = new DLinkedList();
+		StringBuilder s = new StringBuilder(from.getAddresses()[0]);
+		s.append(this.date.toString());
+		this.identifier = s.toString();
+		this.identifier.replaceAll("[ \\\\.@:]", "");
 	}
 	
 	public Mail() {
@@ -76,45 +81,52 @@ public class Mail implements IMail{
 			}else if(f.getName().equals("bodyTxt.txt")){//load body
 				m.bodyTxt = f;
 			}else if(f.getName().equals("attachements")){
-				//load attachements--How to get them from folder?
-			}else if(f.getName().equals("receivers")) {
+				//m.attFolder = 
+				m.attachements = new SLinkedList();
+				for(File temp : f.listFiles()) {
+					m.attachements.add(new Attachement(temp));
+				}
+			}else if(f.getName().equals("receivers.txt")) {
 				//load receivers--How to get them from folder?
 			}
 		}
-		
+		StringBuilder s = new StringBuilder(m.composer.getAddresses()[0]);
+		s.append(m.date.toString());
+		m.identifier = s.toString().replaceAll("[ \\\\.@:]", "");
 		return m;
 	}
 	
 	@Override
 	public void setSubject(String s) {//limit length
 		if(s.length() > 20)
-			throw new IllegalArgumentException("message too long");
+			throw new IllegalArgumentException("subject too long");
 		this.subject = s;
+	}
+	
+	public String getSubject() {
+		return this.subject;
 	}
 	
 	@Override
 	public boolean appendBody(String s) {//keep to the end
+		return false;
+	}
+	
+	@Override
+	public boolean deleteBody(long n, long k) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addBody(long n, String addendum) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
-	public boolean copy(IFolder to) {//make a shallow copy of date, subject, composer
-		//then reassign containingFolder, receiversFolder, attFolder, bodyTxt
-		try {
-			Mail newMail = (Mail)super.clone();
-			newMail.containingFolder = to.add(newMail);
-			Files.walkFileTree(this.containingFolder.getPath().toPath(), Files.copy);
-			
-			return true;
-		}
-		catch (RuntimeException e){
-			return false;
-		}catch(CloneNotSupportedException e) {
-			return false;
-		} catch (IOException e) {
-			return false;
-		}
+	public boolean copy(IFolder to) {
+		return this.containingFolder.copy(to);
 	}
 
 	@Override
@@ -125,21 +137,30 @@ public class Mail implements IMail{
 	}
 
 	@Override
-	public boolean addReceiver(IContact receiver) {
-		receivers.add(receiver);
-		if(receiversFolder == null) {
-			containingFolder.add(receiver);
-		}else {
-			receiversFolder.add(receiver);
+	public boolean addReceiver(String receiverEmail) throws FileNotFoundException, IOException {
+		receivers.add(receiverEmail);
+		if(receiversFile == null) {
+			receiversFile = new File(containingFolder.getPath(), "receivers.txt");
+		}
+		try(RandomAccessFile f = new RandomAccessFile(receiversFile, "rw")){
+			f.seek(f.length());
+			f.writeChars(receiverEmail);
+			f.writeChars(System.lineSeparator());
 		}
 		return true;
 	}
 	
 	@Override
-	public IContact removeReceiver(int index) {
-		IContact r = (IContact)receivers.get(index);
+	public String removeReceiver(int index) throws FileNotFoundException, IOException {
+		String r = (String)receivers.get(index);
 		receivers.remove(index);
-		receiversFolder.remove(r);
+		//receiversFolder.remove(r);
+		try(RandomAccessFile f = new RandomAccessFile(receiversFile, "rw")){
+			for(int i = 0; i < index; i++) {
+				f.readLine();
+			}
+			f.
+		}
 		return r;
 	}
 	@Override
@@ -187,9 +208,7 @@ public class Mail implements IMail{
 		return this.composer;
 	}
 	
-	public String getSubject() {
-		return this.subject;
-	}
+	
 	/**
 	 * reads */
 	private void writeObject(ObjectOutputStream oos) throws IOException{
@@ -200,8 +219,22 @@ public class Mail implements IMail{
 		in.defaultReadObject();
 		
 	}
-}
 
-class copier implements SimpleFileVisitor<Path>{
+	@Override
+	public boolean setPriority(Priority p) {
+		this.p = p;
+		return true;
+	}
+
+	@Override
+	public Priority getPriority() {
+		return this.p;
+	}
+
 	
+	
+	@Override
+	public String toString() {		
+		return this.identifier;
+	}
 }
