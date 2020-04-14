@@ -60,13 +60,13 @@ public interface IMail extends Serializable{
 	 * 			the receiver's email
 	 * @throws IOException 
 	 * @throws FileNotFoundException */
-	public boolean addReceiver(String receiverEmail) throws FileNotFoundException, IOException;
+	public boolean addReceiver(String receiverEmail);
 	/**
 	 * removes receiver #index
 	 * @param index of removed receiver
 	 * @throws IOException 
 	 * @throws FileNotFoundException */
-	public String removeReceiver(int index) throws FileNotFoundException, IOException;
+	public String removeReceiver(int index) ;
 	/**
 	 * @return receiver queue*/
 	public IQueue getReceivers();
@@ -84,5 +84,4 @@ public interface IMail extends Serializable{
 	
 	public IContact getSender();
 	
-	public boolean save();
 }

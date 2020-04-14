@@ -81,13 +81,30 @@ public class Mail implements IMail{
 			}else if(f.getName().equals("bodyTxt.txt")){//load body
 				m.bodyTxt = f;
 			}else if(f.getName().equals("attachements")){
-				//m.attFolder = 
+				//m.attFolder = f; Constructor of IFolder?
 				m.attachements = new SLinkedList();
 				for(File temp : f.listFiles()) {
 					m.attachements.add(new Attachement(temp));
 				}
 			}else if(f.getName().equals("receivers.txt")) {
-				//load receivers--How to get them from folder?
+				m.receiversFile = f;
+				try(RandomAccessFile stream = new RandomAccessFile(f, "rw")){
+					m.receivers = new DLinkedList();
+					for(String line = stream.readLine(); line != null; line = stream.readLine()) {
+						if(line.charAt(0) =='D') {
+							continue;
+						}
+						else {
+							m.receivers.add(line);
+						}
+					}
+				} catch (FileNotFoundException e) {//SHOULD THESE EVEN BE THROWN!!
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		StringBuilder s = new StringBuilder(m.composer.getAddresses()[0]);
@@ -137,7 +154,8 @@ public class Mail implements IMail{
 	}
 
 	@Override
-	public boolean addReceiver(String receiverEmail) throws FileNotFoundException, IOException {
+	public boolean addReceiver(String receiverEmail) {
+		receiverEmail = receiverEmail.toLowerCase();
 		receivers.add(receiverEmail);
 		if(receiversFile == null) {
 			receiversFile = new File(containingFolder.getPath(), "receivers.txt");
@@ -146,12 +164,18 @@ public class Mail implements IMail{
 			f.seek(f.length());
 			f.writeChars(receiverEmail);
 			f.writeChars(System.lineSeparator());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return true;
 	}
 	
 	@Override
-	public String removeReceiver(int index) throws FileNotFoundException, IOException {
+	public String removeReceiver(int index) {
 		String r = (String)receivers.get(index);
 		receivers.remove(index);
 		//receiversFolder.remove(r);
@@ -159,10 +183,17 @@ public class Mail implements IMail{
 			for(int i = 0; i < index; i++) {
 				f.readLine();
 			}
-			f.
+			f.writeChar('D');//EMAILS SHOULD BE LOWER CASE
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return r;
 	}
+	
 	@Override
 	public IQueue getReceivers() {
 		IQueue q = new AQueue(receivers.size());
@@ -230,8 +261,6 @@ public class Mail implements IMail{
 	public Priority getPriority() {
 		return this.p;
 	}
-
-	
 	
 	@Override
 	public String toString() {		
