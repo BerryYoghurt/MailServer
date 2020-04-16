@@ -17,6 +17,7 @@ import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 import eg.edu.alexu.csd.datastructure.queue.AQueue;
 import eg.edu.alexu.csd.datastructure.queue.IQueue;
+import sun.security.action.GetBooleanAction;
 
 public class Mail implements IMail{
 	
@@ -124,21 +125,10 @@ public class Mail implements IMail{
 		return this.subject;
 	}
 	
-	@Override
-	public boolean appendBody(String s) {//keep to the end
-		return false;
-	}
-	
-	@Override
-	public boolean deleteBody(long n, long k) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
-	public boolean addBody(long n, String addendum) {
-		// TODO Auto-generated method stub
-		return false;
+	public File getBody() {
+		return bodyTxt;
 	}
 	
 	@Override
