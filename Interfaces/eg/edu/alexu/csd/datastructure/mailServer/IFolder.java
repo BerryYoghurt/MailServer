@@ -30,4 +30,6 @@ public interface IFolder {
 	 * @param L
 	 */
 	//void uploadToIndex(ILinkedList L); //what does this function do? --jehad
+	
+	public boolean copy(IFolder to);
 }
