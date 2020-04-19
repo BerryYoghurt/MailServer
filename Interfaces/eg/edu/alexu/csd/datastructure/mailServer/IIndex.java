@@ -1,16 +1,18 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import java.io.FileNotFoundException;
+
 public interface IIndex {
 	/**
 	 * reads the index file and uploads it to a linked list
 	 * @return linked list containing all the elements of the index file
 	 */
-	public void readIndex();
+	public void readIndex() throws FileNotFoundException;
 	/**
 	 * write in the index file from the list after all modifications done in it
 	 * finalizes the modifications
 	 */
-	public void writeToIndex();
+	public void writeToIndex() throws FileNotFoundException;
 	/**
 	 * adds an item to the list
 	 * @param o
@@ -62,4 +64,5 @@ public interface IIndex {
 	 * @return linked list of pages
 	 */
 	public ILinkedList setPages(int size);	//linkedlists of IMail[] each IMail[] represents a page 
+	 
 }
