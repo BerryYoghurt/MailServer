@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -37,7 +38,7 @@ public class Index implements IIndex {
     private IFilter filter; // set
     
     //constructor
-    public Index(File path) {
+    public Index(File path) throws FileNotFoundException {
     	//create index file itself and keep its path
     	String IPath = path.getAbsolutePath() + "\\index.txt"; // get position
     	File Index = new File(IPath);
@@ -52,9 +53,10 @@ public class Index implements IIndex {
 		*read line by line
 		* item = call stringToInfo
 		*list.add(item);
+		 * @throws FileNotFoundException 
 		*/
 	@Override
-	public void readIndex() {
+	public void readIndex() throws FileNotFoundException {
 		Scanner reader = new Scanner(path); 
         while (reader.hasNextLine()){ 
             Info item = new Info();
@@ -66,18 +68,20 @@ public class Index implements IIndex {
 
     /**
      * write line by line 
+     * @throws FileNotFoundException 
      */
 	@Override
-	public void writeToIndex() { // test traverse function 
+	public void writeToIndex() throws FileNotFoundException { // test traverse function 
         
 		PrintWriter writer = new PrintWriter(this.path);
 		for(int i=0 ; i < list.size() ; i++){
-		  Node n = list.traverse();
+		  Object n = list.traverse(null);
 		  if(n!=null){
-		    Info item = (Info)n.data; 
+		    Info item = (Info)n; 
 		    writer.println(item.infoToString());
 		  }
 		}
+		writer.close();
 	} 
     /**
      * we know that object is an email 
@@ -94,32 +98,32 @@ public class Index implements IIndex {
 	}
 
 	@Override
-	public Object remove(Object o) {//jehad
+	public Object remove(Object o) {
 		// TODO Auto-generated method stub
 		size--;
 		return null;
 	}
-    @Override
-    public void setSort(ISort s){//jehad
+    @Override//*****************************************
+    public void setSort(ISort s){
         sort = s;
     }
 
     @Override
-    public void setfilter(IFilter f){//jehad
+    public void setfilter(IFilter f){
         filter = f;
     }
 
 	@Override
-	public void sort() {
+	public void sort() { //second
 		// TODO Auto-generated method stub
 		sort.applySort(list);
 	}
 
 	@Override
-	public void filter() {
+	public void filter() { //first //applied in setViewing 
 		// TODO Auto-generated method stub
 		filter.applyFilter(list); 
-	}
+	}//***************************************************
 
 	@Override
 	public Object find(Object o) { 
@@ -134,7 +138,7 @@ public class Index implements IIndex {
 	}
 
 	@Override
-	public ILinkedList setPages(int size) { //jehad
+	public ILinkedList setPages(int size) { //*************************************************
 		ILinkedList pages; //linked list of arrays of size 10
 		//divide the main list into arrays(pages)
 		return null;
