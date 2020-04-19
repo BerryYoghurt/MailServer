@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import eg.edu.alexu.csd.datastructure.queue.IQueue;
+
 public class Index implements IIndex {
 	
 	class Info { //date , sender , recievers , subject , directory 
@@ -99,28 +101,7 @@ public class Index implements IIndex {
 		size--;
 		return null;
 	}
-    @Override
-    public void setSort(ISort s){//jehad
-        sort = s;
-    }
-
-    @Override
-    public void setfilter(IFilter f){//jehad
-        filter = f;
-    }
-
-	@Override
-	public void sort() {
-		// TODO Auto-generated method stub
-		sort.applySort(list);
-	}
-
-	@Override
-	public void filter() {
-		// TODO Auto-generated method stub
-		filter.applyFilter(list); 
-	}
-
+   
 	@Override
 	public Object find(Object o) { 
 		// TODO Auto-generated method stub
@@ -132,14 +113,5 @@ public class Index implements IIndex {
 		// TODO Auto-generated method stub
 		return size;
 	}
-
-	@Override
-	public ILinkedList setPages(int size) { //jehad
-		ILinkedList pages; //linked list of arrays of size 10
-		//divide the main list into arrays(pages)
-		return null;
-	}
-
-	
 	
 }

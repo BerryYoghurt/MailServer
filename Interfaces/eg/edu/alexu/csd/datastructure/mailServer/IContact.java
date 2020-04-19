@@ -8,6 +8,7 @@ package eg.edu.alexu.csd.datastructure.mailServer;
  * new account and one for contact*/
 
 public interface IContact {
+	
 	/**
 	 * sets (or adds) the email address of the conact and validates it depending on whether
 	 * it's a new account or an existing user
@@ -42,15 +43,12 @@ public interface IContact {
 	public String getName();
 	
 	/**
-	 * add the new account to the server's database
-	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	/*public int addToDataBase();*/
-	/**
 	 * add the new contact to the index file (contacts of another user, receivers, etc)
-	 * @param contact 
-	 * 		new contact
+	 * @param folder
+	 * 		in case 
 	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	public int appendIndex(IIndex indexFile);
+	public int appendIndex(IFolder folder);
+	
 	/**
 	 * @return draft folder*/
 	public IFolder getDraftPath();
