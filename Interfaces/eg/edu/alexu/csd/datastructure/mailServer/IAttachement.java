@@ -7,4 +7,6 @@ public interface IAttachement {
 	public File getPath();
 	//public boolean viewAttachement();-- It's better to getPath then view it in the GUI part
 	public boolean delete();
+	public void view();
+	public String getName();
 }

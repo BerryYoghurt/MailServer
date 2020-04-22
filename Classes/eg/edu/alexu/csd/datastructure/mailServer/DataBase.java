@@ -1,11 +1,13 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
+
 public class DataBase implements IIndex {
 
 	@Override
 	public ILinkedList readIndex() {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
@@ -36,6 +38,10 @@ public class DataBase implements IIndex {
 	public int getSize() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public IContact loadUser(String email) {
+		return null;
 	}
 
 }

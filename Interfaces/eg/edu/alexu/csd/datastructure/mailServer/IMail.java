@@ -63,6 +63,10 @@ public interface IMail{
 	
 	public Date getDate();
 	
-	public IContact getSender();
+	public String getSenderName();
+
+	void saveMail();
+
+	String getSenderAddress();
 	
 }
