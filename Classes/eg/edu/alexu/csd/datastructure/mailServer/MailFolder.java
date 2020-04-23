@@ -3,10 +3,25 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 
 public class MailFolder implements IFolder {
-	File self;
+	
+	private File self;
+	private boolean editableMails;
+	
+	
 	public MailFolder(File path, String string) {
 		self = new File(path, string);
 		self.mkdir();
+		switch(string) {
+		case "trash":
+			break;
+		case "draft":
+			editableMails = true;
+			break;
+		case "inbox":
+		case "sent":
+			editableMails = false;
+			//enum
+		}
 	}
 
 	@Override

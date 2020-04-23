@@ -1,0 +1,16 @@
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+
+https://whatismyipaddress.com/email-header  WHY MICROSOFT MAIL READS THE DATE WRONG
+
+https://www.hunnysoft.com/mime/mime-guide.html
+
+https://docs.microsoft.com/en-us/previous-versions/office/developer/exchange-server-2010/aa563068(v=exchg.140)
+
+https://javaee.github.io/javamail/docs/Providers.pdf
+
+https://en.wikipedia.org/wiki/Base64#Examples
+
+https://tidbits.com/2000/01/31/email-attachment-formats-explained/
+
+
+

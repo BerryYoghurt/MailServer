@@ -339,14 +339,13 @@ public class Mail implements IMail{
 	public boolean addAttachement(IAttachement attachement) {//done, remember attFolder class
 		if(this.attFolder == null) {
 			attFolder = new File(containingFolder, "attachements");
+			attFolder.mkdir();
 		}
-		else {
-			try {
-				attachement.copy(attFolder);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
+		try {
+			attachement.copy(attFolder);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
 		}
 		this.attachements.add(attachement);
 		return true;
