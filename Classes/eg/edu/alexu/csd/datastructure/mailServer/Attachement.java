@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +28,21 @@ public class Attachement implements IAttachement {
 	@Override
 	public boolean delete() {
 		return att.delete();
+	}
+
+	@Override
+	public void view() {
+		try {
+			Desktop.getDesktop().open(att);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+
+	@Override
+	public String getName() {
+		return att.getName();
 	}
 
 }

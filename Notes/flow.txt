@@ -1,0 +1,41 @@
+First window: 
+	- sign-in
+	- sign-up
+
+
+SIGN-UP:
+	get info:
+	- name(first, last)
+	- gender, birdate, etc
+	- address --> if repeated, reject (no special characters)
+	- password --> 8<length<20, store hash
+	store in database.
+
+SIGN-IN:
+	enter address: 
+	-check that address is in database
+	-check password hash matches
+
+ALWAYS THERE: sign out, compose new email(blank editor), view profile, home
+
+MAIN PAGE:
+	4 folders (inbox, trash, draft, sent)
+	view (add, delete, edit) contacts
+
+INBOX Folder:
+	`list emails from index (delete, filter)
+	`open an email
+	-next page, previous page
+
+TRASH:
+	same as inbox +
+	-permanently delete (one or many)
+	-restore to folder (depending on sender address)
+
+DRAFT:
+	same as inbox +
+	
+	open editor, but partially filled //- send (receivers, at least one of attachements or body not empty), save as draft
+
+SENT:
+	same as inbox.

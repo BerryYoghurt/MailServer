@@ -1,0 +1,13 @@
+setViewingOptions(folder, filter, sort):
+	read this folder's index -- returns linked list 1
+	for each element in ll1:	
+		apply filter, if true keep, if false remove (or new linked list على حسب)
+	
+	sort.sort(new linked list, int n) -- final linked list
+	
+
+------------------------------
+
+
+	
+	

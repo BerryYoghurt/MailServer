@@ -1,7 +1,6 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Date;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
@@ -9,7 +8,7 @@ import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 /**
  * Interface of Mail. Sender and date should be set in constructor*/
-public interface IMail extends Serializable{
+public interface IMail{
 	
 	/**
 	 *sets the subject of the email
@@ -19,8 +18,6 @@ public interface IMail extends Serializable{
 	public void setSubject(String s);
 	
 	public String getSubject();
-	
-	public static IMail loadMail(IFolder thisMailFolder) {return null;}	
 	
 	public boolean setPriority(Priority p);
 	
@@ -66,6 +63,10 @@ public interface IMail extends Serializable{
 	
 	public Date getDate();
 	
-	public IContact getSender();
+	public String getSenderName();
+
+	void saveMail();
+
+	String getSenderAddress();
 	
 }

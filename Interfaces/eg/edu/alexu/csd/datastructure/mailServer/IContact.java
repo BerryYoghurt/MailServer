@@ -1,6 +1,11 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
-
 import java.io.File;
+/**
+ * creates a new contact instance that can either be added to the
+ * database as a new account or added into a user's phonebook 
+ * 
+ * Preferrably, we should create 2 classes of this interface, one for
+ * new account and one for contact*/
 
 public interface IContact {
 	/**
@@ -8,10 +13,10 @@ public interface IContact {
 	 */
 	public File getPath();
 	/**
-	 * sets (or adds) the email address of the contact and validates it depending on whether
+	 * sets (or adds) the email address of the conact and validates it depending on whether
 	 * it's a new account or an existing user
 	 * @param address new email address
-	 * @return whether the process has been "successful"*/
+	 * @return whether the process has been "successfull"*/
 	public boolean setAddress(String address);
 	/**
 	 * @return the address (if an account) or addresses(if a contact)*/
@@ -35,21 +40,18 @@ public interface IContact {
 	 * sets the name of the contact
 	 * @param name
 	 * @return true if success*/
-	public boolean setName(String Fname,String Lname);
+	public boolean setName(String Fname, String Lname);
 	/**
 	 * @return name*/
 	public String getName();
 	
 	/**
-	 * add the new account to the server's database
-	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	/*public int addToDataBase();*/
-	/**
 	 * add the new contact to the index file (contacts of another user, receivers, etc)
-	 * @param contact 
-	 * 		new contact
+	 * @param folder
+	 * 		in case 
 	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error*/
-	public int appendIndex(IFolder indexFile);
+	public int appendIndex(IFolder folder);
+	
 	/**
 	 * @return draft folder*/
 	public IFolder getDraftPath();
@@ -63,3 +65,4 @@ public interface IContact {
 	 * @return sent folder*/
 	public IFolder getSentPath();
 }
+

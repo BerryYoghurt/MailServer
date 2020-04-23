@@ -1,5 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
+
 public interface IApp {
 	/**
 	* Sign in to the application
