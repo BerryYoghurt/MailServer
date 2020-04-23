@@ -15,12 +15,12 @@ public interface IContact {
 	public boolean setAddress(String address);
 	/**
 	 * @return the address (if an account) or addresses(if a contact)*/
-	public String[] getAddresses();
+	public SinglyLinkedList getAddresses();
 	/**
 	 * removes an email address whose order is give as parameter
 	 * @param order
 	 */
-	void removeAddress(int order);
+	public boolean removeAddress(int order);
 	/**
 	 * sets password, only if IConact is instance of Account
 	 * @param password the new password
