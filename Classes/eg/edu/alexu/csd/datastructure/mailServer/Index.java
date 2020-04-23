@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -30,14 +31,12 @@ public class Index implements IIndex {
 	    //deal with queue & contact & date
 	}
 	
-	private ILinkedList list;
+	protected ILinkedList list;
     private File path;
-    private int size = 0;
-    private ISort sort; //set
-    private IFilter filter; // set
-    
+    protected int size = 0;
+
     //constructor
-    public Index(File path) {
+    public Index(File path) throws FileNotFoundException {
     	//create index file itself and keep its path
     	String IPath = path.getAbsolutePath() + "\\index.txt"; // get position
     	File Index = new File(IPath);
@@ -45,16 +44,18 @@ public class Index implements IIndex {
         readIndex();
     }
     
-    File getPath() {
+    @Override
+    public File getPath() {
     	return this.path;
     }
 		/**open File
 		*read line by line
 		* item = call stringToInfo
 		*list.add(item);
+		 * @throws FileNotFoundException 
 		*/
 	@Override
-	public void readIndex() {
+	public void readIndex() throws FileNotFoundException {
 		Scanner reader = new Scanner(path); 
         while (reader.hasNextLine()){ 
             Info item = new Info();
@@ -66,26 +67,31 @@ public class Index implements IIndex {
 
     /**
      * write line by line 
+     * @throws FileNotFoundException 
      */
 	@Override
-	public void writeToIndex() { // test traverse function 
+	public void writeToIndex() throws FileNotFoundException { // test traverse function 
         
 		PrintWriter writer = new PrintWriter(this.path);
 		for(int i=0 ; i < list.size() ; i++){
-		  Node n = list.traverse();
+		  Object n = list.traverse(null);
 		  if(n!=null){
-		    Info item = (Info)n.data; 
+		    Info item = (Info)n; 
 		    writer.println(item.infoToString());
 		  }
 		}
+		writer.close();
 	} 
     /**
      * we know that object is an email 
      */
 	@Override
-	public void add(IMail mail) {//date , sender , recievers , subject , directory
-        Info item = new Info();
-        item.date = mail.getDate(); // string
+	public void add(Object item) {//date , sender , recievers , subject , directory
+	    if(item == null || !(item instanceof IMail)){
+	        throw new RuntimeException();
+	    }
+        Info i = new Info();
+        i.date = ((IMail) item).getDate(); // string
         //item.sender = mail.getSender(); //we need a function in IContact to get the sender email address as a string
         //item.recievers = mail.getRecievers();
        //item.subject = mail.getsubject();
@@ -94,47 +100,24 @@ public class Index implements IIndex {
 	}
 
 	@Override
-	public Object remove(Object o) {//jehad
-		// TODO Auto-generated method stub
+	public Object remove(Object o) {
 		size--;
 		return null;
 	}
-    @Override
-    public void setSort(ISort s){//jehad
-        sort = s;
-    }
 
-    @Override
-    public void setfilter(IFilter f){//jehad
-        filter = f;
-    }
-
-	@Override
-	public void sort() {
-		// TODO Auto-generated method stub
-		sort.applySort(list);
-	}
-
-	@Override
-	public void filter() {
-		// TODO Auto-generated method stub
-		filter.applyFilter(list); 
-	}
 
 	@Override
 	public Object find(Object o) { 
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
 		return size;
 	}
 
 	@Override
-	public ILinkedList setPages(int size) { //jehad
+	public ILinkedList setPages(int size) { //*************************************************
 		ILinkedList pages; //linked list of arrays of size 10
 		//divide the main list into arrays(pages)
 		return null;
