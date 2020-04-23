@@ -1,10 +1,12 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.io.IOException;
 
 public interface IFolder {
 	/**
-	 * @return the path of this folder*/
+	 * @return the path of this folder
+	 */
 	public File getPath();
 	/**
 	 * @return true if the folder is empty
@@ -14,8 +16,9 @@ public interface IFolder {
 	 * adds an item into this folder and its index file
 	 * @param item (email, contact, ..etc)  
 	 * @return the new folder created inside this folder, could be null if the added item is 
-	 * just a file*/
-	public IFolder add(Object item);
+	 * just a file
+	 * @throws IOException */
+	public File add(Object item);
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
@@ -26,10 +29,8 @@ public interface IFolder {
 	 * @return if deleted successfully*/
 	public boolean delete();
 	/**
-	 * adds a list of items to the index file of the folder
-	 * @param L
+	 * @return number of items in the folder
 	 */
-	//void uploadToIndex(ILinkedList L); //what does this function do? --jehad
-	
-	public boolean copy(IFolder to);
+	public int getSize();
+	//public boolean copy(IFolder to);
 }

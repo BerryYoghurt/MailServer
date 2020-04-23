@@ -24,8 +24,9 @@ public interface IContact {
 	/**
 	 * removes an email address whose order is give as parameter
 	 * @param order
+	 * @return 
 	 */
-	void removeAddress(int order);
+	boolean removeAddress(int order);
 	/**
 	 * sets password, only if IConact is instance of Account
 	 * @param password the new password

@@ -1,3 +1,4 @@
+package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -9,20 +10,19 @@ import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 public class Index implements IIndex {
 	
 	
-	private SLinkedList list;
+	protected SLinkedList list;
     private File path;
-    private int size = 0;
+    protected int size = 0;
     
     //constructor
-    public Index(File path) {
+    public Index(File path){
     	//create index file itself and keep its path
-    	String IPath = path.getAbsolutePath() + "\\index.txt"; // get position
-    	File Index = new File(IPath);
+    	File Index = new File(path, "index.txt");
     	this.path  = Index;
         readIndex();
     }
-    
-    File getPath() {
+    @Override
+    public File getPath() {
     	return this.path;
     }
 		/**open File
@@ -36,7 +36,7 @@ public class Index implements IIndex {
 		
 		try(Scanner reader = new Scanner(path);) {
 			while (reader.hasNextLine()){ 
-	            Info item = new Info();
+	            UserInfo item = new UserInfo();
 	            item.stringToInfo(reader.nextLine());
 	            list.add(item);
 	        }
@@ -55,9 +55,9 @@ public class Index implements IIndex {
         
 		try(PrintWriter writer = new PrintWriter(this.path)){
 			list.resetNext();
-			Info i;
-			for( ; list.hasNext() ; i = (Info)list.getNext()){
-				i = (Info)list.next(); 
+			UserInfo i;
+			for( ; list.hasNext() ; i = (UserInfo)list.getNext()){
+				i = (UserInfo)list.next(); 
 			    writer.println(i.infoToString());
 			}
 		} catch (FileNotFoundException e) {
@@ -69,13 +69,17 @@ public class Index implements IIndex {
      * we know that object is an email 
      */
 	@Override
-	public void add(IMail mail) {//date , sender , recievers , subject , directory
-        Info item = new Info();
-        item.date = mail.getDate().toString(); // string
-        item.sender = mail.getSenderAddress(); //we need a function in IContact to get the sender email address as a string
-        item.receivers = mail.getReceivers().size();
-        item.subject = mail.getSubject();
-        item.directory = mail.toString();
+	public void add(Object mail) {//date , sender , recievers , subject , directory
+		if(mail == null || !(mail instanceof IMail)){
+	        throw new RuntimeException();
+	    }
+		Mail m = (Mail)mail;
+		UserInfo item = new UserInfo();
+        item.date = m.getDate().toString(); // string
+        item.sender = m.getSenderAddress(); //we need a function in IContact to get the sender email address as a string
+        item.receivers = m.getReceivers().size();
+        item.subject = m.getSubject();
+        item.directory = m.toString();
 		size++;
 	}
 
@@ -94,9 +98,7 @@ public class Index implements IIndex {
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
 		return size;
 	}
 	
-}
-
+}    

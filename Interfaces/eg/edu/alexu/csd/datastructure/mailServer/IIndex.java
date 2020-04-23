@@ -1,7 +1,8 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 public interface IIndex {
 	/**
 	 * reads the index file and uploads it to a linked list
@@ -12,12 +13,12 @@ public interface IIndex {
 	 * write in the index file from the list after all modifications done in it
 	 * finalizes the modifications
 	 */
-	public void writeToIndex();
+	public void writeToIndex() throws FileNotFoundException;
 	/**
 	 * adds an item to the list
 	 * @param o
 	 */
-	public void add(IMail mail);
+	public void add(Object item);
 	/**
 	 * removes an item from the list
 	 * @param o
@@ -34,4 +35,7 @@ public interface IIndex {
 	 * @return number of items stored in the index
 	 */
 	public int getSize();
+	
+	public File getPath();
+
 }
