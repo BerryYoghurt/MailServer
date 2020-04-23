@@ -44,15 +44,23 @@ public class Mail implements IMail{
 		this.composerName = from.getName();
 		this.composerAddress = from.getAddresses()[0];
 		this.p = Priority.NORMAL;
-		containingFolder = from.getDraftPath().getPath();
-		bodyTxt = new File(containingFolder.getPath(), "bodyTxt.txt");
+		
 		//metadata = new File(containingFolder.getPath(), "metadata.eml");
 		this.attachements = new SLinkedList();
 		this.receivers = new DLinkedList();
-		StringBuilder s = new StringBuilder(this.composerName);
+		StringBuilder s = new StringBuilder(this.composerAddress);
 		s.append(this.date.toString());
 		this.identifier = s.toString();
-		this.identifier.replaceAll("[ \\\\.@:]", "");
+		this.identifier = this.identifier.replaceAll("[\\s\\\\.@:]", "");
+		containingFolder = new File(from.getDraftPath().getPath(), this.identifier);
+		containingFolder.mkdir();
+		bodyTxt = new File(containingFolder, "bodyTxt.txt");
+		try {
+			bodyTxt.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private Mail() {
@@ -64,30 +72,40 @@ public class Mail implements IMail{
 		try {
 			eml.createNewFile();
 		} catch (IOException e1) {
+			System.out.println("EML file not created");
+			//e1.printStackTrace();
+		}
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(eml);
+			
+			try(Writer s = new OutputStreamWriter(fos, Charset.forName("US-ASCII"))){
+				//StringBuilder s = new StringBuilder();
+				s.append("Subject: "); s.append(this.subject);
+				s.append("\r\n");
+				s.append("From: "); s.append("\""); s.append(this.composerName); 
+				s.append("\""); s.append('<');
+				s.append(this.composerAddress); /*s.append("@this.server");*/ s.append('>');
+				s.append("\r\n");
+				SimpleDateFormat d = new SimpleDateFormat("EEE dd MMM yyyy hh:mm:ss zzz");
+				s.append("Date: ");s.append(d.format(this.date)); s.append("\r\n");
+				s.append("To: ");
+				for(Object receiver: this.receivers) {
+					s.append('<');
+					s.append((String) receiver); s.append('>');
+					s.append(';');
+				}
+				s.append("\r\n");
+				s.append("Priority: ");s.append(this.p.toString());
+				s.append("\r\n");
+				s.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		try(Writer s = new OutputStreamWriter(new FileOutputStream(eml), Charset.forName("US-ASCII"))){
-			//StringBuilder s = new StringBuilder();
-			s.append("Subject: "); s.append(this.subject);
-			s.append("\n\r");
-			s.append("From: "); s.append("\""); s.append(this.composerName); 
-			s.append("\""); s.append('<');
-			s.append(this.composerAddress); s.append("@this.server"); s.append('>');
-			s.append("\n\r");
-			s.append("Date: ");s.append(this.date.toString()); s.append("\n\r");
-			s.append("To: ");
-			for(Object receiver: this.receivers) {
-				s.append((String) receiver);
-				s.append(';');
-			}
-			s.append("\n\r");
-			s.append("Priority: ");s.append(this.p.toString());
-			s.append("\n\r");
-			s.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	private static String readKeyWord(char[] str) {
@@ -105,22 +123,26 @@ public class Mail implements IMail{
 		String[] emails = new String[number];
 		StringBuilder s = new StringBuilder();
 		int i = 0;
+		boolean started = false;
 		for(char c : str) {
 			if(c == '<') {
+				started = true;
 				continue;
 			}
 			if(c == '>') {
+				started = false;
 				emails[i++] = s.toString();
 				s = new StringBuilder();
 			}
-			s.append(c);
+			if(started)
+				s.append(c);
 		}
 		return emails;
 	}
 	
-	public static IMail loadMail(IFolder thisMailFolder, int numberOfReceivers) {
+	public static Mail loadMail(File thisMailFolder, int numberOfReceivers) {
 		Mail m = new Mail();
-		m.containingFolder = thisMailFolder.getPath();
+		m.containingFolder = thisMailFolder;
 		File[] list = m.containingFolder.listFiles();
 		for(File f : list) {
 			if(f.getName().contentEquals("metadata.eml")) {//load subject and date
@@ -133,37 +155,41 @@ public class Mail implements IMail{
 						case "From":
 							i++;
 							StringBuilder s = new StringBuilder();
+							boolean started = false;
 							for(int j = token.length(); j < arr.length; j++) {
 								if(arr[j] == '\"') {
+									started = true;
 									continue;
 								}
 								if(arr[j] == '<') {
 									break;
 								}
-								s.append(arr[j]);
+								if(started)
+									s.append(arr[j]);
 							}
 							m.composerName = s.toString();
 							m.composerAddress = readEmails(arr, 1)[0];
 							break;
 						case "Subject":
 							i++;
-							m.subject = line.substring("Subject: ".length(), line.length()-2);
+							m.subject = line.substring(token.length()+2);
 							break;
 						case "To":
 							i++;
 							String[] receivers = readEmails(arr, numberOfReceivers);
+							m.receivers = new DLinkedList();
 							for(String rec : receivers) {
 								m.addReceiver(rec);
 							}
 							break;
 						case "Priority":
 							i++;
-							m.p = Priority.valueOf(line.substring("Priority: ".length(), line.length()-2));
+							m.p = Priority.valueOf(line.substring(token.length()+2));
 							break;
 						case "Date":
 							i++;
-							SimpleDateFormat d =new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy");
-							m.date = d.parse(line);
+							SimpleDateFormat d =new SimpleDateFormat("EEE dd MMM yyyy hh:mm:ss zzz");
+							m.date = d.parse(line.substring(token.length() + 2));
 							break;
 						}
 					}
@@ -206,9 +232,7 @@ public class Mail implements IMail{
 				}
 			}*/
 		}
-		StringBuilder s = new StringBuilder(m.composerAddress);
-		s.append(m.date.toString());
-		m.identifier = s.toString().replaceAll("[ \\\\.@:]", "");
+		m.identifier = thisMailFolder.getName();
 		return m;
 	}
 	

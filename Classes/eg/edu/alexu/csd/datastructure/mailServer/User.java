@@ -1,9 +1,11 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,17 +18,45 @@ public class User implements IContact {
 	private File path;
 	private File infoFile;
 	private String[] info = new String[7]; 				// 1-Fname 2-Lname 3-address 4-date 5-gender 6-password  7-salt
-  private byte[] salt;
+	private byte[] salt;
 	private MailFolder draft;
 	private MailFolder trash;
 	private MailFolder inbox;
 	private MailFolder sent;
   
-  User(){ // if we want to upload an existing user??
-  
-  }
+	  User(){ // if we want to upload an existing user??
+	  //TODO Load user from database
+	  }
+	  
+	  
+	  User(String Fname, String Lname, String address){//TESTING ONLY
+		  File folder = new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\" + address);
+			if (!(folder.exists() || folder.mkdir())) {
+				throw new RuntimeException("folder is not created!");
+			}
+			this.path = folder;
 
-	User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
+			File file = new File(folder.getAbsolutePath() + "\\info.txt");
+			try {
+				if (!(file.exists() || file.createNewFile())) {
+					throw new RuntimeException("file is not created!");
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.infoFile = file;
+			setAddress(address);
+			setName(Fname, Lname);
+			writeToFile();
+
+			draft = new MailFolder(this.path,"draft");
+			trash = new MailFolder(this.path,"trash");
+			inbox = new MailFolder(this.path,"inbox");
+			sent = new MailFolder(this.path,"sent");
+	  }
+
+	  User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
 		// address // without @  //dateformat ="MM-dd-yyyy"
 
 		File folder = new File("system\\" + address);
@@ -36,7 +66,7 @@ public class User implements IContact {
 		this.path = folder;
 
 		File file = new File(folder.getAbsolutePath() + "\\info.txt");
-		if (!folder.createNewFile()) {
+		if (!file.createNewFile()) {
 			throw new RuntimeException("file is not created!");
 		}
 		this.infoFile = file;
@@ -56,22 +86,28 @@ public class User implements IContact {
 	}
 
 	public void writeToFile() {
-		PrintWriter writer = new PrintWriter(this.path);
-		for(int i=0 ; i < info.length ; i++){
-		    writer.println(info[i]);
-		     
+		try(PrintWriter writer = new PrintWriter(this.infoFile)){
+			for(int i=0 ; i < info.length ; i++){
+			    writer.println(info[i]);
+			     
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-    writer.close();
 	}
   
   public void read(){
-  			Scanner reader = new Scanner(infoFile); 
-        int i = 0;
-        while (reader.hasNextLine() && i < info.length){ 
-            info[i] = reader.nextLine();
-            i++;
-        }
-        reader.close();
+  		try(Scanner reader = new Scanner(infoFile)){ 
+	        int i = 0;
+	        while (reader.hasNextLine() && i < info.length){ 
+	            info[i] = reader.nextLine();
+	            i++;
+	        }
+  		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
   }
   
   public File getPath() {
@@ -100,7 +136,7 @@ public class User implements IContact {
 
 	@Override
 	public boolean setAddress(String address) { // without the @ //both
-		if (address.length() > 20 || address.length() < 10) {
+		if (address.length() > 20 || address.length() < 5) {//why < 10??
 			return false;
 		}
 		address = address + "@system.com";
@@ -168,44 +204,51 @@ public class User implements IContact {
 		return 0;
 	}
 
-	@Override
-	public IFolder getDraftPath() {// user
-		return this.draft;
-	}
-
-	@Override
-	public IFolder getTrashPath() {// user
-		return this.trash;
-	}
-
-	@Override
-	public IFolder getInboxPath() {// user
-		return this.inbox;
-	}
-
-	@Override
-	public IFolder getSentPath() {// user
-		return this.sent;
-	}
+		@Override
+		public IFolder getDraftPath() {// user
+			return this.draft;
+		}
 	
-  private String getHash(String password, byte[] salt){
-  	MessageDigest digest = MessageDigest.getInstance("MD5");
-    digest.reset();
-    digest.update(salt);
-    byte[] hash = digest.digest(password.getBytes());
-    return bytesToStringHex(hash);
-  }
-  
-  private String bytesToStringHex(byte[] bytes){
-  	char[] hexChars = new char[bytes.length * 2];
-    char[] hexArray = "0123456789ABCDEF".toCharArray();
-    for(int i = 0; i < bytes.length; i++){
-    	int v = bytes[i] & 0xFF ;
-      hexChars[i*2] = hexArray[v >>> 4];
-      hexChars[i*2 + 1] = hexArray[v & 0x0F];
-    }
-    return new String(hexChars);
-  }
+		@Override
+		public IFolder getTrashPath() {// user
+			return this.trash;
+		}
+	
+		@Override
+		public IFolder getInboxPath() {// user
+			return this.inbox;
+		}
+	
+		@Override
+		public IFolder getSentPath() {// user
+			return this.sent;
+		}
+	
+	  private String getHash(String password, byte[] salt){
+	  	MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			digest.reset();
+		    digest.update(salt);
+		    byte[] hash = digest.digest(password.getBytes());
+		    return bytesToStringHex(hash);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return null;
+	  }
+	  
+	  private String bytesToStringHex(byte[] bytes){
+	  	char[] hexChars = new char[bytes.length * 2];
+	    char[] hexArray = "0123456789ABCDEF".toCharArray();
+	    for(int i = 0; i < bytes.length; i++){
+	    	int v = bytes[i] & 0xFF ;
+	      hexChars[i*2] = hexArray[v >>> 4];
+	      hexChars[i*2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
+	  }
   
   private byte[] createSalt(){
   	byte[] bytes = new byte[20];
@@ -213,25 +256,12 @@ public class User implements IContact {
     random.nextBytes(bytes);
     return bytes;
   }
-  String string = new String(bytes);
+  //String string = new String(bytes);//?????????????????
   private void setSalt(){
   	byte[] saltArray = createSalt();
     this.salt = saltArray;
     String salt = new String(saltArray);
     info[6] = salt;
   }
-
-@Override
-public boolean setName(String name) {
-	// TODO Auto-generated method stub
-	return false;
-}
-
-@Override
-public int appendIndex(IIndex indexFile) {
-	// TODO Auto-generated method stub
-	return 0;
-}
-  
   
 }

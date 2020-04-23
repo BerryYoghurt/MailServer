@@ -37,7 +37,7 @@ public interface IContact {
 	 * sets the name of the contact
 	 * @param name
 	 * @return true if success*/
-	public boolean setName(String name);
+	public boolean setName(String Fname, String Lname);
 	/**
 	 * @return name*/
 	public String getName();
