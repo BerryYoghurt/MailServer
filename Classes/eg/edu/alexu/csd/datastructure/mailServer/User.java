@@ -49,10 +49,10 @@ public class User implements IContact {
 			setName(Fname, Lname);
 			writeToFile();
 
-			draft = new MailFolder(this.path,"draft");
-			trash = new MailFolder(this.path,"trash");
-			inbox = new MailFolder(this.path,"inbox");
-			sent = new MailFolder(this.path,"sent");
+			draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
+			trash = new MailFolder(this.path,MailFolder.kind.TRASH);
+			inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
+			sent = new MailFolder(this.path,MailFolder.kind.SENT);
 	  }
 
 	  User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
@@ -77,10 +77,10 @@ public class User implements IContact {
 		setBirthDate(birthDate);
 		setGender(gender);
 		writeToFile();
-		draft = new MailFolder(this.path,"draft");
-		trash = new MailFolder(this.path,"trash");
-		inbox = new MailFolder(this.path,"inbox");
-		sent = new MailFolder(this.path,"sent");
+		draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
+		trash = new MailFolder(this.path,MailFolder.kind.TRASH);
+		inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
+		sent = new MailFolder(this.path,MailFolder.kind.SENT);
 	}
 
 	public void writeToFile() {

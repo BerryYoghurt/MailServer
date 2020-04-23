@@ -13,15 +13,33 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 
 public class MailFolder implements IFolder {
-
 	private IIndex index;
 	private File path;
-
+	private boolean editableMails;
+	
+	enum kind{
+		TRASH,
+		DRAFT,
+		SENT,
+		INBOX
+	};
+	
 	// constructor
-	public MailFolder(File path, String name) {
-		this.path = new File(path, name);
+	public MailFolder(File path, kind k) {
+		this.path = new File(path, k.toString().toLowerCase());
 		this.path.mkdir();
-		index = new Index(this.path); // fpath >>> folder path
+		index = new Index(this.path); // fpath >>> folder path	
+		
+		switch(k) {
+		case TRASH:
+			break;
+		case DRAFT:
+			editableMails = true;
+			break;
+		case INBOX:
+		case SENT:
+			editableMails = false;
+		}
 	}
 
 	@Override

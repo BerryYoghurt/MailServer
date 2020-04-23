@@ -16,7 +16,7 @@ public class Attachement implements IAttachement {
 	
 	@Override
 	public boolean copy(File to) throws IOException{
-		Files.copy(att.toPath(), to.toPath());
+		Files.copy(att.toPath(), to.toPath().resolve(att.getName()));
 		return false;
 	}
 
@@ -35,7 +35,6 @@ public class Attachement implements IAttachement {
 		try {
 			Desktop.getDesktop().open(att);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
