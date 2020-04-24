@@ -49,9 +49,8 @@ public class CIndex extends Index{
 	
 	public void writeToIndex(){
 		try(PrintWriter writer = new PrintWriter(getPath())){
-			list.resetNext();
-			for(; list.hasNext() ; list.getNext()) {
-			    Info item = (Info)list.next();
+			for(Object o : list) {
+			    Info item = (Info)o;
 			    writer.println(item.infoToString());
 			}
 		} catch (FileNotFoundException e) {

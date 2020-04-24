@@ -1,14 +1,15 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 
 public class MailFolder implements IFolder {
@@ -59,6 +60,7 @@ public class MailFolder implements IFolder {
 			e.printStackTrace();
 		}
 	}*/
+	
 	//another constructor
 	public MailFolder(File pathToLoadFrom) {
 		this.path = pathToLoadFrom;
@@ -67,7 +69,7 @@ public class MailFolder implements IFolder {
 	}
 	
 	@Override
-	public File getPath() {
+	public File getPath() { 
 		return this.path;
 	}
 
@@ -127,7 +129,7 @@ public class MailFolder implements IFolder {
 		}
 
 	}
-
+	
 	@Override
 	public int getSize() {
 		// TODO Auto-generated method stub

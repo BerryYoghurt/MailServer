@@ -6,9 +6,9 @@ public class MailInfo {
     public int receivers = 0; // multi reciever 
     public String subject;
     public String directory;
-    
+    public String priority;
     String infoToString(){
-        return date + "," + sender + "," + receivers+  "," + subject + "," + directory ; 
+        return date + "," + sender + "," + receivers+  "," + subject + "," + directory + "," + priority; 
     }
     
     void stringToInfo (String line){
@@ -24,6 +24,7 @@ public class MailInfo {
         //String[] arr2 = recievers.spilt(" " , 0); 
         subject = arr[3];
         directory= arr[4];
+        priority = arr[5];
     }
     //deal with queue & contact & date
 }
