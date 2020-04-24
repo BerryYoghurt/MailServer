@@ -41,7 +41,6 @@ public class User implements IContact {
 					throw new RuntimeException("file is not created!");
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			this.infoFile = file;
@@ -90,7 +89,6 @@ public class User implements IContact {
 			     
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -143,7 +141,6 @@ public class User implements IContact {
 
 	@Override
 	public String[] getAddresses() { // contact + getAddresses //user >> returns only one address
-		// TODO Auto-generated method stub
 		String[] get = new String[1];
 		get[0] = info[2];
 		return get;

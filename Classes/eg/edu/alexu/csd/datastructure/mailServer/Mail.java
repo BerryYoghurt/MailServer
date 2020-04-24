@@ -285,8 +285,11 @@ public class Mail implements IMail{
 
 	@Override
 	public boolean move(IFolder newFolder) {//done
-		if(this.copy(newFolder))
-			return this.containingFolder.delete();
+		if(this.copy(newFolder)) {
+			IFolder f = new MailFolder(this.containingFolder);
+			f.remove(this);
+			return true;
+		}
 		else return false;
 	}
 	
