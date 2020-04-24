@@ -31,7 +31,7 @@ public class MailFolder implements IFolder {
 	}
 
 	@Override
-	public File getPath() {
+	public File getPath() { 
 		return this.path;
 	}
 
@@ -41,23 +41,21 @@ public class MailFolder implements IFolder {
 	}
 
 	@Override
-	public File add(Object item) {
+	public File add(Object item) { //*
 		if (!this.path.exists()) {
 			throw new RuntimeException("folder does not exists!");
 		}
 		if (item instanceof IMail) {
 			/*
-			 * //set name , check if repeated String newPath = path.getAbsolutePath() + "\\"+ name; 
-			 * SingleMailFolder mail = new SingleMailFolder(newPath...); // set mail
-			 * inside its folder return mail;
+			how to get the Mail Folder path
 			 */
+			index.add(item);
 		}
-		index.add(item);
-		return null; // folder of singleMailFolder
+		return null; 
 	}
 
 	@Override
-	public Object remove(Object item) { // name???
+	public Object remove(Object item) { // name??? //*
 		// TODO Auto-generated method stub
 		index.remove(item);
 		// remove item itself

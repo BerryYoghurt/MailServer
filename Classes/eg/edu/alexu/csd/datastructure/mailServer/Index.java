@@ -6,30 +6,14 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Index implements IIndex {
+    
+    public class Info {
+
+	// date , sender , recievers , subject , directory
+
 	
-	class Info { //date , sender , recievers , subject , directory 
-	
-	    String date;
-	    String sender;
-	    IQueue recievers; // multi reciever 
-	    String subject;
-	    String directory;
-	    
-	    String infoToString(){
-	        return date + "," + sender + "," + /*recievers+*/  "," + subject + "," + directory ; 
-	    }
-	    
-	    void stringToInfo (String line){
-	        String[] arr = line.split("," , 0);
-	        date = arr[0];
-	        sender = arr[1];
-	        //recievers = arr[2];
-	        //String[] arr2 = recievers.spilt(" " , 0); 
-	        subject = arr[3];
-	        directory= arr[4];
-	    }
-	    //deal with queue & contact & date
-	}
+	// deal with queue & contact & date
+}
 	
 	protected ILinkedList list;
     private File path;
@@ -90,24 +74,65 @@ public class Index implements IIndex {
 	    if(item == null || !(item instanceof IMail)){
 	        throw new RuntimeException();
 	    }
-        Info i = new Info();
-        i.date = ((IMail) item).getDate(); // string
-        //item.sender = mail.getSender(); //we need a function in IContact to get the sender email address as a string
-        //item.recievers = mail.getRecievers();
-       //item.subject = mail.getsubject();
-        //item.directory = 
+        Info item2 = new Info();
+        item2.date = ((IMail) item).getDate().toString();
+        item2.sender = ((IMail) item).getSender();
+        item2.recievers = ((IMail) item).getRecievers();
+        item2.subject = ((IMail) item).getSubject();
+        item2.directory = ((IMail) item).getDirectory();
+        item2.prioriy = ((IMail) item).getPrioriy().name();
+        list.add(item2);
 		size++;
 	}
 
 	@Override
 	public Object remove(Object o) {
+	    if(o == null || !(o instanceof IMail)){
+	        throw new RuntimeException();
+	    }
+        Info item = new Info();
+        item.date = ((IMail) o).getDate().toString();
+        item.sender = ((IMail) o).getSender();
+        item.recievers = ((IMail) o).getRecievers();
+        item.subject = ((IMail) o).getSubject();
+        item.directory = ((IMail) o).getDirectory();
+        item.prioriy = ((IMail) o).getPrioriy().name();
+        Object found = find(o);
 		size--;
-		return null;
+		return found;
 	}
 
 
+    public int search(Object e) {
+		int middle, high, low;
+		boolean found = false;
+		Stack stack = new Stack();
+		stack.push(0);
+		stack.push(list.size()-1);
+		while(!found) {
+			high = stack.pop();
+			low = stack.pop();
+			if(high < low) {
+				stack.push(-1);
+				break;
+			}
+			middle = (high + low)/2;
+			if(list.get(middle).equals(e)) {
+				stack.push(middle);
+				found = true;
+			}else if(list.get(middle).compareTo(e) > 0) { //sorted by ??
+				stack.push(low);
+				stack.push(middle-1);
+			}else {
+				stack.push(middle+1);
+				stack.push(high);
+			}
+		}
+		return stack.pop();
+	}
+
 	@Override
-	public Object find(Object o) { 
+	public Object find(Object o) { //search the linked list by ??
 		return null;
 	}
 
@@ -115,12 +140,36 @@ public class Index implements IIndex {
 	public int getSize() {
 		return size;
 	}
-
+	/**
+    *linked list of arrays of size 10
+	*divide the main list into arrays(pages)
+     */
 	@Override
-	public ILinkedList setPages(int size) { //*************************************************
-		ILinkedList pages; //linked list of arrays of size 10
-		//divide the main list into arrays(pages)
-		return null;
+	public ILinkedList setPages(int size) { 
+		ILinkedList pages = new SLinkedList();
+		for(int i=0 ; i < Math.ceil(list.size()/10.0) ; i++){
+		    int begin , end;
+		    if(i == 0){
+		        begin = 0;
+		    }else{
+		        begin = ((i)*10)-1;
+		    }
+		    
+		    if(i == Math.ceil(list.size()/10.0)-1){
+		        end = list.size()-1;
+		    }else{
+		        end = ((i+1)*10)-1;
+		    }
+		   
+		    ILinkedList sublist = list.sublist(begin,end);
+		    Info[] arr = new Info[sublist.size()];
+		    for(int j = 0; j < sublist.size(); j++){
+		        arr[j] = (Info)sublist.traverse(null);
+		    }
+		    pages.add(arr);
+		}
+		
+		return pages;
 	}
 
 	
