@@ -26,8 +26,8 @@ public class Mail implements IMail{
 
 	transient private File containingFolder = null;// no need to save
 	transient private File attFolder = null;//no need to save
-	//transient private File receiversFile;
-	private String /*IContact*/ composerName;//how to read or write?
+	private IContact composer;
+	private String composerName;//how to read or write?
 	private String composerAddress;
 	private Date date;//serial
 	private String subject;//serial
@@ -35,17 +35,14 @@ public class Mail implements IMail{
 	transient private String identifier;
 	transient private SLinkedList attachements;//no need to save
 	transient private DLinkedList receivers;
-	//transient private File metadata;//no need to save, carries the serial data
 	transient private File bodyTxt;//no need to save
 	
-	public Mail(IContact from) {
-		
+	public Mail(IContact from) {//any time a new mail is created, it is in draft
 		this.date = new Date();
+		composer = from;
 		this.composerName = from.getName();
 		this.composerAddress = from.getAddresses()[0];
 		this.p = Priority.NORMAL;
-		
-		//metadata = new File(containingFolder.getPath(), "metadata.eml");
 		this.attachements = new SLinkedList();
 		this.receivers = new DLinkedList();
 		StringBuilder s = new StringBuilder(this.composerAddress);
@@ -68,6 +65,7 @@ public class Mail implements IMail{
 	}
 	@Override
 	public void saveMail() {
+		composer.getDraftPath().add(this);//add to index
 		File eml = new File(this.containingFolder, "metadata.eml");
 		try {
 			eml.createNewFile();
@@ -108,6 +106,7 @@ public class Mail implements IMail{
 			e1.printStackTrace();
 		}
 	}
+	
 	private static String readKeyWord(char[] str) {
 		StringBuilder s = new StringBuilder();
 		for(int i = 0; i < str.length; i++) {
@@ -140,9 +139,13 @@ public class Mail implements IMail{
 		return emails;
 	}
 	
-	public static Mail loadMail(File thisMailFolder, int numberOfReceivers) {
+	public static Mail loadMail(File thisMailFolder, int numberOfReceivers, boolean trash) {
 		Mail m = new Mail();
-		m.containingFolder = thisMailFolder;
+		m.containingFolder = thisMailFolder;//could be draft (which can be deleted or sent)
+		//could be sent (which could be deleted)
+		//could be trash (which could be restored)
+		//could be inbox
+		long lastModified = thisMailFolder.lastModified();
 		File[] list = m.containingFolder.listFiles();
 		for(File f : list) {
 			if(f.getName().contentEquals("metadata.eml")) {//load subject and date
@@ -233,6 +236,8 @@ public class Mail implements IMail{
 			}*/
 		}
 		m.identifier = thisMailFolder.getName();
+		if(trash)
+			m.containingFolder.setLastModified(lastModified);//ensure last modified is not changed for the sake of deletion
 		return m;
 	}
 	
@@ -283,6 +288,12 @@ public class Mail implements IMail{
 		if(this.copy(newFolder))
 			return this.containingFolder.delete();
 		else return false;
+	}
+	
+	@Override
+	public boolean delete() {
+		IFolder to = new MailFolder(new File(this.containingFolder.getParentFile(),"trash"));
+		return move(to);
 	}
 
 	@Override

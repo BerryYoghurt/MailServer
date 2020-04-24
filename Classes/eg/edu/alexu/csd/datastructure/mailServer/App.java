@@ -1,9 +1,13 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
+import java.io.File;
+
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 
 public class App implements IApp{
-	private DataBase db;
+	protected DataBase db;
+	protected File systemFile;
+	
 	@Override
 	public boolean signin(String email, String password) {
 		// TODO Auto-generated method stub

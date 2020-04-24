@@ -68,5 +68,7 @@ public interface IMail{
 	void saveMail();
 
 	String getSenderAddress();
+
+	boolean delete();
 	
 }

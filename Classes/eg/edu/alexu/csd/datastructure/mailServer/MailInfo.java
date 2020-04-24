@@ -1,6 +1,6 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-public class UserInfo {
+public class MailInfo {
 	public String date;
     public String sender;
     public int receivers = 0; // multi reciever 
