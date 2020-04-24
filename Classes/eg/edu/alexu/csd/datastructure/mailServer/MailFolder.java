@@ -32,7 +32,7 @@ public class MailFolder implements IFolder {
 		switch(type) {
 		case TRASH://TODO ONLY FOR WINDOWS, update to Unix too
 			//File root = path.getParentFile().toPath().resolve("trash").toFile();//navigate to trash
-			createDeletionBatch(this.path);
+			//createDeletionBatch(this.path);
 			break;
 		case DRAFT:
 			break;
@@ -42,7 +42,8 @@ public class MailFolder implements IFolder {
 			break;
 		}
 	}
-	private void createDeletionBatch(File root) {
+	/*private void createDeletionBatch(File root) {
+		SystemUtils;
 		File batch = new File(root, "AutoDelete.bat");
 		try(Writer s = new OutputStreamWriter(new FileOutputStream(batch), Charset.forName("US-ASCII"))){
 			batch.createNewFile();
@@ -57,7 +58,7 @@ public class MailFolder implements IFolder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	//another constructor
 	public MailFolder(File pathToLoadFrom) {
 		this.path = pathToLoadFrom;
