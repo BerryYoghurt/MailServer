@@ -1,7 +1,6 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
-import java.io.IOException;
 
 public interface IFolder {
 	/**
@@ -16,9 +15,8 @@ public interface IFolder {
 	 * adds an item into this folder and its index file
 	 * @param item (email, contact, ..etc)  
 	 * @return the new folder created inside this folder, could be null if the added item is 
-	 * just a file
-	 * @throws IOException */
-	public File add(Object item) throws IOException;
+	 * just a file*/
+	public IFolder add(Object item);
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
