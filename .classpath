@@ -11,6 +11,7 @@
 	<classpathentry kind="lib" path="Lib/javax.mail.jar"/>
 	<classpathentry kind="lib" path="Lib/Queue.jar"/>
 	<classpathentry kind="lib" path="Lib/LinkedList.jar"/>
+	<classpathentry kind="lib" path="Lib/Stack.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
