@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+
 public class ContactFolder implements IFolder{
     
     private IIndex index;
@@ -105,5 +107,10 @@ public class ContactFolder implements IFolder{
 				}
 			}
 		}
+	}
+
+	@Override
+	public DLinkedList getIndex() {
+		return (DLinkedList)index.readIndex();
 	}
 }

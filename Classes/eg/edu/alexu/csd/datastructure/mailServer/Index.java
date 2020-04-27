@@ -9,6 +9,7 @@ import java.util.Scanner;
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
+import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class Index implements IIndex {
     
@@ -118,8 +119,8 @@ public class Index implements IIndex {
 		stack.push(0);
 		stack.push(list.size()-1);
 		while(!found) {
-			high = stack.pop();
-			low = stack.pop();
+			high = (Integer)stack.pop();
+			low = (Integer)stack.pop();
 			if(high < low) {
 				stack.push(-1);
 				break;
@@ -148,36 +149,4 @@ public class Index implements IIndex {
 	public int getSize() {
 		return size;
 	}
-	/**
-    *linked list of arrays of size 10
-	*divide the main list into arrays(pages)
-     */
-	@Override
-	public ILinkedList setPages(int size) { 
-		ILinkedList pages = new SLinkedList();
-		for(int i=0 ; i < Math.ceil(list.size()/10.0) ; i++){
-		    int begin , end;
-		    if(i == 0){
-		        begin = 0;
-		    }else{
-		        begin = ((i)*10)-1;
-		    }
-		    
-		    if(i == Math.ceil(list.size()/10.0)-1){
-		        end = list.size()-1;
-		    }else{
-		        end = ((i+1)*10)-1;
-		    }
-		   
-		    ILinkedList sublist = list.sublist(begin,end);
-		    MailInfo[] arr = new MailInfo[sublist.size()];
-		    for(int j = 0; j < sublist.size(); j++){
-		        arr[j] = (MailInfo)sublist.traverse(null);
-		    }
-		    pages.add(arr);
-		}
-		
-		return pages;
-	}	
-	
 }

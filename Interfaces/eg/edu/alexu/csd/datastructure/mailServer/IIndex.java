@@ -37,6 +37,4 @@ public interface IIndex {
 	public int getSize();
 	
 	public File getPath();
-	ILinkedList setPages(int size);
-
 }

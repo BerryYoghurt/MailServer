@@ -25,7 +25,7 @@ class TestMail {
 	@Test
 	void testCreation() {
 		createEmail();
-		Mail n = Mail.loadMail(new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\batteekh\\draft\\"+m.toString()), 2, false);
+		Mail n = Mail.loadMail(new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\batteekh\\draft\\"+m.toString()), 2);
 		assertEquals(n.getSenderName(), m.getSenderName());
 		//assertTrue(n.getDate().equals(m.getDate()));
 		assertEquals(n.getPriority(), m.getPriority());
@@ -45,7 +45,7 @@ class TestMail {
 		Attachement a = new Attachement(new File("D:\\Uni\\Term4\\MailServer\\Notes\\folderClassMap.png"));
 		m.addAttachement(a);
 		m.saveMail();
-		Mail n = Mail.loadMail(new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\batteekh\\draft\\"+m.toString()), 1, false);
+		Mail n = Mail.loadMail(new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\batteekh\\draft\\"+m.toString()), 1);
 		assertEquals(n.getSenderName(), m.getSenderName());
 		//assertTrue(n.getDate().equals(m.getDate()));
 		assertEquals(n.getPriority(), m.getPriority());

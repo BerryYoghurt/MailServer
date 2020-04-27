@@ -12,6 +12,8 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+
 public class MailFolder implements IFolder {
 	private IIndex index;
 	private File path;
@@ -141,7 +143,7 @@ public class MailFolder implements IFolder {
 		//System.out.println();
 	}
 
-	public void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
+	public static void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
 		// Check if sourceFolder is a directory or file
 		// If sourceFolder is file; then copy the file directly to new location
 		if (sourceFolder.isDirectory()) {
@@ -173,14 +175,19 @@ public class MailFolder implements IFolder {
 		Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 	}
 
-	public void cleanDir(File folder) throws IOException {
+	public static void cleanDir(File folder) throws IOException {
 
 		File[] files = folder.listFiles();
 		if (files != null && files.length > 0) {
 			for (File f : files) {
-				if (!f.equals(index.getPath()))
+				if (f.getName() != "index.txt")
 					removeDir(f);
 			}
 		}
+	}
+
+	@Override
+	public DLinkedList getIndex() {
+		return (DLinkedList)this.index.readIndex();
 	}
 }
