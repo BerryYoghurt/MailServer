@@ -7,23 +7,26 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+
 public class SubjectFilter implements IFilter {
 	File folder;
-
+	private String field;
+	
 	SubjectFilter(File path) {
 		this.folder = path;
 	}
 
 	@Override
-	public DoublyLinkedList applyFilter(DoublyLinkedList list, String field) { // linked list of info
-		DoublyLinkedList filtered = new DoublyLinkedList();
+	public DLinkedList applyFilter(DLinkedList list) { // linked list of info
+		DoublyLinkedList filtered = new DLinkedList();
 		while (list.hasNext()) {
 			Info item = (Info) list.getNext();// add clone in Info
 			if (item.subject.contains(field)) {
 				filtered.add(item);
 				String newDirectory = this.folder.getAbsolutePath() + item.directory.getName();
 				copyFolder(item.directory, new File(newDirectory));
-				item.directory = newDirectory;
+				//item.directory = newDirectory;
 			}
 		}
 		return filtered;
@@ -68,5 +71,16 @@ public class SubjectFilter implements IFilter {
 
 	public void removeDir(File folder) throws IOException {// *************************************************************
 		Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+	}
+
+	@Override
+	public DLinkedList applyFilter(DLinkedList index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setParameter(String parameter) {
+		this.field = parameter;		
 	}
 }

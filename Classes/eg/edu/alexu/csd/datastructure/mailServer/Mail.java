@@ -139,13 +139,13 @@ public class Mail implements IMail{
 		return emails;
 	}
 	
-	public static Mail loadMail(File thisMailFolder, int numberOfReceivers, boolean trash) {
+	public static Mail loadMail(File thisMailFolder, int numberOfReceivers) {
 		Mail m = new Mail();
 		m.containingFolder = thisMailFolder;//could be draft (which can be deleted or sent)
 		//could be sent (which could be deleted)
 		//could be trash (which could be restored)
 		//could be inbox
-		long lastModified = thisMailFolder.lastModified();
+		//long lastModified = thisMailFolder.lastModified();
 		File[] list = m.containingFolder.listFiles();
 		for(File f : list) {
 			if(f.getName().contentEquals("metadata.eml")) {//load subject and date
@@ -236,8 +236,8 @@ public class Mail implements IMail{
 			}*/
 		}
 		m.identifier = thisMailFolder.getName();
-		if(trash)
-			m.containingFolder.setLastModified(lastModified);//ensure last modified is not changed for the sake of deletion
+		//if(trash)
+		//	m.containingFolder.setLastModified(lastModified);//ensure last modified is not changed for the sake of deletion
 		return m;
 	}
 	

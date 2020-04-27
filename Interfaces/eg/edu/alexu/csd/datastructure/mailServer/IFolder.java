@@ -3,6 +3,8 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 import java.io.IOException;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+
 public interface IFolder {
 	/**
 	 * @return the path of this folder
@@ -32,5 +34,7 @@ public interface IFolder {
 	 * @return number of items in the folder
 	 */
 	public int getSize();
+	
+	public DLinkedList getIndex();
 	//public boolean copy(IFolder to);
 }
