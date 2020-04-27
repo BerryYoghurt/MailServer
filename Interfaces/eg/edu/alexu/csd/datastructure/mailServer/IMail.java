@@ -64,6 +64,8 @@ public interface IMail{
 	public Date getDate();
 	
 	public String getSenderName();
+	
+	public String getDirectory();
 
 	void saveMail();
 

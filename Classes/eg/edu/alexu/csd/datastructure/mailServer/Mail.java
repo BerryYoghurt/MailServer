@@ -412,6 +412,11 @@ public class Mail implements IMail{
 	public String toString() {//done	
 		return this.identifier;
 	}
+
+	@Override
+	public String getDirectory() {
+		return this.containingFolder.getPath();
+	}
 	
 	
 }

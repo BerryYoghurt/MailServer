@@ -20,7 +20,7 @@ public class SenderFilter implements IFilter {
 	@Override
 	public DLinkedList applyFilter(DLinkedList list, String field) {
 		DLinkedList filtered = new DLinkedList();
-		for(Object o : list)) {
+		for(Object o : list) {
 			MailInfo item = (MailInfo) o;//TODO add clone in Info
 			if (item.sender.contains(field)) {
 				filtered.add(item);
@@ -58,19 +58,4 @@ public class SenderFilter implements IFilter {
 			Files.copy(sourceFolder.toPath(), destinationFolder.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
-
-	public void cleanDir(File folder) throws IOException { // ***************************************************************
-
-		File[] files = folder.listFiles();
-		if (files != null && files.length > 0) {
-			for (File f : files) {
-				removeDir(f);
-			}
-		}
-	}
-
-	public void removeDir(File folder) throws IOException {// *************************************************************
-		Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-	}
-
 }

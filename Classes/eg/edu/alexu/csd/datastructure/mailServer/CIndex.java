@@ -8,34 +8,15 @@ import java.util.Scanner;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 
 public class CIndex extends Index{
-    
-    class Info { // name , directory 
-	
-	    public String name;
-	    public String directory;
-	    
-	    String infoToString(){
-	        return name + "," + directory; 
-	    }
-	    
-	    void stringToInfo (String line){
-	        String[] arr = line.split("," , 0);
-	        name = arr[0];
-	        directory= arr[1];
-	    }
-	    //deal with queue & contact & date
-	}
-    
-    
-	public CIndex(File path) throws FileNotFoundException {
-		super(path);
-		// TODO Auto-generated constructor stub
+     
+	public CIndex(File path,boolean isNew) throws FileNotFoundException {
+		super(path,isNew);
 	}
 	
 	public ILinkedList readIndex(){
 	    try(Scanner reader = new Scanner(super.getPath())){ 
 	        while (reader.hasNextLine()){ 
-	            Info item = new Info();
+	            CInfo item = new CInfo();
 	            item.stringToInfo(reader.nextLine());
 	            list.add(item);
 	        }
@@ -50,7 +31,7 @@ public class CIndex extends Index{
 	public void writeToIndex(){
 		try(PrintWriter writer = new PrintWriter(getPath())){
 			for(Object o : list) {
-			    Info item = (Info)o;
+			    CInfo item = (CInfo)o;
 			    writer.println(item.infoToString());
 			}
 		} catch (FileNotFoundException e) {
@@ -63,25 +44,58 @@ public class CIndex extends Index{
 		if(item == null || !(item instanceof Contact)){
 	        throw new RuntimeException();
 	    }
-        Info i = new Info();
+        CInfo i = new CInfo();
         i.name = ((Contact)item).getName(); // string
         i.directory = ((Contact) item).getPath().getAbsolutePath();
         list.add(i);
 		size++;
 	}
 	
-	public Object remove(Object o) {    //remove it from the linked list
-		find(o);
-		size--;
-		return null;
+	public Object remove(Object o) {    //remove it from the linked list  //we only need contact name
+	    if( !(o instanceof String) || o == null || o.length() ==0 ){
+	        throw new RuntimeException();
+	    }else{
+		    int found = (Integer)find(o);
+		    if(found != -1) {
+		        size--;
+		        CInfo temp = (CInfo)list.get(found);
+		        list.remove(found);
+		        return temp;
+		    }
+		    return null;
+	    }
 	}
 
 
-	public Object find(Object o) {     //find it in the linked list
-	    // convert it to an info object
-		// binary search
-		//return the found object or null(if not found)
-		return null;
+	public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
+	    if( !(o instanceof String) || o == null || ((File) o).length() == 0 ){
+	        throw new RuntimeException();
+	    }
+	    int middle, high, low;
+		boolean found = false;
+		Stack stack = new Stack();
+		stack.push(0);
+		stack.push(list.size()-1);
+		while(!found) {
+			high = stack.pop();
+			low = stack.pop();
+			if(high < low) {
+				stack.push(-1);
+				break;
+			}
+			middle = (high + low)/2;
+			if(list.get(middle).equals(o)) {
+				stack.push(middle);
+				found = true;
+			}else if(list.get(middle).compareTo(o) > 0) { //sorted by ??
+				stack.push(low);
+				stack.push(middle-1);
+			}else {
+				stack.push(middle+1);
+				stack.push(high);
+			}
+		}
+		return stack.pop();
 	}
 
 }

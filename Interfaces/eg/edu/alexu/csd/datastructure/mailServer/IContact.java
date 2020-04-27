@@ -66,3 +66,4 @@ public interface IContact {
 	 * @return sent folder*/
 	public IFolder getSentPath();
 }
+
