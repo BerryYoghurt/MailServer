@@ -23,8 +23,22 @@ public class User implements IContact {
 	private MailFolder inbox;
 	private MailFolder sent;
   
-	  User(){ // if we want to upload an existing user??
-	  //TODO Load user from database
+	  User(String address){
+		  	File folder = new File(App.systemFile,address);
+			folder.mkdir();
+			this.path = folder;
+			File file = new File(folder,"info.txt");
+			this.infoFile = file;
+			try {
+				read();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
+			trash = new MailFolder(this.path,MailFolder.kind.TRASH);
+			inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
+			sent = new MailFolder(this.path,MailFolder.kind.SENT);
 	  }
 	  
 	  
@@ -57,7 +71,7 @@ public class User implements IContact {
 	  User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
 		// address // without @  //dateformat ="MM-dd-yyyy"
 
-		File folder = new File("system\\" + address);
+		File folder = new File(App.systemFile, address);
 		if (!folder.mkdir()) {
 			throw new RuntimeException("folder is not created!");
 		}
@@ -94,10 +108,13 @@ public class User implements IContact {
 	}
   
   
-  public File getPath() {
-    return this.path;
-  }
-
+	  public File getPath() {
+	    return this.path;
+	  }
+	  
+	  public String getPassHash() {
+		  return info[5];
+	  }
 	public void read() throws FileNotFoundException {
 		Scanner reader = new Scanner(infoFile);
 		int i = 0;
@@ -116,6 +133,10 @@ public class User implements IContact {
 			info[4] = "female";
 		}
 	}
+	
+	public String getGender() {
+		return info[4];
+	}
 
 	public boolean setBirthDate(String date) {
 		try {
@@ -127,6 +148,10 @@ public class User implements IContact {
 		} catch (ParseException e) {
 			return false;
 		}
+	}
+	
+	public String getBirthDate() {
+		return info[3];
 	}
 
 	@Override
@@ -204,10 +229,11 @@ public class User implements IContact {
 
 	@Override
 	public int appendIndex(IFolder indexFile) { // user only >> appends to database
-		// TODO Auto-generated method stub
-
+		App.db.add(this);
 		return 0;
 	}
+	
+	
 	@Override
 	public IFolder getDraftPath() {// user
 		return this.draft;

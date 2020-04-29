@@ -3,13 +3,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.Scanner;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
-import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class Index implements IIndex {
     
@@ -112,7 +109,7 @@ public class Index implements IIndex {
 	}
 
 
-    public int search(Object e) {
+    /*public int search(Object e) {
 		int middle, high, low;
 		boolean found = false;
 		Stack stack = new Stack();
@@ -138,7 +135,7 @@ public class Index implements IIndex {
 			}
 		}
 		return stack.pop();
-	}
+	}*/
 
 	@Override
 	public Object find(Object o) { //search the linked list by ??

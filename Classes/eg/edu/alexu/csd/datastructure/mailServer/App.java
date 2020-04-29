@@ -8,8 +8,8 @@ import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 public class App implements IApp{
-	protected DataBase db;
-	protected File systemFile;
+	protected static DataBase db = new DataBase();
+	protected static File systemFile = new File(App.class.getClass().getResource("/").getPath());
 	protected User signedInUser;
 	protected DLinkedList index;
 	protected IFolder currentFolder;
@@ -21,11 +21,12 @@ public class App implements IApp{
 			return false;
 		}
 		//check that email exists in Database
-		User u = new User(/*email*/);//should upload from database
+		User u = db.loadUser(email);//should upload from database
 		if(u.matchPassword(password)) {
 			signedInUser = u;
 			return true;
 		}
+		u = null;
 		return false;
 	}
 
@@ -105,7 +106,7 @@ public class App implements IApp{
 		}
 		q = email.getReceivers();
 		while(!q.isEmpty()) {
-			User u = new User(); //load from database
+			User u = db.loadUser((String)q.dequeue()); //load from database
 			//MailFolder.copyFolder(sourceFolder, destinationFolder);
 			email.copy(u.getInboxPath());
 		}

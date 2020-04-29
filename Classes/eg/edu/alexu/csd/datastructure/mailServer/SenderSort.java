@@ -2,16 +2,18 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.util.Stack;
 
-public class SubjectSort implements ISort{
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+
+public class SenderSort implements ISort{
 	@Override
-	public void applySort(SLinkedList list) { //LinkedList of info
+	public void applySort(DLinkedList list) { //LinkedList of info
 	    	
 		if (list == null || list.size() == 0)
 			return;
 		
         int low = 0;
         int high = list.size()-1;
-        String pivot = list.get( (low+high)/2 );
+        String pivot = (String)list.get( (low+high)/2 );
         Stack<Object> s = new Stack<Object>();
         s.push(low);
         s.push(pivot);
@@ -25,11 +27,11 @@ public class SubjectSort implements ISort{
             low = (int) s.pop();
             
             int i = low , j = high;
-            while ( ((Info)list.get(i)).sender.compareTo(pivot) < 0) { 
+            while ( ((MailInfo)list.get(i)).sender.compareTo(pivot) < 0) { 
 				i++;
 			}
  
-			while (((Info)list.get(j)).sender.compareTo(pivot) > 0) {
+			while (((MailInfo)list.get(j)).sender.compareTo(pivot) > 0) {
 				j--;
 			}
  

@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
+import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class CIndex extends Index{
      
@@ -52,7 +53,7 @@ public class CIndex extends Index{
 	}
 	
 	public Object remove(Object o) {    //remove it from the linked list  //we only need contact name
-	    if( !(o instanceof String) || o == null || o.length() ==0 ){
+	    if( !(o instanceof String) || o == null || ((String)o).length() ==0 ){
 	        throw new RuntimeException();
 	    }else{
 		    int found = (Integer)find(o);
@@ -77,8 +78,8 @@ public class CIndex extends Index{
 		stack.push(0);
 		stack.push(list.size()-1);
 		while(!found) {
-			high = stack.pop();
-			low = stack.pop();
+			high = (Integer)stack.pop();
+			low = (Integer)stack.pop();
 			if(high < low) {
 				stack.push(-1);
 				break;
