@@ -24,7 +24,7 @@ public class ContactFolder implements IFolder{
 			throw new RuntimeException("folder is not created!");
 		}
 		this.path = folder;
-		index = new Index(folder); // fpath >>> folder path
+		index = new Index(folder, true); // fpath >>> folder path
 
 	}
 

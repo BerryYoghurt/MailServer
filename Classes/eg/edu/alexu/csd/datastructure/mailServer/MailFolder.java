@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 
@@ -25,7 +28,7 @@ public class MailFolder implements IFolder {
 	public MailFolder(File path, kind k) {
 		this.path = new File(path, k.toString().toLowerCase());
 		this.path.mkdir();
-		index = new Index(this.path); // fpath >>> folder path	
+		index = new Index(this.path, true); // fpath >>> folder path	
 		type = k;
 		switch(type) {
 		case TRASH://TODO ONLY FOR WINDOWS, update to Unix too
@@ -61,7 +64,7 @@ public class MailFolder implements IFolder {
 	//another constructor
 	public MailFolder(File pathToLoadFrom) {
 		this.path = pathToLoadFrom;
-		index = new Index(this.path);
+		index = new Index(this.path,false);
 		type = kind.valueOf(pathToLoadFrom.getName().toUpperCase());
 	}
 	
@@ -184,5 +187,18 @@ public class MailFolder implements IFolder {
 	@Override
 	public DLinkedList getIndex() {
 		return (DLinkedList)this.index.readIndex();
+	}
+	
+	public void clearInTrash(DLinkedList list){
+	    Date current = new Date();
+	    for(Object o : list){
+	        MailInfo temp = (MailInfo)o;
+	        Date mailDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((temp).inTrash);  
+	   	    long diff = current.getTime() - mailDate.getTime();
+	   	    long diffDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+	             if(diffDays >= 30){
+	                 removeDir(new File(temp.directory));
+	            }
+	        }
 	}
 }

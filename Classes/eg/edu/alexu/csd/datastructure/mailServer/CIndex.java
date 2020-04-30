@@ -68,7 +68,7 @@ public class CIndex extends Index{
 	}
 
 
-	public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
+	/*public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
 	    if( !(o instanceof String) || o == null || ((File) o).length() == 0 ){
 	        throw new RuntimeException();
 	    }
@@ -97,6 +97,6 @@ public class CIndex extends Index{
 			}
 		}
 		return stack.pop();
-	}
+	}*/
 
 }

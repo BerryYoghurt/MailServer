@@ -1,3 +1,5 @@
+//constructor
+
 package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,11 +18,17 @@ public class Index implements IIndex {
     protected int size = 0;
 
     //constructor
-    public Index(File path){
+    public Index(File path, boolean isNew){
     	//create index file itself and keep its path
     	File index = new File(path, "index.txt");
     	try {
-			index.createNewFile();
+    		if(isNew){
+        	    index.createNewFile();
+        	    this.path  = index;
+        	}else{ 
+        	    this.path  = index;
+                readIndex();
+        	}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -28,6 +36,7 @@ public class Index implements IIndex {
     	this.path  = index;
         readIndex();
     }
+    
     
     @Override
     public File getPath() {
