@@ -1,15 +1,10 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
