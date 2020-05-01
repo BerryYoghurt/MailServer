@@ -68,17 +68,24 @@ public class User implements IContact {
 			sent = new MailFolder(this.path,MailFolder.kind.SENT);
 	  }
 
+	  /**
+	   * @param Fname
+	   * @param Lname
+	   * @param birthDate
+	   * @param gender
+	   * @param address
+	   * @param password*/
 	  User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
 		// address // without @  //dateformat ="MM-dd-yyyy"
 
 		File folder = new File(App.systemFile, address);
-		if (!folder.mkdir()) {
+		if (!(folder.exists() || folder.mkdir())) {
 			throw new RuntimeException("folder is not created!");
 		}
 		this.path = folder;
 
 		File file = new File(folder.getAbsolutePath() + "\\info.txt");
-		if (!file.createNewFile()) {
+		if (!(file.exists() || file.createNewFile())) {
 			throw new RuntimeException("file is not created!");
 		}
 		this.infoFile = file;
@@ -159,7 +166,7 @@ public class User implements IContact {
 		if (address.length() > 20 || address.length() < 5) {//why < 10??
 			return false;
 		}
-		address = address + "@system.com";
+		//address = address + "@system.com";
 		info[2] = address;
 		return true;
 	}

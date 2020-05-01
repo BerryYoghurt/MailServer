@@ -189,16 +189,16 @@ public class MailFolder implements IFolder {
 		return (DLinkedList)this.index.readIndex();
 	}
 	
-	public void clearInTrash(DLinkedList list){
+	/*public void clearInTrash(DLinkedList list){
 	    Date current = new Date();
 	    for(Object o : list){
 	        MailInfo temp = (MailInfo)o;
-	        Date mailDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((temp).inTrash);  
+	        Date mailDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((temp).inTrash);  //????
 	   	    long diff = current.getTime() - mailDate.getTime();
 	   	    long diffDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	             if(diffDays >= 30){
 	                 removeDir(new File(temp.directory));
 	            }
 	        }
-	}
+	}*/
 }

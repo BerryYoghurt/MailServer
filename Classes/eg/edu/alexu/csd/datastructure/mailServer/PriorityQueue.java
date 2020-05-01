@@ -34,7 +34,7 @@ public class PriorityQueue implements IPriorityQueue {
 		newNode.priority = key;
 		
 		Node current = tail.prev;
-		while(current!= head && current.priority >= key) {
+		while(current!= head && current.priority < key) {
 			current = current.prev;
 		}
 		insertBetween(current, current.next, newNode);

@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
@@ -8,11 +9,16 @@ import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 public class App implements IApp{
-	protected static DataBase db = new DataBase();
-	protected static File systemFile = new File(App.class.getClass().getResource("/").getPath());
+	protected static DataBase db;
+	protected static File systemFile;
 	protected User signedInUser;
 	protected DLinkedList index;
 	protected IFolder currentFolder;
+	
+	App(){
+		db = new DataBase();
+		systemFile = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	}
 	
 	@Override
 	public boolean signin(String email, String password) {
@@ -22,6 +28,8 @@ public class App implements IApp{
 		}
 		//check that email exists in Database
 		User u = db.loadUser(email);//should upload from database
+		if(u == null)
+			return false;
 		if(u.matchPassword(password)) {
 			signedInUser = u;
 			return true;
@@ -32,9 +40,12 @@ public class App implements IApp{
 
 	@Override
 	public boolean signup(IContact contact) {//contact should be filled in GUI part
-		//check if email exists in database
-		//if not, add to database
-		return false;
+		//User u = db.loadUser(contact.getAddresses()[0]);
+		//if(u == null)
+		//{
+			return db.add((User)contact) == 1;
+		//}
+		//return false;
 	}
 
 	@Override
