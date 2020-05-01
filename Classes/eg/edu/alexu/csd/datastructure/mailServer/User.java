@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class User implements IContact {
@@ -129,7 +130,7 @@ public class User implements IContact {
 			info[i] = reader.nextLine();
 			i++;
 		}
-		this.salt = info[6].getBytes();
+		this.salt = Base64.getDecoder().decode(info[6]);
 		reader.close();
 	}
 
@@ -167,7 +168,7 @@ public class User implements IContact {
 			return false;
 		}
 		//address = address + "@system.com";
-		info[2] = address;
+		info[2] = address.toLowerCase();
 		return true;
 	}
 
@@ -206,7 +207,7 @@ public class User implements IContact {
 		String str;
 		try {
 			str = getHash(password, this.salt);
-			if (str == info[5]) {
+			if (str.equals(info[5])) {
 				return true;
 			}
 		} catch (NoSuchAlgorithmException e) {
@@ -291,7 +292,7 @@ public class User implements IContact {
 	private void setSalt() {
 		byte[] saltArray = createSalt();
 		this.salt = saltArray;
-		String salt = new String(saltArray);
+		String salt = Base64.getEncoder().encodeToString(saltArray);
 		info[6] = salt;
 	}
 }

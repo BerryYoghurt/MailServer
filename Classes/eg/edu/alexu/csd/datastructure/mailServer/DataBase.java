@@ -36,21 +36,38 @@ public class DataBase implements Closeable{
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean userExists(String email) {
+		email = email.toLowerCase();
+		Statement s;
+		try {
+			s = conn.createStatement();
+			ResultSet set = s.executeQuery("SELECT * FROM Users WHERE address = '"+email+"'");
+			if(set.next())//this address exists
+			{
+				return true;
+			}
+			set.close();
+			s.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	/**
 	 * adds user to database*/
 	public int add(User user) {
 		try {
 			Statement s = conn.createStatement();
-			ResultSet set = s.executeQuery("SELECT * FROM Users WHERE address = '"+user.getAddresses()[0]+"'");
-			if(set.next())//this address exists
-			{
+			if(userExists(user.getAddresses()[0]))
 				return 0;
-			}
 			StringBuilder str = new StringBuilder("insert into Users(");
 			str.append("address,"); str.append("password)");
 			str.append("values('");
 			str.append(user.getAddresses()[0]+"','"); str.append(user.getPassHash()+"')");
 			s.executeUpdate(str.toString());
+			s.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
@@ -62,8 +79,10 @@ public class DataBase implements Closeable{
 		Statement s;
 		try {
 			MailFolder.cleanDir(user.getPath());
+			user.getPath().delete();
 			s = conn.createStatement();
 			s.executeUpdate("DELETE FROM Users WHERE address = '"+user.getAddresses()[0]+"'");
+			s.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,18 +94,22 @@ public class DataBase implements Closeable{
 
 	
 	public User loadUser(String email) {
+		email = email.toLowerCase();
+		if(!userExists(email))
+		{
+			return null;
+		}
 		Statement s;
 		try {
 			s = conn.createStatement();
 			ResultSet set = s.executeQuery("SELECT * FROM Users WHERE address = '"+email+"'");
-			if(!set.next())//this address doesnt exist
-			{
-				return null;
-			}
+			set.next();
 			User u = new User(set.getString("address"));
+			set.close();
+			s.close();
 			return u;
 		}catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		return null;
 	}

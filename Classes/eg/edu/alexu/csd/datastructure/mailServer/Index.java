@@ -50,7 +50,7 @@ public class Index implements IIndex {
 		*/
     @Override
 	public ILinkedList readIndex() {
-		
+		list = new DLinkedList();
 		try(Scanner reader = new Scanner(path);) {
 			while (reader.hasNextLine()){ 
 	            MailInfo item = new MailInfo();

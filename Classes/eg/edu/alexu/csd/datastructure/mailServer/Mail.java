@@ -258,24 +258,28 @@ public class Mail implements IMail{
 		return bodyTxt;
 	}
 	
-	private void copy(File root, File parentDest) throws IOException {
-		Files.copy(root.toPath(),parentDest.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+	private void copy(File root, File dest) throws IOException {
+		Files.copy(root.toPath(),dest.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 		for(File f : root.listFiles()) {
-			File copiedRoot = new File(parentDest, root.getName());
+			File copied = new File(dest, f.getName());
 			if(f.isDirectory()) {
-				copy(f, copiedRoot);
+				copy(f, copied);
 			}
 			else {
-				Files.copy(f.toPath(),copiedRoot.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(f.toPath(),copied.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 			}
 		}
 	}
 	
 	@Override
 	public boolean copy(IFolder to) {//done
-		to.add(this);
+		//to.add(this);
 		try {
-			copy(this.containingFolder, to.getPath());
+			copy(this.containingFolder, to.add(this));
+			/*File newParent = new File(to.getPath(), toString());
+			for(File f : containingFolder.listFiles()) {
+				copy(f, newParent);
+			}*/
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -286,7 +290,7 @@ public class Mail implements IMail{
 	@Override
 	public boolean move(IFolder newFolder) {//done
 		if(this.copy(newFolder)) {
-			IFolder f = new MailFolder(this.containingFolder);
+			IFolder f = new MailFolder(this.containingFolder.getParentFile());
 			f.remove(this);
 			return true;
 		}

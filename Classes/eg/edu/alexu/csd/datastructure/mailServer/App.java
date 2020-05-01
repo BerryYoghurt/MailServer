@@ -114,6 +114,9 @@ public class App implements IApp{
 		IQueue q = email.getReceivers();
 		while(!q.isEmpty()) {
 			//check if receiver is in database, if one is not valid, return false
+			if(!App.db.userExists((String)q.dequeue())) {
+				return false;
+			}
 		}
 		q = email.getReceivers();
 		while(!q.isEmpty()) {
