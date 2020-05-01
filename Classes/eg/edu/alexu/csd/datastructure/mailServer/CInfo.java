@@ -15,6 +15,5 @@ public class CInfo {
         name = arr[0];
         directory= arr[1];
     }
-    //deal with queue & contact & date
 
 }

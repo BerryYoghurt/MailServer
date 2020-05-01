@@ -2,32 +2,31 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
+import eg.edu.alexu.csd.datastructure.linkedList.SinglyLinkedList;
 
-public class Contact implements IContact{
+public class Contact implements IContact{  //remove uncommon methods ?????
     
     String name;
-    SLinkedList emails;
+    SinglyLinkedList emails;
     IFolder contacts;
     File path;
     
     Contact(String name , String email , IFolder contacts){ //new contact
-    
         setName(name,"");
         setAddress(email);
         this.contacts = contacts;
         this.path = contacts.add(this);
-        
     }
     
-    Contact(File path){ //already exists 
+    Contact(File path){ //already exists //path of the contact file
         String str = path.getName();
         this.name = str.replace(".txt" , "");
         this.path = path;
-        getAddresses();
+        this.emails = getAddresses();
     }
 
 	@Override
@@ -40,31 +39,29 @@ public class Contact implements IContact{
 	    if(this.emails != null){
 	        return false;
 	    }
-		this.emails = new SLinkedList();
+		this.emails = new SinglyLinkedList();
         this.emails.add(address);
 		return true;
 	}
 
 	@Override
-	public String[] getAddresses() {    //linked lists of strings
-		String[] s;
-		if(this.emails == null || this.emails.size() == 0){
-			try(Scanner reader = new Scanner(this.path)){
-				this.emails = new SLinkedList();
-				while (reader.hasNextLine()) {
-					this.emails.add(reader.nextLine());
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	public SinglyLinkedList getAddresses() {    //linked lists of strings
+	    if(this.emails != null && this.emails.size() != 0){
+	        return this.emails.copy();            // the copy method returns a copy of the current linked list
 	    }
-		s = new String[emails.size()];
-		int i = 0;
-        for(emails.resetNext(); emails.hasNext(); emails.getNext()) {
-        	s[i++] = (String) emails.next();
-        }
-		return s;
+		Scanner reader;
+		try {
+			reader = new Scanner(this.path);
+			SinglyLinkedList adresses = new SinglyLinkedList();
+			while (reader.hasNextLine()) {
+				adresses.add(reader.nextLine());
+			}
+			reader.close();
+			return adresses;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -113,23 +110,19 @@ public class Contact implements IContact{
 	}
 
 	@Override
-	public int appendIndex(IFolder indexFile) {
-		// TODO Auto-generated method stub
+	public int appendIndex(IFolder indexFile) { // xxxxxxxxxxxxxxxxxx
 		return 0;
 	}
 	
-	public void writeToFile(){
+	public void writeToFile() throws FileNotFoundException {
 	    if(this.emails == null){
             throw new RuntimeException();
         }
-		try(PrintWriter writer = new PrintWriter(this.path)){
-			for (this.emails.resetNext(); emails.hasNext() ; ) {
-				writer.println((String)this.emails.getNext());      // we need the traverse method in SLinkedList ?
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		PrintWriter writer = new PrintWriter(this.path);
+		for (int i = 0; i < this.emails.size() ; i++) {
+			writer.println((String)this.emails.traverse(null));      // we need the traverse method in SinglyLinkedList ?
 		}
+		writer.close();
 	}
 
 	@Override
@@ -149,6 +142,11 @@ public class Contact implements IContact{
 
 	@Override
 	public IFolder getSentPath() {
+		throw new RuntimeException();
+	}
+
+	@Override
+	public IFolder getContactsPath() {
 		throw new RuntimeException();
 	}
 

@@ -1,12 +1,73 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Stack;
 
-public class DateSort implements ISort {
+import eg.edu.alexu.csd.datastructure.linkedList.DoublyLinkedList;
+
+public class DateSort implements ISort{
 
 	@Override
-	public void applySort(DLinkedList index) {
-		
+	public void applySort(DoublyLinkedList list) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
+		if (list == null || list.size() == 0)
+			return;
+
+		int low = 0;
+		int high = list.size() - 1;
+		String pivot = (String) list.get((low + high) / 2);
+		Stack s = new Stack();
+		s.push(low);
+		s.push(pivot);
+		s.push(high);
+
+		while (low < high && !s.isEmpty()) {
+
+			high = (int) s.pop();
+			pivot = (String) s.pop();
+			low = (int) s.pop();
+
+			int i = low, j = high;
+			try {
+				while (formatter.parse(((Info) list.get(i)).date).compareTo(formatter.parse(pivot)) < 0) {
+					i++;
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				while (formatter.parse(((Info) list.get(j)).date).compareTo(formatter.parse(pivot)) > 0) {
+					j--;
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (i <= j) {
+				Object temp = list.get(i);
+				list.set(i, list.get(j));
+				list.set(j, temp);
+				i++;
+				j--;
+			}
+
+			// low >> j , i >> high
+			if (low < j) {
+				s.push(low);
+				s.push(list.get((low + j) / 2));
+				s.push(j);
+			}
+			if (high > i) {
+				s.push(i);
+				s.push(list.get((i + high) / 2));
+				s.push(high);
+			}
+		}
 	}
+	
 
 }

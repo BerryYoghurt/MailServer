@@ -12,7 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
-public class User implements IContact {
+import eg.edu.alexu.csd.datastructure.linkedList.SinglyLinkedList;
+
+public class User implements IContact { //needs a filter folder
 
 	private File path;
 	private File infoFile;
@@ -22,70 +24,23 @@ public class User implements IContact {
 	private MailFolder trash;
 	private MailFolder inbox;
 	private MailFolder sent;
-  
-	  User(String address){
-		  	File folder = new File(App.systemFile,address);
-			folder.mkdir();
-			this.path = folder;
-			File file = new File(folder,"info.txt");
-			this.infoFile = file;
-			try {
-				read();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
-			trash = new MailFolder(this.path,MailFolder.kind.TRASH);
-			inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
-			sent = new MailFolder(this.path,MailFolder.kind.SENT);
-	  }
-	  
-	  
-	  User(String Fname, String Lname, String address){//TESTING ONLY
-		  File folder = new File("D:\\Uni\\Term4\\MailServer\\Tests\\eg\\edu\\alexu\\csd\\datastructure\\mailServer\\" + address);
-			if (!(folder.exists() || folder.mkdir())) {
-				throw new RuntimeException("folder is not created!");
-			}
-			this.path = folder;
 
-			File file = new File(folder.getAbsolutePath() + "\\info.txt");
-			try {
-				if (!(file.exists() || file.createNewFile())) {
-					throw new RuntimeException("file is not created!");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			this.infoFile = file;
-			setAddress(address);
-			setName(Fname, Lname);
-			writeToFile();
+	User() { // if we want to upload an existing user??
 
-			draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
-			trash = new MailFolder(this.path,MailFolder.kind.TRASH);
-			inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
-			sent = new MailFolder(this.path,MailFolder.kind.SENT);
-	  }
+	}
 
-	  /**
-	   * @param Fname
-	   * @param Lname
-	   * @param birthDate
-	   * @param gender
-	   * @param address
-	   * @param password*/
-	  User(String Fname, String Lname, String birthDate, boolean gender, String address, String password) throws IOException { 
-		// address // without @  //dateformat ="MM-dd-yyyy"
+	User(String Fname, String Lname, String birthDate, boolean gender, String address, String password)
+			throws IOException {
+		// address // without @ //dateformat ="MM-dd-yyyy"
 
-		File folder = new File(App.systemFile, address);
-		if (!(folder.exists() || folder.mkdir())) {
+		File folder = new File("system\\" + address);
+		if (!folder.mkdir()) {
 			throw new RuntimeException("folder is not created!");
 		}
 		this.path = folder;
 
 		File file = new File(folder.getAbsolutePath() + "\\info.txt");
-		if (!(file.exists() || file.createNewFile())) {
+		if (!folder.createNewFile()) {
 			throw new RuntimeException("file is not created!");
 		}
 		this.infoFile = file;
@@ -97,40 +52,49 @@ public class User implements IContact {
 		setBirthDate(birthDate);
 		setGender(gender);
 		writeToFile();
-		draft = new MailFolder(this.path,MailFolder.kind.DRAFT);
-		trash = new MailFolder(this.path,MailFolder.kind.TRASH);
-		inbox = new MailFolder(this.path,MailFolder.kind.INBOX);
-		sent = new MailFolder(this.path,MailFolder.kind.SENT);
+
+		draft = new MailFolder(this.path, Kind.DRAFT, true);
+		trash = new MailFolder(this.path, Kind.TRASH, true);
+		inbox = new MailFolder(this.path, Kind.INBOX, true);
+		sent = new MailFolder(this.path, Kind.SENT, true);
 	}
 
 	public void writeToFile() {
-		try(PrintWriter writer = new PrintWriter(this.infoFile)){
-			for(int i=0 ; i < info.length ; i++){
-			    writer.println(info[i]);
-			     
+		try {
+			PrintWriter writer = new PrintWriter(this.path);
+			for (int i = 0; i < info.length; i++) {
+				writer.println(info[i]);
+
 			}
+			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+
 	}
-  
-  
-	  public File getPath() {
-	    return this.path;
-	  }
-	  
-	  public String getPassHash() {
-		  return info[5];
-	  }
-	public void read() throws FileNotFoundException {
-		Scanner reader = new Scanner(infoFile);
-		int i = 0;
-		while (reader.hasNextLine() && i < info.length) {
-			info[i] = reader.nextLine();
-			i++;
+
+	public String getPassHash() {
+		return info[5];
+	}
+
+	public void read(){
+		try {
+			Scanner reader = new Scanner(infoFile);
+			int i = 0;
+			while (reader.hasNextLine() && i < info.length) {
+				info[i] = reader.nextLine();
+				i++;
+			}
+			this.salt = info[6].getBytes();
+			reader.close();
+		}catch(FileNotFoundException e){
+			e.printStackTrace();
 		}
-		this.salt = info[6].getBytes();
-		reader.close();
+		
+	}
+
+	public File getPath() {
+		return this.path;
 	}
 
 	public void setGender(boolean gender) { // true >> male //false >> female
@@ -163,24 +127,23 @@ public class User implements IContact {
 
 	@Override
 	public boolean setAddress(String address) { // without the @ //both
-		if (address.length() > 20 || address.length() < 5) {//why < 10??
+		if (address.length() > 20 || address.length() < 10) {
 			return false;
 		}
-		//address = address + "@system.com";
+		address = address + "@system.com";
 		info[2] = address;
 		return true;
-	}
-
+	}	
+	
 	@Override
-	public String[] getAddresses() { // contact + getAddresses //user >> returns only one address
-		String[] get = new String[1];
-		get[0] = info[2];
+	public SinglyLinkedList getAddresses() { // contact + getAddresses //user >> returns only one address
+	    SinglyLinkedList get = new SinglyLinkedList();
+		get.add(info[2]);
 		return get;
 	}
 
 	@Override
 	public boolean removeAddress(int order) {// contact
-		// TODO Auto-generated method stub
 		throw new RuntimeException();
 	}
 
@@ -192,7 +155,6 @@ public class User implements IContact {
 		try {
 			info[5] = getHash(password, this.salt);
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
@@ -210,9 +172,9 @@ public class User implements IContact {
 				return true;
 			}
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return false;
 	}
 
@@ -235,12 +197,11 @@ public class User implements IContact {
 	}
 
 	@Override
-	public int appendIndex(IFolder indexFile) { // user only >> appends to database
+	public int appendIndex(IFolder indexFile) { // user only >> appends to database 
 		App.db.add(this);
 		return 0;
 	}
-	
-	
+
 	@Override
 	public IFolder getDraftPath() {// user
 		return this.draft;
@@ -259,6 +220,12 @@ public class User implements IContact {
 	@Override
 	public IFolder getSentPath() {// user
 		return this.sent;
+	}
+	
+	@Override
+	public IFolder getContactsPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private String getHash(String password, byte[] salt) throws NoSuchAlgorithmException {
@@ -294,4 +261,5 @@ public class User implements IContact {
 		String salt = new String(saltArray);
 		info[6] = salt;
 	}
+
 }

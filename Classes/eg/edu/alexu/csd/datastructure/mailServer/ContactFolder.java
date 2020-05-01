@@ -8,25 +8,33 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+import eg.edu.alexu.csd.datastructure.linkedList.DoublyLinkedList;
 
 public class ContactFolder implements IFolder{
     
-    private IIndex index;
+    private CIndex index;
 	private File path;
+	//private boolean isNew;
 
 	// constructor
-	public ContactFolder(File path) throws FileNotFoundException {
-		String fPath = path.getAbsolutePath() + "\\Contacts"; // get position
-		// create IFolder
-		File folder = new File(fPath);
-  		if (!folder.mkdir()) {
-			throw new RuntimeException("folder is not created!");
-		}
-		this.path = folder;
-		index = new Index(folder, true); // fpath >>> folder path
-
+	public ContactFolder(File path , boolean isNew) throws IOException { //path of the user folder in both cases
+		File folder = new File(path, "Contacts");
+	    if(isNew){ //new contact folder
+	        //this.isNew = true;
+	        // create IFolder
+  		    if (!folder.mkdir()) {
+		    	throw new RuntimeException("folder is not created!");
+		    }
+		    this.path = folder;
+		    index = new CIndex(folder,true); // fpath >>> folder path
+	    }else{ //existing contact folder
+	        //this.isNew = false;
+	        this.path = folder;
+	        //upload existing index
+	        index = new CIndex(folder,false);
+	    }
 	}
+	
 
 	@Override
 	public File getPath() {
@@ -40,35 +48,43 @@ public class ContactFolder implements IFolder{
 
 	@Override
 	public File add(Object item){
-	    if (!this.path.exists()) {
+		if (!this.path.exists() || item == null || !(item instanceof Contact)) {
 			throw new RuntimeException("folder does not exists!");
 		}
-		if (item instanceof Contact) {
-			File file = new File(this.path.getAbsolutePath() + "\\" + ((Contact) item).getName() + ".txt");
-		    try {
-				if (!file.createNewFile()) {
-				    throw new RuntimeException("file is not created!");
-				}
-			
-			    PrintWriter writer = new PrintWriter(file);
-				writer.println(((Contact) item).getName());
-			    writer.close();
-			    index.add(item);
-		     	return file; 
-		    } catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		File file = new File(this.path , ((Contact) item).getName() + ".txt");
+		try {
+		if (!file.createNewFile()) {
+			throw new RuntimeException("file is not created!");
+		}
+		PrintWriter writer = new PrintWriter(file);
+		writer.println(((Contact) item).emails.get(0));
+		writer.close();
+		index.add(item);
+		return file;
+		}catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
-
+     /**
+       *search index
+       *remove from index and folder
+       * @return found folder directory
+     * @throws IOException 
+       */
 	@Override
-	public Object remove(Object item) {
-        if(item instanceof String){
-            //search index
-            //remove from index and folder  
-            
+	public Object remove(Object item){ 
+        if(item instanceof String){ //contact name
+            CInfo temp = (CInfo)index.remove(item);
+            if(temp != null){
+                File found = new File(temp.directory);
+                try {
+					removeDir(found);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                return found;
+            }
         }
 		return null;
 	}
@@ -89,11 +105,10 @@ public class ContactFolder implements IFolder{
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
 		return index.getSize();
 	}
 	
-		public void removeDir(File folder) throws IOException {
+	public void removeDir(File folder) throws IOException {
 		Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 	}
 
@@ -108,9 +123,10 @@ public class ContactFolder implements IFolder{
 			}
 		}
 	}
-
+	
 	@Override
-	public DLinkedList getIndex() {
-		return (DLinkedList)index.readIndex();
+	public DoublyLinkedList getIndex() {
+		return (DoublyLinkedList)index.readIndex();
 	}
+
 }

@@ -3,8 +3,7 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+import eg.edu.alexu.csd.datastructure.linkedList.DoublyLinkedList;
 
 public class SenderFilter implements IFilter {
 
@@ -16,10 +15,10 @@ public class SenderFilter implements IFilter {
 	}
 
 	@Override
-	public DLinkedList applyFilter(DLinkedList list) {
-		DLinkedList filtered = new DLinkedList();
-		for(Object o : list) {
-			MailInfo item = (MailInfo) o;//TODO add clone in Info
+	public DoublyLinkedList applyFilter(DoublyLinkedList list) {
+		DoublyLinkedList filtered = new DoublyLinkedList();
+		Info item = (Info) list.traverse(null);// add clone in Info
+		while (item != null) {
 			if (item.sender.contains(field)) {
 				filtered.add(item);
 				String newDirectory = this.folder.getAbsolutePath() + Paths.get(item.directory).getFileName();
@@ -29,13 +28,14 @@ public class SenderFilter implements IFilter {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//item.directory = newDirectory;
+				item.directory = newDirectory;
 			}
+			item = (Info) list.traverse(null);
 		}
 		return filtered;
 	}
 
-	@Override
+	
 	public void setParameter(String parameter) {
 		this.field = parameter;		
 	}
