@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 import java.io.File;
 import java.io.IOException;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+import eg.edu.alexu.csd.datastructure.linkedList.DoublyLinkedList;
 
 public interface IFolder {
 	/**
@@ -24,6 +24,7 @@ public interface IFolder {
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
+	 * @throws IOException 
 	 */
 	public Object remove(Object item);
 	/**
@@ -34,7 +35,8 @@ public interface IFolder {
 	 * @return number of items in the folder
 	 */
 	public int getSize();
-	
-	public DLinkedList getIndex();
-	//public boolean copy(IFolder to);
+	/**
+	 * @return linked list for the index file
+	 */
+	public DoublyLinkedList getIndex();
 }
