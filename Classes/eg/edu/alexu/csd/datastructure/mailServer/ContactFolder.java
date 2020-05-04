@@ -12,13 +12,13 @@ import eg.edu.alexu.csd.datastructure.linkedList.DoublyLinkedList;
 
 public class ContactFolder implements IFolder{
     
-    private CIndex index;
+    public CIndex index;
 	private File path;
 	//private boolean isNew;
 
 	// constructor
-	public ContactFolder(File path , boolean isNew) throws IOException { //path of the user folder in both cases
-		File folder = new File(path, "Contacts");
+	public ContactFolder(File path , boolean isNew){ //path of the user folder in both cases
+		File folder = new File(path, "contacts");
 	    if(isNew){ //new contact folder
 	        //this.isNew = true;
 	        // create IFolder
@@ -26,12 +26,23 @@ public class ContactFolder implements IFolder{
 		    	throw new RuntimeException("folder is not created!");
 		    }
 		    this.path = folder;
-		    index = new CIndex(folder,true); // fpath >>> folder path
+		    try {
+				index = new CIndex(folder,true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		    // fpath >>> folder path
 	    }else{ //existing contact folder
 	        //this.isNew = false;
 	        this.path = folder;
 	        //upload existing index
-	        index = new CIndex(folder,false);
+	        try {
+				index = new CIndex(folder,false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 	}
 	
@@ -81,7 +92,8 @@ public class ContactFolder implements IFolder{
                 try {
 					removeDir(found);
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println(e);
+					//e.printStackTrace();
 				}
                 return found;
             }

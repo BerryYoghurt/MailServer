@@ -24,24 +24,39 @@ public class User implements IContact { //needs a filter folder
 	private MailFolder trash;
 	private MailFolder inbox;
 	private MailFolder sent;
+	private ContactFolder contacts;
 
-	User() { // if we want to upload an existing user??
-
+	public User(String address) { // if we want to upload an existing user??
+		File folder = new File("system\\" + address);
+		//folder.mkdir();
+		this.path = folder;
+		File file = new File(folder,"info.txt");
+		this.infoFile = file;
+		read();
+		draft = new MailFolder(this.path,Kind.DRAFT, false);
+		trash = new MailFolder(this.path,Kind.TRASH, false);
+		inbox = new MailFolder(this.path,Kind.INBOX, false);
+		sent = new MailFolder(this.path,Kind.SENT, false);
+		contacts = new ContactFolder(this.path,false);		
 	}
-
-	User(String Fname, String Lname, String birthDate, boolean gender, String address, String password)
-			throws IOException {
+	
+	public User(String Fname, String Lname, String birthDate, boolean gender, String address, String password){
 		// address // without @ //dateformat ="MM-dd-yyyy"
 
 		File folder = new File("system\\" + address);
 		if (!folder.mkdir()) {
-			throw new RuntimeException("folder is not created!");
+			throw new RuntimeException("user folder is not created!");
 		}
 		this.path = folder;
 
 		File file = new File(folder.getAbsolutePath() + "\\info.txt");
-		if (!folder.createNewFile()) {
-			throw new RuntimeException("file is not created!");
+		try {
+			if (!file.createNewFile()) {
+				throw new RuntimeException("info file is not created!");
+			}
+		} catch (IOException e) {
+			//e.printStackTrace();
+			throw new RuntimeException("info file is not created!");
 		}
 		this.infoFile = file;
 
@@ -57,18 +72,21 @@ public class User implements IContact { //needs a filter folder
 		trash = new MailFolder(this.path, Kind.TRASH, true);
 		inbox = new MailFolder(this.path, Kind.INBOX, true);
 		sent = new MailFolder(this.path, Kind.SENT, true);
+		contacts = new ContactFolder(this.path,true);	
+		//appendIndex(null);
 	}
 
 	public void writeToFile() {
 		try {
-			PrintWriter writer = new PrintWriter(this.path);
+			PrintWriter writer = new PrintWriter(this.infoFile);
 			for (int i = 0; i < info.length; i++) {
 				writer.println(info[i]);
 
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println(e);
 		}
 
 	}
@@ -88,7 +106,8 @@ public class User implements IContact { //needs a filter folder
 			this.salt = info[6].getBytes();
 			reader.close();
 		}catch(FileNotFoundException e){
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		
 	}
@@ -113,7 +132,7 @@ public class User implements IContact { //needs a filter folder
 		try {
 			DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 			df.setLenient(false);
-			df.parse(date);
+			df.parse(date); // check if valid
 			info[3] = date;
 			return true;
 		} catch (ParseException e) {
@@ -143,8 +162,8 @@ public class User implements IContact { //needs a filter folder
 	}
 
 	@Override
-	public boolean removeAddress(int order) {// contact
-		throw new RuntimeException();
+	public String removeAddress(int order) {// contact
+		throw new RuntimeException("this is a user");
 	}
 
 	@Override
@@ -155,7 +174,8 @@ public class User implements IContact { //needs a filter folder
 		try {
 			info[5] = getHash(password, this.salt);
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		return true;
 	}
@@ -168,11 +188,12 @@ public class User implements IContact { //needs a filter folder
 		String str;
 		try {
 			str = getHash(password, this.salt);
-			if (str == info[5]) {
+			if (str.compareTo(info[5]) == 0) {
 				return true;
 			}
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		
 		return false;
@@ -197,7 +218,7 @@ public class User implements IContact { //needs a filter folder
 	}
 
 	@Override
-	public int appendIndex(IFolder indexFile) { // user only >> appends to database 
+	public int appendIndex(IFolder indexFile) { // user only >> appends to database //no need??
 		App.db.add(this);
 		return 0;
 	}
@@ -224,8 +245,7 @@ public class User implements IContact { //needs a filter folder
 	
 	@Override
 	public IFolder getContactsPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.contacts;
 	}
 
 	private String getHash(String password, byte[] salt) throws NoSuchAlgorithmException {

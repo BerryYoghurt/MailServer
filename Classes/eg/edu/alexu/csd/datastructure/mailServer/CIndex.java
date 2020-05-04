@@ -5,9 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
-import java.util.Stack;
-
 import eg.edu.alexu.csd.datastructure.linkedList.ILinkedList;
+import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class CIndex extends Index{
      
@@ -23,6 +22,7 @@ public class CIndex extends Index{
 	            item.stringToInfo(reader.nextLine());
 	            list.add(item);
 	        }
+	        this.size = list.size();
 	        reader.close();
 		}catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -91,10 +91,10 @@ public class CIndex extends Index{
 				break;
 			}
 			middle = (high + low)/2;
-			if(list.get(middle).equals(o)) {
+			if((( (CInfo) list.get(middle) ).name).equals((String) o)) {
 				stack.push(middle);
 				found = true;
-			}else if(((String) list.get(middle)).compareTo((String) o) > 0) { //sorted by ??
+			}else if( (( (CInfo) list.get(middle) ).name).compareTo((String) o) > 0) { //sorted by ??
 				stack.push(low);
 				stack.push(middle-1);
 			}else {

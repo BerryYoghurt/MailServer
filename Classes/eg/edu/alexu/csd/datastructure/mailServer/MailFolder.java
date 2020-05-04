@@ -20,7 +20,7 @@ public class MailFolder implements IFolder {
 	private Kind type;
 
 	// constructor
-	public MailFolder(File path, Kind name, boolean isNew) throws IOException {
+	public MailFolder(File path, Kind name, boolean isNew){
 		// create IFolder
 		this.type = name;
 		File folder = new File(path, name.toString().toLowerCase());

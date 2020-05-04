@@ -15,14 +15,15 @@ public class Contact implements IContact{  //remove uncommon methods ?????
     IFolder contacts;
     File path;
     
-    Contact(String name , String email , IFolder contacts){ //new contact
+    public Contact(String name , String email , IFolder contacts){ //new contact
         setName(name,"");
         setAddress(email);
         this.contacts = contacts;
-        this.path = contacts.add(this);
+        this.path = new File(contacts.getPath(), name + ".txt");
+        contacts.add(this);
     }
     
-    Contact(File path){ //already exists //path of the contact file
+    public Contact(File path){ //already exists //path of the contact file
         String str = path.getName();
         this.name = str.replace(".txt" , "");
         this.path = path;
@@ -65,16 +66,17 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 
 	@Override
-	public boolean removeAddress(int order) { // 0 based
+	public String removeAddress(int order) { // 0 based
         if(this.emails == null || order < 0 || order >= this.emails.size()){
             throw new RuntimeException();
         }
         else if (this.emails.size() == 1){
-            return false;
+            return null;
         }
         else{
+        	String temp = (String)emails.get(order);
             this.emails.remove(order);
-            return true;
+            return temp;
         }
 	}
 	
@@ -82,7 +84,8 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	   if(this.emails == null){
             throw new RuntimeException();
         }
-         this.emails.add(address);
+	   	if(!this.emails.contains(address))
+	   		this.emails.add(address);
 	}
 
 	@Override
@@ -96,7 +99,7 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 
 	@Override
-	public boolean setName(String Fname, String Lname) { // Lname xx   //no special Characters
+	public boolean setName(String Fname, String Lname) { // Lname xx .. null or ""   //no special Characters
 		if(Fname.length() == 0 || Fname.length() > 50){
 		    return false;
         }
@@ -114,15 +117,23 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 		return 0;
 	}
 	
-	public void writeToFile() throws FileNotFoundException {
+	public void writeToFile(){
 	    if(this.emails == null){
             throw new RuntimeException();
         }
-		PrintWriter writer = new PrintWriter(this.path);
-		for (int i = 0; i < this.emails.size() ; i++) {
-			writer.println((String)this.emails.traverse(null));      // we need the traverse method in SinglyLinkedList ?
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(this.path);
+			String temp = (String)this.emails.traverse(null);
+			while(temp != null) {
+				writer.println(temp); 
+				temp = (String)this.emails.traverse(null);
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			System.out.println(e);
 		}
-		writer.close();
+		
 	}
 
 	@Override

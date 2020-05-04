@@ -24,6 +24,7 @@ public class Index implements IIndex {
 	// constructor
 	public Index(File path, boolean isNew) { // both cases >> path of the mail folder
 		// create index file itself and keep its path
+		list = new DoublyLinkedList();
 		File index = new File(path, "index.txt");
 		try {
 			if (isNew) {
@@ -58,6 +59,7 @@ public class Index implements IIndex {
 				item.stringToInfo(reader.nextLine());
 				list.add(item);
 			}
+			this.size = list.size();
 			reader.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -79,8 +81,7 @@ public class Index implements IIndex {
 		}
 		writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e);
 		}
 		
 	}
