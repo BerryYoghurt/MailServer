@@ -7,8 +7,10 @@ public interface IFilter {
 	 * chooses the filter to be applied
 	 * @param line a line read from index file  
 	 */
-	public DLinkedList applyFilter(DLinkedList index);
-	
+	public DLinkedList applyFilter(DLinkedList list);
+	/**
+	 * sets the field of filtering
+	 * @param parameter
+	 */
 	public void setParameter(String parameter);
-	
 }

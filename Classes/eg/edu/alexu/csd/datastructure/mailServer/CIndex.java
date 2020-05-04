@@ -2,6 +2,7 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -10,35 +11,39 @@ import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class CIndex extends Index{
      
-	public CIndex(File path,boolean isNew) throws FileNotFoundException {
+	public CIndex(File path,boolean isNew) throws IOException {
 		super(path,isNew);
 	}
 	
 	public ILinkedList readIndex(){
-	    try(Scanner reader = new Scanner(super.getPath())){ 
+		try {
+			Scanner reader = new Scanner(getPath()); 
 	        while (reader.hasNextLine()){ 
 	            CInfo item = new CInfo();
 	            item.stringToInfo(reader.nextLine());
 	            list.add(item);
 	        }
-	        return list;
-	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+	        reader.close();
+		}catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	    return null;
+	    return list/*.copy(*/;
 	}
 	
 	public void writeToIndex(){
-		try(PrintWriter writer = new PrintWriter(getPath())){
-			for(Object o : list) {
-			    CInfo item = (CInfo)o;
+		try {
+			PrintWriter writer = new PrintWriter(getPath());
+			for(Object o :list){
+				 CInfo item = (CInfo)o; 
+			  if(item!=null){
 			    writer.println(item.infoToString());
+			  }
 			}
+			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public void add(Object item) {
@@ -53,7 +58,7 @@ public class CIndex extends Index{
 	}
 	
 	public Object remove(Object o) {    //remove it from the linked list  //we only need contact name
-	    if( !(o instanceof String) || o == null || ((String)o).length() ==0 ){
+	    if( !(o instanceof String) || o == null || ((String) o).length() ==0 ){
 	        throw new RuntimeException();
 	    }else{
 		    int found = (Integer)find(o);
@@ -68,8 +73,8 @@ public class CIndex extends Index{
 	}
 
 
-	/*public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
-	    if( !(o instanceof String) || o == null || ((File) o).length() == 0 ){
+	public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
+	    if( !(o instanceof String) || o == null || ((String) o).length() == 0 ){
 	        throw new RuntimeException();
 	    }
 	    int middle, high, low;
@@ -78,8 +83,8 @@ public class CIndex extends Index{
 		stack.push(0);
 		stack.push(list.size()-1);
 		while(!found) {
-			high = (Integer)stack.pop();
-			low = (Integer)stack.pop();
+			high = (int) stack.pop();
+			low = (int) stack.pop();
 			if(high < low) {
 				stack.push(-1);
 				break;
@@ -88,7 +93,7 @@ public class CIndex extends Index{
 			if(list.get(middle).equals(o)) {
 				stack.push(middle);
 				found = true;
-			}else if(list.get(middle).compareTo(o) > 0) { //sorted by ??
+			}else if(((String) list.get(middle)).compareTo((String) o) > 0) { //sorted by ??
 				stack.push(low);
 				stack.push(middle-1);
 			}else {
@@ -97,6 +102,6 @@ public class CIndex extends Index{
 			}
 		}
 		return stack.pop();
-	}*/
+	}
 
 }

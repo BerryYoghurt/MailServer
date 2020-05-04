@@ -7,6 +7,5 @@ public interface ISort {
 	 * chooses the sort to be applied
 	 * @param sortNum 
 	 */
-	void applySort(DLinkedList index);//see what the argument should be
-	
+	void applySort(DLinkedList list);//see what the argument should be
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -13,59 +14,35 @@ import java.util.concurrent.TimeUnit;
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 
 public class MailFolder implements IFolder {
+
 	private IIndex index;
 	private File path;
-	private kind type;
-	
-	enum kind{
+	private Kind type;
+	enum Kind{
 		TRASH,
 		DRAFT,
 		SENT,
 		INBOX
 	};
-	
 	// constructor
-	public MailFolder(File path, kind k) {
-		this.path = new File(path, k.toString().toLowerCase());
-		this.path.mkdir();
-		index = new Index(this.path, true); // fpath >>> folder path	
-		type = k;
-		switch(type) {
-		case TRASH://TODO ONLY FOR WINDOWS, update to Unix too
-			//File root = path.getParentFile().toPath().resolve("trash").toFile();//navigate to trash
-			//createDeletionBatch(this.path);
-			break;
-		case DRAFT:
-			break;
-		case INBOX:
-			break;
-		case SENT:
-			break;
+	public MailFolder(File path, Kind name, boolean isNew) {
+		// create IFolder
+		this.type = name;
+		File folder = new File(path, name.toString().toLowerCase());
+		if(isNew) {
+			if (!folder.mkdir()) {
+				throw new RuntimeException("folder is not created!");
+			}
 		}
+		this.path = folder;
+		index = new Index(folder,isNew); // fpath >>> folder path
+
 	}
-	/*private void createDeletionBatch(File root) {
-		SystemUtils;
-		File batch = new File(root, "AutoDelete.bat");
-		try(Writer s = new OutputStreamWriter(new FileOutputStream(batch), Charset.forName("US-ASCII"))){
-			batch.createNewFile();
-			s.append("@Echo off \r\n");
-			s.append("ForFiles /p "); s.append(root.getPath());
-			s.append(" /s /d -30 /c \" cmd /c del @file\"");
-			s.flush();
-			Runtime r = Runtime.getRuntime();//temporary path name
-			String command = "SCHTASKS /CREATE /SC DAILY /TN \"MailServer\\AutoDelete\" /TR \""+batch.getPath()+"\" /ST 00:00";
-			r.exec(command);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 	
-	//another constructor
 	public MailFolder(File pathToLoadFrom) {
 		this.path = pathToLoadFrom;
 		index = new Index(this.path,false);
-		type = kind.valueOf(pathToLoadFrom.getName().toUpperCase());
+		type = Kind.valueOf(pathToLoadFrom.getName().toUpperCase());
 	}
 	
 	@Override
@@ -79,40 +56,37 @@ public class MailFolder implements IFolder {
 	}
 
 	@Override
-	public File add(Object item) {
+	public File add(Object item) { //**************************
 		if (!this.path.exists()) {
-			throw new RuntimeException("folder does not exist!");
+			throw new RuntimeException("folder does not exists!");
 		}
-		if (!(item instanceof IMail)) {
-			throw new RuntimeException("Should be a mail");
-		}
-		Mail i = (Mail)item;
-		File thisMail = new File(this.path, i.toString());
-		thisMail.mkdir();
+		if (item instanceof IMail) {
 			/*
-			 * //set name , check if repeated String newPath = path.getAbsolutePath() + "\\"+ name; 
-			 * SingleMailFolder mail = new SingleMailFolder(newPath...); // set mail
-			 * inside its folder return mail;
+			how to get the Mail Folder path
 			 */
-		index.add(item);
-		return thisMail; // folder of singleMailFolder
+			index.add(item);
+			return new File(((IMail)item).getDirectory());
+		}
+		return null; 
 	}
 
 	@Override
-	public Object remove(Object item) { // name???
-		if(!(item instanceof Mail)) {
-			throw new IllegalArgumentException();
+	public Object remove(Object item){ // name??? //*
+		if (!this.path.exists()) {
+			throw new RuntimeException("folder does not exists!");
 		}
-		Mail i = (Mail) item;
-		File mFolder = new File(this.path, i.toString());
-		try {
-			MailFolder.removeDir(mFolder);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (item instanceof IMail) {
+			Object found = index.remove(item);
+			if(found != null) {
+				File mail = new File(((IMail)item).getDirectory());
+				try {
+					removeDir(mail);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return found;  //>>>>>> info object
 		}
-		index.remove(item);
-		// remove item itself
 		return null;
 	}
 
@@ -129,10 +103,9 @@ public class MailFolder implements IFolder {
 		}
 
 	}
-	
+
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
 		return index.getSize();
 	}
 
@@ -183,22 +156,23 @@ public class MailFolder implements IFolder {
 			}
 		}
 	}
-
-	@Override
-	public DLinkedList getIndex() {
-		return (DLinkedList)this.index.readIndex();
-	}
 	
-	/*public void clearInTrash(DLinkedList list){
+	public void clearInTrash(DLinkedList list) throws ParseException, IOException{
 	    Date current = new Date();
 	    for(Object o : list){
 	        MailInfo temp = (MailInfo)o;
-	        Date mailDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((temp).inTrash);  //????
+	        Date mailDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((temp).inTrash);  
 	   	    long diff = current.getTime() - mailDate.getTime();
 	   	    long diffDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	             if(diffDays >= 30){
 	                 removeDir(new File(temp.directory));
 	            }
 	        }
-	}*/
+	}
+
+	@Override
+	public DLinkedList getIndex() {
+		return (DLinkedList)this.index.readIndex();
+	}
+
 }

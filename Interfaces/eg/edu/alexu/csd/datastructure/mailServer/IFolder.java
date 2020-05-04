@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 
+
+
 public interface IFolder {
 	/**
 	 * @return the path of this folder
@@ -24,6 +26,7 @@ public interface IFolder {
 	/**
 	 * removes an item address whose order is give as parameter
 	 * @param order
+	 * @throws IOException 
 	 */
 	public Object remove(Object item);
 	/**
@@ -34,7 +37,8 @@ public interface IFolder {
 	 * @return number of items in the folder
 	 */
 	public int getSize();
-	
+	/**
+	 * @return linked list for the index file
+	 */
 	public DLinkedList getIndex();
-	//public boolean copy(IFolder to);
 }
