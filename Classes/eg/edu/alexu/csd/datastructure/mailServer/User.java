@@ -28,7 +28,7 @@ public class User implements IContact { //needs a filter folder
 
 	User(String address){
 	  	File folder = new File(App.systemFile,address);
-		folder.mkdir();
+		//folder.mkdir();
 		this.path = folder;
 		File file = new File(folder,"info.txt");
 		this.infoFile = file;
@@ -43,14 +43,14 @@ public class User implements IContact { //needs a filter folder
 			throws IOException {
 		// address // without @ //dateformat ="MM-dd-yyyy"
 
-		File folder = new File("system\\" + address);
+		File folder = new File(App.systemFile, address);
 		if (!folder.mkdir()) {
 			throw new RuntimeException("folder is not created!");
 		}
 		this.path = folder;
 
-		File file = new File(folder.getAbsolutePath() + "\\info.txt");
-		if (!folder.createNewFile()) {
+		File file = new File(folder.getPath(),"info.txt");
+		if (!file.createNewFile()) {
 			throw new RuntimeException("file is not created!");
 		}
 		this.infoFile = file;
@@ -71,7 +71,7 @@ public class User implements IContact { //needs a filter folder
 
 	public void writeToFile() {
 		try {
-			PrintWriter writer = new PrintWriter(this.path);
+			PrintWriter writer = new PrintWriter(this.infoFile);
 			for (int i = 0; i < info.length; i++) {
 				writer.println(info[i]);
 
@@ -136,7 +136,7 @@ public class User implements IContact { //needs a filter folder
 
 	@Override
 	public boolean setAddress(String address) { // without the @ //both
-		if (address.length() > 20 || address.length() < 10) {
+		if (address.length() > 20 || address.length() < 1) {
 			return false;
 		}
 		//address = address + "@system.com";
@@ -205,11 +205,6 @@ public class User implements IContact { //needs a filter folder
 		return get;
 	}
 
-	@Override
-	public int appendIndex(IFolder indexFile) { // user only >> appends to database 
-		App.db.add(this);
-		return 0;
-	}
 
 	@Override
 	public IFolder getDraftPath() {// user
@@ -233,7 +228,7 @@ public class User implements IContact { //needs a filter folder
 	
 	@Override
 	public IFolder getContactsPath() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -270,5 +265,15 @@ public class User implements IContact { //needs a filter folder
 		String salt = Base64.getEncoder().encodeToString(saltArray);
 		info[6] = salt;
 	}
-
+	
+	@Override
+	public boolean equals(Object m) {
+		boolean equal = true;
+		if(!(m instanceof User))
+			equal = false;
+		User user = (User)m;
+		if(equal && !user.info[2].equals(this.info[2]))
+			equal = false;
+		return equal;
+	}
 }

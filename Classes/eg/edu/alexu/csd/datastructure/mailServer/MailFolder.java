@@ -61,11 +61,12 @@ public class MailFolder implements IFolder {
 			throw new RuntimeException("folder does not exists!");
 		}
 		if (item instanceof IMail) {
-			/*
-			how to get the Mail Folder path
-			 */
+			Mail m = (Mail) item;
+			File thisMail = new File(this.path, m.toString());
+			thisMail.mkdir();
 			index.add(item);
-			return new File(((IMail)item).getDirectory());
+			index.writeToIndex();
+			return thisMail;
 		}
 		return null; 
 	}
@@ -76,16 +77,21 @@ public class MailFolder implements IFolder {
 			throw new RuntimeException("folder does not exists!");
 		}
 		if (item instanceof IMail) {
-			Object found = index.remove(item);
-			if(found != null) {
+			Integer found = (Integer)index.remove(item);
+			index.writeToIndex();
+			if(found != -1) {
 				File mail = new File(((IMail)item).getDirectory());
 				try {
 					removeDir(mail);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				return item;
 			}
-			return found;  //>>>>>> info object
+			else {
+				return null;
+			}
+			 //>>>>>> info object
 		}
 		return null;
 	}

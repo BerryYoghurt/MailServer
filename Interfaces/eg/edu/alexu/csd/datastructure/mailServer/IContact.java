@@ -43,13 +43,6 @@ public interface IContact {
 	public String getName();
 
 	/**
-	 * add the new contact to the index file (contacts of another user, receivers, etc)
-	 * @param contact 
-	 * 		new contact
-	 * @return 1 iff added and no duplicates, 0 if duplicate, -1 if other error
-	 */
-	public int appendIndex(IFolder indexFile);
-	/**
 	 * @return draft folder
 	 */
 	public IFolder getDraftPath();

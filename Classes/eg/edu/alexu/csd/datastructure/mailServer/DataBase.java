@@ -59,9 +59,9 @@ public class DataBase implements Closeable{
 	 * adds user to database*/
 	public int add(User user) {
 		try {
-			Statement s = conn.createStatement();
 			if(userExists(user.getAddresses()[0]))
 				return 0;
+			Statement s = conn.createStatement();
 			StringBuilder str = new StringBuilder("insert into Users(");
 			str.append("address,"); str.append("password)");
 			str.append("values('");

@@ -38,6 +38,7 @@ public class PriorityQueue implements IPriorityQueue {
 			current = current.prev;
 		}
 		insertBetween(current, current.next, newNode);
+		size++;
 	}
 
 	@Override
@@ -48,13 +49,16 @@ public class PriorityQueue implements IPriorityQueue {
 		Node removed = head.next;
 		head.next = removed.next;
 		removed.next.prev = head;
-		return removed;
+		size--;
+		return removed.data;
 	}
 
 	@Override
 	public Object min() {
-		
-		return null;
+		if(size == 0) {
+			throw new IllegalStateException("Queue empty");
+		}
+		return head.next.data;
 	}
 
 	@Override

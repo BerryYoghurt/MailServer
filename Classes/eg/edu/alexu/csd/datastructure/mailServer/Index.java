@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
+import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class Index implements IIndex {
     
@@ -110,15 +111,17 @@ public class Index implements IIndex {
         item.sender = ((IMail) o).getSenderAddress();
         item.receivers = ((IMail) o).getReceivers().size();
         item.subject = ((IMail) o).getSubject();
-        item.directory = ((IMail) o).getDirectory();
+        item.directory = ((IMail) o).toString();
         item.priority = ((IMail) o).getPriority().toString();
-        Object found = find(o);
+        Integer foundIndex = (Integer)find(o);
+        list.remove(foundIndex);
 		size--;
-		return found;
+		return foundIndex;
 	}
 
 
-    /*public int search(Object e) {
+	@Override
+	public Object find(Object o) { //search the linked list by ??
 		int middle, high, low;
 		boolean found = false;
 		Stack stack = new Stack();
@@ -131,11 +134,13 @@ public class Index implements IIndex {
 				stack.push(-1);
 				break;
 			}
+			
 			middle = (high + low)/2;
-			if(list.get(middle).equals(e)) {
+			MailInfo i =(MailInfo)list.get(middle);
+			if(i.directory.equals(((Mail)o).toString())) {
 				stack.push(middle);
 				found = true;
-			}else if(list.get(middle).compareTo(e) > 0) { //sorted by ??
+			}else if(i.directory.compareTo(((Mail)o).toString()) > 0) { //sorted by ??
 				stack.push(low);
 				stack.push(middle-1);
 			}else {
@@ -144,11 +149,6 @@ public class Index implements IIndex {
 			}
 		}
 		return stack.pop();
-	}*/
-
-	@Override
-	public Object find(Object o) { //search the linked list by ??
-		return null;
 	}
 
 	@Override

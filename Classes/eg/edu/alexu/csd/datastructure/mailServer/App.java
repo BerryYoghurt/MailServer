@@ -119,7 +119,11 @@ public class App implements IApp{
 		}
 		q = email.getReceivers();
 		while(!q.isEmpty()) {
+			//if reciever in this server
 			User u = db.loadUser((String)q.dequeue()); //load from database
+			if(u.equals(signedInUser)) {
+				u = signedInUser;
+			}
 			//MailFolder.copyFolder(sourceFolder, destinationFolder);
 			email.copy(u.getInboxPath());
 		}

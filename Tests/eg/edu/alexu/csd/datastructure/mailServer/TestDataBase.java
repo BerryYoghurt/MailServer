@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
+import javax.xml.crypto.dsig.SignedInfo;
+
 import org.junit.jupiter.api.Test;
 
 class TestDataBase {
@@ -26,9 +28,9 @@ class TestDataBase {
 			m.addReceiver("shHolmes");
 			m.saveMail();
 			assertTrue(a.compose(m));
-			assertFalse(u.getInboxPath().isEmpty());
-			assertTrue(u.getDraftPath().isEmpty());
-			assertFalse(u.getSentPath().isEmpty());
+			assertFalse(a.signedInUser.getInboxPath().isEmpty());
+			assertTrue(a.signedInUser.getDraftPath().isEmpty());
+			assertFalse(a.signedInUser.getSentPath().isEmpty());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

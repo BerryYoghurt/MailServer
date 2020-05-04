@@ -11,7 +11,7 @@ import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 
 class TestMail {
-	User u = new User("Jehad", "Aly", "batteekh");
+	User u = new User("batteekh");
 	Mail m = new Mail(u);
 	void createEmail() {
 		m.setSubject("Hello world");//exclamation!
@@ -37,7 +37,7 @@ class TestMail {
 	}
 	@Test
 	void testCreation1Receiver() {
-		User u = new User("Jehad", "Aly", "batteekh");
+		User u = new User("batteekh");
 		Mail m = new Mail(u);
 		m.setSubject("Hello world");//exclamation!
 		m.addReceiver("farawla@gmail.com");

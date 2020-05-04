@@ -117,11 +117,6 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	public String getName() {
 		return this.name;
 	}
-
-	@Override
-	public int appendIndex(IFolder indexFile) { // xxxxxxxxxxxxxxxxxx
-		return 0;
-	}
 	
 	public void writeToFile() throws FileNotFoundException {
 	    if(this.emails == null){
