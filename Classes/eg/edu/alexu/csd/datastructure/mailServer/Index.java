@@ -12,7 +12,6 @@ import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 public class Index implements IIndex {
-    
 	
 	protected DLinkedList list;
     private File path;
@@ -78,8 +77,7 @@ public class Index implements IIndex {
 			    writer.println(i.infoToString());
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e);
 		}
 	} 
     

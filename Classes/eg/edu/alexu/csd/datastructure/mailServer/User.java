@@ -25,6 +25,7 @@ public class User implements IContact { //needs a filter folder
 	private MailFolder trash;
 	private MailFolder inbox;
 	private MailFolder sent;
+	private ContactFolder contacts;
 
 	User(String address){
 	  	File folder = new File(App.systemFile,address);
@@ -45,7 +46,7 @@ public class User implements IContact { //needs a filter folder
 
 		File folder = new File(App.systemFile, address);
 		if (!folder.mkdir()) {
-			throw new RuntimeException("folder is not created!");
+			throw new RuntimeException("user folder is not created!");
 		}
 		this.path = folder;
 
@@ -78,7 +79,8 @@ public class User implements IContact { //needs a filter folder
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println(e);
 		}
 
 	}
@@ -98,7 +100,8 @@ public class User implements IContact { //needs a filter folder
 			this.salt = info[6].getBytes();
 			reader.close();
 		}catch(FileNotFoundException e){
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		this.salt = Base64.getDecoder().decode(info[6]);
 	}
@@ -122,7 +125,7 @@ public class User implements IContact { //needs a filter folder
 		try {
 			DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 			df.setLenient(false);
-			df.parse(date);
+			df.parse(date); // check if valid
 			info[3] = date;
 			return true;
 		} catch (ParseException e) {
@@ -153,7 +156,7 @@ public class User implements IContact { //needs a filter folder
 
 	@Override
 	public String removeAddress(int order) {// contact
-		throw new RuntimeException();
+		throw new IllegalStateException("this is a user");
 	}
 
 	@Override
@@ -164,7 +167,8 @@ public class User implements IContact { //needs a filter folder
 		try {
 			info[5] = getHash(password, this.salt);
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		return true;
 	}
@@ -181,7 +185,8 @@ public class User implements IContact { //needs a filter folder
 				return true;
 			}
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		
 		return false;
@@ -228,8 +233,7 @@ public class User implements IContact { //needs a filter folder
 	
 	@Override
 	public IFolder getContactsPath() {
-		
-		return null;
+		return this.contacts;
 	}
 
 	private String getHash(String password, byte[] salt) throws NoSuchAlgorithmException {

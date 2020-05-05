@@ -16,14 +16,15 @@ public class Contact implements IContact{  //remove uncommon methods ?????
     IFolder contacts;
     File path;
     
-    Contact(String name , String email , IFolder contacts){ //new contact
+    public Contact(String name , String email , IFolder contacts){ //new contact
         setName(name,"");
         setAddress(email);
         this.contacts = contacts;
         this.path = new File(contacts.getPath(), name + ".txt");
-        contacts.add(this);    }
+        contacts.add(this);
+    }
     
-    Contact(File path){ //already exists //path of the contact file
+    public Contact(File path){ //already exists //path of the contact file
         String str = path.getName();
         this.name = str.replace(".txt" , "");
         this.path = path;
@@ -109,7 +110,7 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 
 	@Override
-	public boolean setName(String Fname, String Lname) { // Lname xx   //no special Characters
+	public boolean setName(String Fname, String Lname) { // Lname xx .. null or ""   //no special Characters
 		if(Fname.length() == 0 || Fname.length() > 50){
 		    return false;
         }
@@ -122,15 +123,21 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 		return this.name;
 	}
 	
-	public void writeToFile() throws FileNotFoundException {
+	public void writeToFile(){
 	    if(this.emails == null){
             throw new RuntimeException();
-        }
-		PrintWriter writer = new PrintWriter(this.path);
+	    }
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(this.path);
+		
 		for (String s : emails) {
 			writer.println(s);      // we need the traverse method in SinglyLinkedList ?
 		}
-		writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
