@@ -152,7 +152,7 @@ public class User implements IContact { //needs a filter folder
 	}
 
 	@Override
-	public boolean removeAddress(int order) {// contact
+	public String removeAddress(int order) {// contact
 		throw new RuntimeException();
 	}
 

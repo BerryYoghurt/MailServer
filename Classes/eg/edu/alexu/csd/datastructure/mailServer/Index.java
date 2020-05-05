@@ -16,7 +16,6 @@ public class Index implements IIndex {
 	
 	protected DLinkedList list;
     private File path;
-    protected int size = 0;
 
     //constructor
     public Index(File path, boolean isNew){
@@ -98,7 +97,6 @@ public class Index implements IIndex {
         item.directory = m.toString();
         item.priority = m.getPriority().toString();
         list.add(item);
-		size++;
 	}
 
 	@Override
@@ -115,7 +113,6 @@ public class Index implements IIndex {
         item.priority = ((IMail) o).getPriority().toString();
         Integer foundIndex = (Integer)find(o);
         list.remove(foundIndex);
-		size--;
 		return foundIndex;
 	}
 
@@ -153,6 +150,6 @@ public class Index implements IIndex {
 
 	@Override
 	public int getSize() {
-		return size;
+		return list.size();
 	}
 }

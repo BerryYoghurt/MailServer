@@ -20,8 +20,8 @@ public class Contact implements IContact{  //remove uncommon methods ?????
         setName(name,"");
         setAddress(email);
         this.contacts = contacts;
-        this.path = contacts.add(this);
-    }
+        this.path = new File(contacts.getPath(), name + ".txt");
+        contacts.add(this);    }
     
     Contact(File path){ //already exists //path of the contact file
         String str = path.getName();
@@ -41,6 +41,10 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 			emails = new String[1];
 		}
 		else {
+			for(String e : emails) {
+				if(e.equals(address))
+					return false; //already exists
+			}
 			emails = Arrays.copyOfRange(emails, 0, emails.length);
 		}
 		this.emails[emails.length-1] = address;
@@ -73,12 +77,12 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 
 	@Override
-	public boolean removeAddress(int order) { // 0 based
+	public String removeAddress(int order) { // 0 based
         if(this.emails == null || order < 0 || order >= this.emails.length){
             throw new ArrayIndexOutOfBoundsException();
         }
         else if (this.emails.length == 1){
-            return false;
+            return null;
         }
         else{
         	String[] temp = new String[emails.length-1];
@@ -89,7 +93,7 @@ public class Contact implements IContact{  //remove uncommon methods ?????
             	temp[i] = emails[i];
             }
             emails = temp;
-            return true;
+            return temp[order];
         }
 	}
 	

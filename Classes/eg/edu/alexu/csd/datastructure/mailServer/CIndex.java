@@ -54,7 +54,6 @@ public class CIndex extends Index{
         i.name = ((Contact)item).getName(); // string
         i.directory = ((Contact) item).getPath().getAbsolutePath();
         list.add(i);
-		size++;
 	}
 	
 	public Object remove(Object o) {    //remove it from the linked list  //we only need contact name
@@ -63,7 +62,6 @@ public class CIndex extends Index{
 	    }else{
 		    int found = (Integer)find(o);
 		    if(found != -1) {
-		        size--;
 		        CInfo temp = (CInfo)list.get(found);
 		        list.remove(found);
 		        return temp;
@@ -90,10 +88,11 @@ public class CIndex extends Index{
 				break;
 			}
 			middle = (high + low)/2;
-			if(list.get(middle).equals(o)) {
+			String s = ( (CInfo) list.get(middle) ).name;
+			if(s.equals(o)) {
 				stack.push(middle);
 				found = true;
-			}else if(((String) list.get(middle)).compareTo((String) o) > 0) { //sorted by ??
+			}else if(s.compareTo((String) o) > 0) { //sorted by ??
 				stack.push(low);
 				stack.push(middle-1);
 			}else {
