@@ -115,6 +115,9 @@ public class MailFolder implements IFolder {
 		return index.getSize();
 	}
 
+	public Kind getKind() {
+		return this.type;
+	}
 	public void move(File from, File to) throws IOException {
 		Files.move(from.toPath(), to.toPath());
 		//System.out.println();

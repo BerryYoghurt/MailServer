@@ -422,5 +422,4 @@ public class Mail implements IMail{
 		return this.containingFolder.getPath();
 	}
 	
-	
 }
