@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Scanner;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 
 public class User implements IContact { //needs a filter folder
 

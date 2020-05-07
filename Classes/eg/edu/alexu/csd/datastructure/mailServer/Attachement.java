@@ -44,4 +44,17 @@ public class Attachement implements IAttachement {
 		return att.getName();
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Attachement) {
+			if(((Attachement)other).getPath().equals(this.getPath()))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

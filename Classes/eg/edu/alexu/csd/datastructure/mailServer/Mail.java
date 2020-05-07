@@ -22,7 +22,7 @@ import eg.edu.alexu.csd.datastructure.queue.AQueue;
 import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 
-public class Mail implements IMail{
+public class Mail implements IMail, Cloneable{
 
 	transient private File containingFolder = null;// no need to save
 	transient private File attFolder = null;//no need to save
@@ -39,6 +39,7 @@ public class Mail implements IMail{
 	
 	public Mail(IContact from) {//any time a new mail is created, it is in draft
 		this.date = new Date();
+		this.subject = "";
 		composer = from;
 		this.composerName = from.getName();
 		this.composerAddress = from.getAddresses()[0];
@@ -79,7 +80,7 @@ public class Mail implements IMail{
 			
 			try(Writer s = new OutputStreamWriter(fos, Charset.forName("US-ASCII"))){
 				//StringBuilder s = new StringBuilder();
-				s.append("Subject: "); s.append(this.subject);
+				s.append("Subject: "); s.append(this.subject == null? "": this.subject);
 				s.append("\r\n");
 				s.append("From: "); s.append("\""); s.append(this.composerName); 
 				s.append("\""); s.append('<');
@@ -141,10 +142,7 @@ public class Mail implements IMail{
 	
 	public static Mail loadMail(File thisMailFolder, int numberOfReceivers) {
 		Mail m = new Mail();
-		m.containingFolder = thisMailFolder;//could be draft (which can be deleted or sent)
-		//could be sent (which could be deleted)
-		//could be trash (which could be restored)
-		//could be inbox
+		m.containingFolder = thisMailFolder;
 		//long lastModified = thisMailFolder.lastModified();
 		File[] list = m.containingFolder.listFiles();
 		for(File f : list) {
@@ -209,33 +207,17 @@ public class Mail implements IMail{
 			}else if(f.getName().equals("bodyTxt.txt")){//load body
 				m.bodyTxt = f;
 			}else if(f.getName().equals("attachements")){
-				//m.attFolder = f; Constructor of IFolder?
+				m.attFolder = f;
 				m.attachements = new SLinkedList();
 				for(File temp : f.listFiles()) {
 					m.attachements.add(new Attachement(temp));
 				}
-			}/*else if(f.getName().equals("receivers.txt")) {
-				m.receiversFile = f;
-				try(RandomAccessFile stream = new RandomAccessFile(f, "rw")){
-					m.receivers = new DLinkedList();
-					for(String line = stream.readLine(); line != null; line = stream.readLine()) {
-						if(line.charAt(0) =='D') {
-							continue;
-						}
-						else {
-							m.receivers.add(line);
-						}
-					}
-				} catch (FileNotFoundException e) {//SHOULD THESE EVEN BE THROWN!!
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
+			}
 		}
 		m.identifier = thisMailFolder.getName();
+		if(m.attachements == null) {
+			m.attachements = new SLinkedList();
+		}
 		//if(trash)
 		//	m.containingFolder.setLastModified(lastModified);//ensure last modified is not changed for the sake of deletion
 		return m;
@@ -307,20 +289,6 @@ public class Mail implements IMail{
 	public boolean addReceiver(String receiverEmail) {//done
 		receiverEmail = receiverEmail.toLowerCase();
 		receivers.add(receiverEmail);
-		/*if(receiversFile == null) {
-			receiversFile = new File(containingFolder.getPath(), "receivers.txt");
-		}
-		try(RandomAccessFile f = new RandomAccessFile(receiversFile, "rw")){
-			f.seek(f.length());
-			f.writeChars(receiverEmail);
-			f.writeChars(System.lineSeparator());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		return true;
 	}
 	
@@ -328,19 +296,6 @@ public class Mail implements IMail{
 	public String removeReceiver(int index) {//done
 		String r = (String)receivers.get(index);
 		receivers.remove(index);
-		//receiversFolder.remove(r);
-		/*try(RandomAccessFile f = new RandomAccessFile(receiversFile, "rw")){
-			for(int i = 0; i < index; i++) {
-				f.readLine();
-			}
-			f.writeChar('D');//EMAILS SHOULD BE LOWER CASE
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		return r;
 	}
 	
@@ -400,6 +355,16 @@ public class Mail implements IMail{
 	public String getSenderAddress() {
 		return this.composerAddress;
 	}
+	/**
+	 * updates the date to the instance at which it was called*/
+	public void updateDate() {
+		if(containingFolder.getParent().equals("draft")) {//in draft
+			this.date = new Date();
+		}
+		else {
+			throw new IllegalStateException("The mail is not in draft");
+		}
+	}
 	
 	@Override
 	public boolean setPriority(Priority p) {//done
@@ -420,6 +385,12 @@ public class Mail implements IMail{
 	@Override
 	public String getDirectory() {
 		return this.containingFolder.getPath();
+	}
+	
+	@Override
+	public Mail clone() {
+		Mail m = Mail.loadMail(this.containingFolder, this.receivers.size());
+		return m;
 	}
 	
 }

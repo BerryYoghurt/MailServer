@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
 
-import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 
 public interface IContact {
 	/**
