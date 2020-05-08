@@ -14,7 +14,7 @@ import java.util.Base64;
 import java.util.Scanner;
 
 
-public class User implements IContact { //needs a filter folder
+public class User implements IContact { // needs a filter folder
 
 	private File path;
 	private File infoFile;
@@ -26,47 +26,40 @@ public class User implements IContact { //needs a filter folder
 	private MailFolder sent;
 	private ContactFolder contacts;
 
-	User(String address){
-	  	File folder = new File(App.systemFile,address);
-		//folder.mkdir();
-		this.path = folder;
-		File file = new File(folder,"info.txt");
-		this.infoFile = file;
-		read();
-		draft = new MailFolder(this.path,MailFolder.Kind.DRAFT, false);
-		trash = new MailFolder(this.path,MailFolder.Kind.TRASH,false);
-		inbox = new MailFolder(this.path,MailFolder.Kind.INBOX,false);
-		sent = new MailFolder(this.path,MailFolder.Kind.SENT,false);
-  }
-
-	User(String Fname, String Lname, String birthDate, boolean gender, String address, String password)
-			throws IOException {
-		// address // without @ //dateformat ="MM-dd-yyyy"
-
+	public User(String address, boolean isNew) {
 		File folder = new File(App.systemFile, address);
-		if (!folder.mkdir()) {
-			throw new RuntimeException("user folder is not created!");
+
+		if (!isNew) {
+			this.path = folder;
+			File file = new File(folder, "info.txt");
+			this.infoFile = file;
+			read();
+		} else {
+			if (!folder.mkdir()) {
+				throw new RuntimeException("user folder is not created!");
+			}
+			this.path = folder;
+
+			File file = new File(folder.getPath(), "info.txt");
+			try {
+				if (!file.createNewFile()) {
+					throw new RuntimeException("file is not created!");
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.infoFile = file;
+
+			setSalt();
+			// address // without @ //dateformat ="MM-dd-yyyy"
 		}
-		this.path = folder;
 
-		File file = new File(folder.getPath(),"info.txt");
-		if (!file.createNewFile()) {
-			throw new RuntimeException("file is not created!");
-		}
-		this.infoFile = file;
-
-		setSalt();
-		setAddress(address);
-		setPassword(password);
-		setName(Fname, Lname);
-		setBirthDate(birthDate);
-		setGender(gender);
-		writeToFile();
-
-		draft = new MailFolder(this.path, MailFolder.Kind.DRAFT, true);
-		trash = new MailFolder(this.path,MailFolder.Kind.TRASH, true);
-		inbox = new MailFolder(this.path, MailFolder.Kind.INBOX, true);
-		sent = new MailFolder(this.path, MailFolder.Kind.SENT, true);
+		draft = new MailFolder(this.path, MailFolder.Kind.DRAFT, isNew);
+		trash = new MailFolder(this.path, MailFolder.Kind.TRASH, isNew);
+		inbox = new MailFolder(this.path, MailFolder.Kind.INBOX, isNew);
+		sent = new MailFolder(this.path, MailFolder.Kind.SENT, isNew);
+		contacts = new ContactFolder(this.path, isNew);
 	}
 
 	public void writeToFile() {
@@ -78,7 +71,7 @@ public class User implements IContact { //needs a filter folder
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println(e);
 		}
 
@@ -88,7 +81,7 @@ public class User implements IContact { //needs a filter folder
 		return info[5];
 	}
 
-	public void read(){
+	public void read() {
 		try {
 			Scanner reader = new Scanner(infoFile);
 			int i = 0;
@@ -98,9 +91,9 @@ public class User implements IContact { //needs a filter folder
 			}
 			this.salt = info[6].getBytes();
 			reader.close();
-		}catch(FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			System.out.println(e);
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		this.salt = Base64.getDecoder().decode(info[6]);
 	}
@@ -108,6 +101,7 @@ public class User implements IContact { //needs a filter folder
 	public File getPath() {
 		return this.path;
 	}
+
 	public void setGender(boolean gender) { // true >> male //false >> female
 		if (gender) {
 			info[4] = "male";
@@ -115,7 +109,7 @@ public class User implements IContact { //needs a filter folder
 			info[4] = "female";
 		}
 	}
-	
+
 	public String getGender() {
 		return info[4];
 	}
@@ -131,7 +125,7 @@ public class User implements IContact { //needs a filter folder
 			return false;
 		}
 	}
-	
+
 	public String getBirthDate() {
 		return info[3];
 	}
@@ -141,11 +135,11 @@ public class User implements IContact { //needs a filter folder
 		if (address.length() > 20 || address.length() < 1) {
 			return false;
 		}
-		//address = address + "@system.com";
+		// address = address + "@system.com";
 		info[2] = address.toLowerCase();
 		return true;
-	}	
-	
+	}
+
 	@Override
 	public String[] getAddresses() { // contact + getAddresses //user >> returns only one address
 		String[] get = new String[1];
@@ -167,7 +161,7 @@ public class User implements IContact { //needs a filter folder
 			info[5] = getHash(password, this.salt);
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println(e);
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return true;
 	}
@@ -185,9 +179,9 @@ public class User implements IContact { //needs a filter folder
 			}
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println(e);
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 
@@ -209,7 +203,6 @@ public class User implements IContact { //needs a filter folder
 		return get;
 	}
 
-
 	@Override
 	public IFolder getDraftPath() {// user
 		return this.draft;
@@ -229,7 +222,7 @@ public class User implements IContact { //needs a filter folder
 	public IFolder getSentPath() {// user
 		return this.sent;
 	}
-	
+
 	@Override
 	public IFolder getContactsPath() {
 		return this.contacts;
@@ -261,21 +254,20 @@ public class User implements IContact { //needs a filter folder
 		return bytes;
 	}
 
-
 	private void setSalt() {
 		byte[] saltArray = createSalt();
 		this.salt = saltArray;
 		String salt = Base64.getEncoder().encodeToString(saltArray);
 		info[6] = salt;
 	}
-	
+
 	@Override
 	public boolean equals(Object m) {
 		boolean equal = true;
-		if(!(m instanceof User))
+		if (!(m instanceof User))
 			equal = false;
-		User user = (User)m;
-		if(equal && !user.info[2].equals(this.info[2]))
+		User user = (User) m;
+		if (equal && !user.info[2].equals(this.info[2]))
 			equal = false;
 		return equal;
 	}

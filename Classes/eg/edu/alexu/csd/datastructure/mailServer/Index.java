@@ -1,6 +1,5 @@
-//constructor
-
 package eg.edu.alexu.csd.datastructure.mailServer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -94,6 +93,11 @@ public class Index implements IIndex {
         item.subject = m.getSubject();
         item.directory = m.toString();
         item.priority = m.getPriority().toString();
+        int ind = (int)find(item);
+        if(ind != -1) {
+			list.remove(ind);
+			list.add(ind, item);
+		}
         list.add(item);
 	}
 
