@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class SignInWindow extends JFrame {
@@ -31,24 +32,24 @@ public class SignInWindow extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SignInWindow frame = new SignInWindow();
+					SignInWindow frame = new SignInWindow(app);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public SignInWindow() {
-		// this.app = app;
+	public SignInWindow(App app) {
+		this.app = app;
 		setTitle("Sign in");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 506, 353);
@@ -103,8 +104,8 @@ public class SignInWindow extends JFrame {
 				boolean check = app.signin(textField.getText(), passwordField.getText());
 				if (check) {
 					dispose();
-					OptionWindow o = new OptionWindow();
-					o.setApp(app);
+					OptionWindow o = new OptionWindow(app);
+					//o.setApp(app);
 					o.setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(null, "Wronge UserName OR Password.");
@@ -120,6 +121,11 @@ public class SignInWindow extends JFrame {
 		JButton btnBack = new JButton("back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					app.db.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				dispose();
 				Welcome newWindow = new Welcome();
 				newWindow.app = null;

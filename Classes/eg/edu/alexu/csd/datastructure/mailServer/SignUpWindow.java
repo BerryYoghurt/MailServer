@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import eg.edu.alexu.csd.datastructure.mailServer.App;
+import eg.edu.alexu.csd.datastructure.mailServer.MailFolder;
 import eg.edu.alexu.csd.datastructure.mailServer.User;
 
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 
@@ -39,7 +41,7 @@ public class SignUpWindow extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -50,12 +52,12 @@ public class SignUpWindow extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public SignUpWindow() {
+	public SignUpWindow(App app) {
 		this.app = app;
 		setTitle("Sign up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -161,6 +163,12 @@ public class SignUpWindow extends JFrame {
 		JButton btnGoBack = new JButton("back");
 		btnGoBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					app.db.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				dispose();
 				Welcome newWindow = new Welcome();
 				newWindow.frame.setVisible(true);
@@ -244,9 +252,9 @@ public class SignUpWindow extends JFrame {
 		JButton btnSignUp = new JButton("sign up");
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // 1-Fname 2-Lname 3-address 4-date 5-gender 6-password 7-salt
-				System.out.println("ok!");
-				String date = comboBox_1.getSelectedObjects() + "-" + comboBox.getSelectedObjects() + "-"
-						+ comboBox_2.getSelectedObjects();
+				String date = comboBox_1.getSelectedItem() + "-" + comboBox.getSelectedItem() + "-"
+						+ comboBox_2.getSelectedItem();
+				//System.out.println(date);
 				boolean gender = true;
 
 				User user;
@@ -257,26 +265,70 @@ public class SignUpWindow extends JFrame {
 					gender = true;
 				} else if (rdbtnFemale.isSelected()) {
 					gender = false;
-				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) {
+				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) {  //gender setting
 					JOptionPane.showMessageDialog(null, "Set Gender.");
-				} else if (passwordField.getText() != passwordField_1.getText()) {
-					JOptionPane.showMessageDialog(null, "passwords does not match");
-				} else if (!user.setName(textField.getText(),textField_1.getText())) {
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				}/* else */if (!passwordField.getText().equals(passwordField_1.getText())) { 		//passwords >> check match
+					JOptionPane.showMessageDialog(null, "passwords do not match");
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				} /*else*/ if (!user.setName(textField.getText(),textField_1.getText())) {	//name setting
 					JOptionPane.showMessageDialog(null, "Invalid name");
-				} else if (!user.setBirthDate(date)) {
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				} /*else*/ if (!user.setBirthDate(date)) {		//date setting
 					JOptionPane.showMessageDialog(null, "Invalid date");
-				} else if (!user.setAddress(textField_2.getText())) {
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				} /*else*/ if (!user.setAddress(textField_2.getText())) {		//address setting
 					JOptionPane.showMessageDialog(null, "Invalid address");
-				} else if (!user.setPassword(passwordField.getText())) {
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				} /*else*/ if (!user.setPassword(passwordField.getText())) {	//password setting
 					JOptionPane.showMessageDialog(null, "Invalid password");
-				} else {
+					try {
+						MailFolder.removeDir(user.getPath());
+					} catch (IOException e1) {
+						System.out.println("problem");
+						//e1.printStackTrace();
+					}
+					return;
+				} /*else {*/
 					user.writeToFile();
-					app.signup(user); 
+					if(!app.signup(user)) {
+						//there is a problem >> user is not signed up >> what kind of problems?
+					}
 					dispose();
-					OptionWindow o = new OptionWindow();
-					o.setApp(app);
+					OptionWindow o = new OptionWindow(app);
+					//o.setApp(app);
 					o.setVisible(true);
-				}
+				//}
 
 			}
 		});
