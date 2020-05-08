@@ -12,11 +12,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.swing.*;
+import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.junit.jupiter.engine.config.JupiterConfiguration;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
+import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 
 @SuppressWarnings("serial")
@@ -35,8 +37,11 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 	
 	private JTextArea area;
 	
+	private AttList attListModel;
 	private JList<Attachement> attList;
 	
+	private JDialog recChooser;
+	private ReceiverList recListModel;
 	private JList<String> receiverList;
 	
 	private JScrollPane textPane, attPane, receiverPane;
@@ -90,8 +95,11 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 	}
 	
 	private void initialiseReceivers() {
-		// TODO Auto-generated method stub
+		recChooser = new JDialog();
 		
+		
+		recListModel = new ReceiverList(mail);
+		receiverList
 	}
 
 	private void initialiseAttachements() {
@@ -103,7 +111,10 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
     	deleteAttachement = new JButton("delete selected attachement");
     	deleteAttachement.addActionListener(this);
     	
-    	//attList = new JList()
+    	attListModel = new AttList(mail);
+    	attList = new JList<Attachement>(attListModel);
+    	attList.setSelectedIndex(0);
+    	attList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     	
     	attPane = new JScrollPane(attList);
     	attPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -214,11 +225,14 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 			int returnVal = chooser.showOpenDialog(frame);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				Attachement a = new Attachement(chooser.getSelectedFile());
-				mail.addAttachement(a);
+				attListModel.add(a);
+				attList.setSelectedIndex(attListModel.getSize()-1);
 			}
 		}
 		else if(e.getSource() == deleteAttachement) {
-			mail.removeAttachement(0);//TODO depends on list
+			int index = attList.getSelectedIndex();
+			attListModel.remove(index);
+			attList.setSelectedIndex(index == attListModel.getSize()?index-1:index);
 		}
 	}
 
@@ -230,10 +244,97 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 }
 
 
-@SuppressWarnings("serial")
-class AttList extends DefaultListModel<Attachement> implements ListModel<Attachement>{
-	AttList(SLinkedList list){
-		super();
-		for(list.resetNext(); list.hasNext(); list.getNext()) {}
+
+class AttList implements ListModel<Attachement>{
+	private SLinkedList list;
+	private ListDataListener listener;
+	private Mail mail;
+	
+	AttList(Mail mail){
+		this.list = (SLinkedList)mail.getAttachements();
 	}
+	
+	public void add(Attachement o) {
+		mail.addAttachement(o);//includes adding to list and its copy
+		if(listener != null)
+			listener.intervalAdded(new ListDataEvent(this,ListDataEvent.INTERVAL_ADDED,this.getSize()-1,this.getSize()-1));
+	}
+	
+	public void remove(int index) {
+		mail.removeAttachement(index);
+		if(listener != null)
+			listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index,index));
+	}
+	
+	@Override
+	public int getSize() {
+		return list.size();
+	}
+
+	@Override
+	public Attachement getElementAt(int index) {
+		return (Attachement) list.get(index);
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener l) {
+		listener = l;	
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener l) {
+		listener = l;
+	}
+	
+}
+
+class ReceiverList implements ListModel<String>{
+
+	private ListDataListener listener;
+	private SLinkedList list;
+	private Mail m;
+	
+	public ReceiverList(Mail mail) {
+		m = mail;
+		IQueue q = m.getReceivers();
+		list = new SLinkedList();
+		while(!q.isEmpty()) {
+			list.add(q.dequeue());
+		}
+	}
+	
+	public void add(String s) {
+		m.addReceiver(s);
+		list.add(s);
+		if(listener!=null)
+			listener.intervalAdded(new ListDataEvent(this,ListDataEvent.INTERVAL_ADDED,this.getSize()-1,this.getSize()-1));
+	}
+
+	public void remove(int index) {
+		m.removeReceiver(index);
+		list.remove(index);
+		if(listener != null)
+			listener.intervalRemoved(new ListDataEvent(this,ListDataEvent.INTERVAL_REMOVED,index,index));
+
+	}
+	@Override
+	public int getSize() {
+		return list.size();
+	}
+
+	@Override
+	public String getElementAt(int index) {
+		return (String)list.get(index);
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener l) {
+		listener = l;		
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener l) {
+		listener = l;		
+	}
+	
 }
