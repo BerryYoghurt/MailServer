@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

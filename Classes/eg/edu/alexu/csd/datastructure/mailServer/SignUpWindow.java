@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.EventQueue;
 
@@ -56,7 +56,6 @@ public class SignUpWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public SignUpWindow() {
-		this.app = app;
 		setTitle("Sign up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 530, 644);
@@ -259,7 +258,7 @@ public class SignUpWindow extends JFrame {
 					gender = false;
 				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Set Gender.");
-				} else if (passwordField.getText() != passwordField_1.getText()) {
+				} else if (!passwordField.getPassword().equals(passwordField_1.getPassword())) {
 					JOptionPane.showMessageDialog(null, "passwords does not match");
 				} else if (!user.setName(textField.getText(),textField_1.getText())) {
 					JOptionPane.showMessageDialog(null, "Invalid name");
@@ -267,7 +266,7 @@ public class SignUpWindow extends JFrame {
 					JOptionPane.showMessageDialog(null, "Invalid date");
 				} else if (!user.setAddress(textField_2.getText())) {
 					JOptionPane.showMessageDialog(null, "Invalid address");
-				} else if (!user.setPassword(passwordField.getText())) {
+				} else if (!user.setPassword(passwordField.getPassword().toString())) {
 					JOptionPane.showMessageDialog(null, "Invalid password");
 				} else {
 					user.writeToFile();

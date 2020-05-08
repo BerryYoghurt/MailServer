@@ -15,8 +15,8 @@ public class App implements IApp{
 	protected IFolder currentFolder;
 	
 	App(){
-		db = new DataBase();
 		systemFile = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+		db = new DataBase();
 	}
 	
 	@Override

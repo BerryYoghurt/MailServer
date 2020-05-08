@@ -20,19 +20,27 @@ public class DataBase implements Closeable{
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");//what if already created??
 			File dbFolder = new File(App.systemFile, "users");
 			if(!dbFolder.exists()) {
-				conn = DriverManager.getConnection("jdbc:derby:users;create=true");
+				conn = DriverManager.getConnection("jdbc:derby:"+App.systemFile.getAbsolutePath()+"\\users;create=true");
 				Statement create = conn.createStatement();
 				create.execute("create table Users(address varchar(255), password varchar(255),primary key(address))");
 				}
 			else {
-				conn = DriverManager.getConnection("jdbc:derby:users");
+				conn = DriverManager.getConnection("jdbc:derby:"+App.systemFile.getAbsolutePath()+"\\users");
 			}
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			/*try {
+				conn = DriverManager.getConnection("jdbc:derby:users;create=true");
+			
+				Statement create = conn.createStatement();
+				create.execute("create table Users(address varchar(255), password varchar(255),primary key(address))");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
 			e.printStackTrace();
 		}
 	}
@@ -104,7 +112,7 @@ public class DataBase implements Closeable{
 			s = conn.createStatement();
 			ResultSet set = s.executeQuery("SELECT * FROM Users WHERE address = '"+email+"'");
 			set.next();
-			User u = new User(set.getString("address"));
+			User u = new User(set.getString("address"), false);
 			set.close();
 			s.close();
 			return u;
