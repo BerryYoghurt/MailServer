@@ -184,7 +184,7 @@ public class SignUpWindow extends JFrame {
 		comboBox.setBounds(207, 366, 42, 26);
 		contentPane.add(comboBox);
 
-		String[] months = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+		String[] months = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
 
 		JComboBox comboBox_1 = new JComboBox(months);
 		comboBox_1.setMaximumRowCount(7);
@@ -244,39 +244,40 @@ public class SignUpWindow extends JFrame {
 		JButton btnSignUp = new JButton("sign up");
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { // 1-Fname 2-Lname 3-address 4-date 5-gender 6-password 7-salt
+				System.out.println("ok!");
 				String date = comboBox_1.getSelectedObjects() + "-" + comboBox.getSelectedObjects() + "-"
 						+ comboBox_2.getSelectedObjects();
 				boolean gender = true;
+
+				User user;
+				user = new User(textField_2.getText(),true);
+				user.setGender(gender);
+
 				if (rdbtnNewRadioButton.isSelected()) {
 					gender = true;
 				} else if (rdbtnFemale.isSelected()) {
 					gender = false;
+				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) {
+					JOptionPane.showMessageDialog(null, "Set Gender.");
+				} else if (passwordField.getText() != passwordField_1.getText()) {
+					JOptionPane.showMessageDialog(null, "passwords does not match");
+				} else if (!user.setName(textField.getText(),textField_1.getText())) {
+					JOptionPane.showMessageDialog(null, "Invalid name");
+				} else if (!user.setBirthDate(date)) {
+					JOptionPane.showMessageDialog(null, "Invalid date");
+				} else if (!user.setAddress(textField_2.getText())) {
+					JOptionPane.showMessageDialog(null, "Invalid address");
+				} else if (!user.setPassword(passwordField.getText())) {
+					JOptionPane.showMessageDialog(null, "Invalid password");
 				} else {
-					 JOptionPane.showMessageDialog(null,"Set Gender.");
+					user.writeToFile();
+					app.signup(user); 
+					dispose();
+					OptionWindow o = new OptionWindow();
+					o.setApp(app);
+					o.setVisible(true);
 				}
 
-				if (passwordField.getText() != passwordField_1.getText()) {
-					JOptionPane.showMessageDialog(null,"passwords does not match");
-				}
-
-				/*User user;
-				try {
-					user = new User(textField.getText(), textField_1.getText(), date, gender, textField_2.getText(),passwordField.getText());
-					if (user.getName() == null) {
-						JOptionPane.showMessageDialog(null,"Invalid name");
-					} else if (user.getAddresses()[0] == null) {
-						JOptionPane.showMessageDialog(null,"Invalid Address");
-					} else if (passwordField.getText().length() > 20 ) {
-						JOptionPane.showMessageDialog(null,"Invalid password");
-					}else if(passwordField.getText().length() < 8){
-					} else if (user.getBirthDate() == null) {
-						JOptionPane.showMessageDialog(null,"passwords does not match");
-					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-				
 			}
 		});
 		btnSignUp.setForeground(new Color(255, 20, 147));
@@ -286,7 +287,7 @@ public class SignUpWindow extends JFrame {
 		contentPane.add(btnSignUp);
 
 	}
-	
+
 	public void setApp(App app) {
 		this.app = app;
 	}

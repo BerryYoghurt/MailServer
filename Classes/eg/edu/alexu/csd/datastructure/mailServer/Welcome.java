@@ -10,12 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-
 import eg.edu.alexu.csd.datastructure.mailServer.App;
-
-import javax.swing.JSplitPane;
-import javax.swing.JInternalFrame;
 
 public class Welcome {
 
