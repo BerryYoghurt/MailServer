@@ -93,6 +93,9 @@ public class Index implements IIndex {
         item.subject = m.getSubject();
         item.directory = m.toString();
         item.priority = m.getPriority().toString();
+        // we need key sort >> take a copy ??
+        KeySort k = new KeySort();
+        k.applySort(this.list);
         int ind = (int)find(item);
         if(ind != -1) {
 			list.remove(ind);
