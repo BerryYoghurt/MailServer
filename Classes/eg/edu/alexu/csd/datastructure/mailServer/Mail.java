@@ -317,7 +317,7 @@ public class Mail implements IMail, Cloneable{
 		try {
 			attachement.copy(attFolder);
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();//TODO make window to show error logs
 			return false;
 		}
 		this.attachements.add(attachement);
