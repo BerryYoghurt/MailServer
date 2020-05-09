@@ -8,13 +8,11 @@ import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -30,8 +28,6 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
 	
 	final private Mail mail;
 	private JDialog frame;
-	
-	private App a;
 	
 	private GroupLayout selfLayout, textLayout, attLayout, recLayout;
 	
@@ -54,7 +50,6 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
 	public ViewMail(Mail m, App a, JFrame f) {
 		super();
 		this.mail = m;
-		this.a = a;
 		
 		selfLayout = new GroupLayout(this);
 		frame = new JDialog(f);
@@ -150,6 +145,7 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
 	private void initialiseAttachements() {
 		attPanel = new JPanel();
 		viewAtt = new JButton("View Attachement");
+		attLabel = new JLabel("Attachements");
 		
     	attListModel = new AttList(mail);
     	attList = new JList<Attachement>(attListModel);
@@ -162,11 +158,13 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
     	attLayout = new GroupLayout(attPanel);
     	attLayout.setHorizontalGroup(
     			attLayout.createParallelGroup()
+    			.addComponent(attLabel)
     			.addComponent(attPane)
     			.addComponent(viewAtt)
     			);
     	attLayout.setVerticalGroup(
     			attLayout.createSequentialGroup()
+    			.addComponent(attLabel)
     			.addComponent(attPane)
     			.addComponent(viewAtt));
     	attPanel.setLayout(attLayout);		

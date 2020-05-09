@@ -122,7 +122,7 @@ public class SignInWindow extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					app.db.close();
+					App.db.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

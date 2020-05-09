@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -17,6 +17,7 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class gender extends JFrame {
 
 	private JPanel contentPane;

@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class passwordEdit extends JFrame {
 
 	private JPanel contentPane;
@@ -26,7 +27,7 @@ public class passwordEdit extends JFrame {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
 	private JPasswordField passwordField_2;
-  private App app;
+	private App app;
 
 	/**
 	 * Launch the application.
@@ -87,13 +88,13 @@ public class passwordEdit extends JFrame {
 		JButton ok = new JButton("Confirm");
 		ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if (!passwordField_1.getText().equals(passwordField_2.getText())) {
+					if (!passwordField_1.getPassword().equals(passwordField_2.getPassword())) {
           	JOptionPane.showMessageDialog(null, "passwords do not match");
           }
-          if(!app.signedInUser.matchPassword(passwordField.getText())){
+          if(!app.signedInUser.matchPassword(passwordField.getPassword().toString())){
           	JOptionPane.showMessageDialog(null, "wrong password");
           }
-         else if (!app.signedInUser.setPassword(passwordField_1.getText())){
+         else if (!app.signedInUser.setPassword(passwordField_1.getPassword().toString())){
            JOptionPane.showMessageDialog(null, "Invalid password");
          } else {
         	    app.signedInUser.writeToFile();

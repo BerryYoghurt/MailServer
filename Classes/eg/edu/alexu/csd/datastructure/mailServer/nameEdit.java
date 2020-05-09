@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
+@SuppressWarnings("serial")
 public class nameEdit extends JFrame {
 
 	private JPanel contentPane;

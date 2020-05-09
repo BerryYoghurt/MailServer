@@ -126,10 +126,11 @@ public class DataBase implements Closeable{
 	public void close() throws IOException {
 			try {
 				conn.close();
-				DriverManager.getConnection("jdbc:derby:users;shutdown=true");
+				DriverManager.getConnection("jdbc:derby:;shutdown=true");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				System.out.println("Successfully Closed");
 			}
 	}
 
