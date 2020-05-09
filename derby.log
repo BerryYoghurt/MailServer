@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Tue May 05 00:44:39 EET 2020:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0171-e1dc-d373-000007a8d5d8 
-on database directory D:\Uni\Term4\MailServer\users with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@c387f44 
+Fri May 08 23:24:10 EET 2020:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0171-f62c-99d2-000007608910 
+on database directory D:\Uni\Term4\MailServer\bin\users with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@c387f44 
 Loaded from file:/D:/Uni/Term4/MailServer/Lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=13.0.2+8

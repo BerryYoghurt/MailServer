@@ -113,12 +113,14 @@ public class App implements IApp{
 		IQueue q = email.getReceivers();
 		while(!q.isEmpty()) {
 			//check if receiver is in database, if one is not valid, return false
-			if(!App.db.userExists((String)q.dequeue())) {
+			String m = (String)q.dequeue();
+			m = m.replaceAll("@([A-Za-z0-9_\\\\-\\\\.].*)", "");
+			if(!db.userExists(m))
 				return false;
-			}
 		}
 		q = email.getReceivers();
 		while(!q.isEmpty()) {
+			
 			//if reciever in this server
 			User u = db.loadUser((String)q.dequeue()); //load from database
 			if(u.equals(signedInUser)) {
