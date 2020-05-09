@@ -54,8 +54,8 @@ public class Welcome {
 		signInButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
-				SignInWindow newWindow = new SignInWindow();
-				newWindow.setApp(app);
+				SignInWindow newWindow = new SignInWindow(app);
+				//newWindow.setApp(app);
 				newWindow.setVisible(true);
 			}
 		});
@@ -72,8 +72,8 @@ public class Welcome {
 		signUpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
-				SignUpWindow newWindow = new SignUpWindow();
-				newWindow.setApp(app);
+				SignUpWindow newWindow = new SignUpWindow(app);
+				//newWindow.setApp(app);
 				newWindow.setVisible(true);
 			}
 		});
