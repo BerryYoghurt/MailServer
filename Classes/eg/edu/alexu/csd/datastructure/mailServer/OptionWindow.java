@@ -27,7 +27,7 @@ public class OptionWindow extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -38,12 +38,13 @@ public class OptionWindow extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public OptionWindow() {
+	public OptionWindow(App app) {
+		this.app = app;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 798, 579);
 		contentPane = new JPanel();
@@ -204,8 +205,8 @@ public class OptionWindow extends JFrame {
 		nameEdit.setBounds(295, 132, 75, 34);
 		contentPane.add(nameEdit);
 		
-		JButton button_5 = new JButton("edit");
-		button_5.addActionListener(new ActionListener() {
+		JButton addressButton = new JButton("edit");
+		addressButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
       		/* new window >> write new address
           String >> take text 
@@ -215,13 +216,13 @@ public class OptionWindow extends JFrame {
           app.signedInUser.writeToFile(); //will be edited in data base?*/
 			}
 		});
-		button_5.setForeground(new Color(0, 0, 51));
-		button_5.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		button_5.setBounds(295, 180, 75, 34);
-		contentPane.add(button_5);
+		addressButton.setForeground(new Color(0, 0, 51));
+		addressButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
+		addressButton.setBounds(295, 180, 75, 34);
+		contentPane.add(addressButton);
 		
-		JButton button_6 = new JButton("edit");
-		button_6.addActionListener(new ActionListener() {
+		JButton genderButton = new JButton("edit");
+		genderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
       /* new window >> select new gender 
       		if(!app.signedInUser.setGender()){
@@ -230,13 +231,13 @@ public class OptionWindow extends JFrame {
           app.signedInUser.writeToFile(); //will be edited in data base?*/
 			}
 		});
-		button_6.setForeground(new Color(0, 0, 51));
-		button_6.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		button_6.setBounds(295, 228, 75, 34);
-		contentPane.add(button_6);
+		genderButton.setForeground(new Color(0, 0, 51));
+		genderButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
+		genderButton.setBounds(295, 228, 75, 34);
+		contentPane.add(genderButton);
 		
-		JButton button_7 = new JButton("edit");
-		button_7.addActionListener(new ActionListener() {
+		JButton birthDateButton = new JButton("edit");
+		birthDateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
       		/* new window >>get new date 
       		if(!app.signedInUser.setBirthDate(first,last)){
@@ -245,10 +246,10 @@ public class OptionWindow extends JFrame {
           app.signedInUser.writeToFile(); //will be edited in data base?*/
 			}
 		});
-		button_7.setForeground(new Color(0, 0, 51));
-		button_7.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		button_7.setBounds(295, 276, 75, 34);
-		contentPane.add(button_7);
+		birthDateButton.setForeground(new Color(0, 0, 51));
+		birthDateButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
+		birthDateButton.setBounds(295, 276, 75, 34);
+		contentPane.add(birthDateButton);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(173, 216, 230));
