@@ -310,7 +310,7 @@ public class Mail implements IMail, Cloneable{
 	
 	@Override
 	public boolean addAttachement(IAttachement attachement) {//done, remember attFolder class
-		if(this.attFolder == null) {
+		if(this.attFolder == null || !this.attFolder.exists()) {//not yet assigned or removed single attachement
 			attFolder = new File(containingFolder, "attachements");
 			attFolder.mkdir();
 		}

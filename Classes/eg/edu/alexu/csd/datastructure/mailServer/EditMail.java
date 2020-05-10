@@ -413,12 +413,12 @@ class AttList implements ListModel<Attachement>{
 	public void add(Attachement o) {
 		if(list.contains(o))
 			return;
-		try {
+		/*try {
 			o.copy(new File(mail.getDirectory()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		mail.addAttachement(o);//includes adding to list and its copy
 		if(listener != null)
 			listener.intervalAdded(new ListDataEvent(this,ListDataEvent.INTERVAL_ADDED,this.getSize()-1,this.getSize()-1));

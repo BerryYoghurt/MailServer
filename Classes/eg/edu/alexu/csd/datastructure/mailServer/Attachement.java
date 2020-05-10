@@ -17,6 +17,7 @@ public class Attachement implements IAttachement {
 	@Override
 	public boolean copy(File to) throws IOException{
 		Files.copy(att.toPath(), to.toPath().resolve(att.getName()), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+		att = new File(to,att.getName());
 		return false;//can attachement be a folder?
 	}
 

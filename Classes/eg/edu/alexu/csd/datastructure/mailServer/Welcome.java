@@ -59,7 +59,6 @@ public class Welcome extends JPanel{
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);*/
-		frame.setBounds(100, 100, 549, 359);
 		JButton signInButton = new JButton("Sign In");
 		signInButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -112,8 +111,6 @@ public class Welcome extends JPanel{
 		this.setBounds(205, 122, 120, 126);
 		
 		setEnabled(true);
-		//frame.pack();
-		frame.setVisible(true);
 	}
 	
 	@Override
