@@ -39,12 +39,12 @@ public class App implements IApp{
 
 	@Override
 	public boolean signup(IContact contact) {//contact should be filled in GUI part
-		//User u = db.loadUser(contact.getAddresses()[0]);
-		//if(u == null)
-		//{
-			return db.add((User)contact) == 1;
-		//}
-		//return false;
+		if(db.add((User)contact)== 1)
+		{
+			signedInUser = (User)contact;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -120,9 +120,10 @@ public class App implements IApp{
 		}
 		q = email.getReceivers();
 		while(!q.isEmpty()) {
-			
+			String m = (String)q.dequeue();
+			m = m.replaceAll("@([A-Za-z0-9_\\\\-\\\\.].*)", "");
 			//if reciever in this server
-			User u = db.loadUser((String)q.dequeue()); //load from database
+			User u = db.loadUser(m); //load from database
 			if(u.equals(signedInUser)) {
 				u = signedInUser;
 			}

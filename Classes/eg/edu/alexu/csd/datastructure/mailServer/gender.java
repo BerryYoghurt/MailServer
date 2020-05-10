@@ -43,7 +43,7 @@ public class gender extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public gender(App app) {
+	public gender(App app, JFrame mainFrame) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 323, 167);
 		contentPane = new JPanel();
@@ -73,6 +73,8 @@ public class gender extends JFrame {
 					app.signedInUser.setGender(false);
 				}
 				app.signedInUser.writeToFile();
+				mainFrame.setEnabled(true);
+				mainFrame.setVisible(true);
 				dispose();	
 			}
 		});
@@ -85,6 +87,8 @@ public class gender extends JFrame {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mainFrame.setEnabled(true);
+				mainFrame.setVisible(true);
 				dispose();
 			}
 		});
@@ -93,5 +97,7 @@ public class gender extends JFrame {
 		btnCancel.setBackground(Color.WHITE);
 		btnCancel.setBounds(170, 90, 115, 30);
 		contentPane.add(btnCancel);
+		
+		setVisible(true);
 	}
 }

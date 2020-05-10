@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,11 +22,13 @@ import eg.edu.alexu.csd.datastructure.queue.IQueue;
 
 
 @SuppressWarnings("serial")
-public class EditMail extends JPanel implements ActionListener, Closeable {
+public class EditMail extends JPanel implements ActionListener {
 	
 	private Pattern pattern = Pattern.compile("([A-Za-z0-9_\\\\-\\\\.]+)@([A-Za-z0-9_\\\\-\\\\.].*)");
 	final private Mail mail;
-	private JDialog frame;
+	private JFrame frame;
+	private JPanel self = this;
+	private JPanel previousPanel;
 	
 	private App a;
 	
@@ -36,7 +39,7 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 	
 	private JPanel textPanel, attPanel, receiverPanel, priorityPanel;
 	
-	private JLabel subjectLabel, dateLabel, priorityLabel;
+	private JLabel subjectLabel, dateLabel, priorityLabel, textLabel, attLabel, recLabel;
 	
 	private JTextField subject, date; 
 	
@@ -55,20 +58,23 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 	
 	private GroupLayout selfLayout, textLayout, attLayout, receiverLayout, priorityLayout;
 	
-	public EditMail(Mail mail, App a, JFrame f) {
+	private SwingWorker<Void,Void> saveTask, sendTask;
+	
+	public EditMail(Mail m, App a, JFrame f, JPanel previousPanel) {
 		super();
-		this.mail = mail.clone();//has to clone.. so that if exited without clicking save as draft, the changes will not be permanent
+		this.mail = m.clone();//has to clone.. so that if exited without clicking save as draft, the changes will not be permanent
 		this.a = a;
+		this.previousPanel = previousPanel;
 		
 		selfLayout = new GroupLayout(this);
-		frame = new JDialog(f);
+		frame = f;
+		
 
 
     	initialiseTextFields();
     	initialiseTextArea();
     	initialiseAttachements();
     	initialiseReceivers();
-    	initialiseFrame();
     	
     	
     	subjectLabel = new JLabel("Subject: ");
@@ -95,17 +101,22 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
     			.addGroup(selfLayout.createParallelGroup()
     					.addComponent(dateLabel)
     					.addComponent(date))
+    			.addComponent(priorityPanel)
     			.addGroup(selfLayout.createParallelGroup()
     					.addComponent(receiverPanel)
     					.addComponent(textPanel)
     					.addComponent(attPanel)));
     	this.setLayout(selfLayout);
+    	
+    	frame.setVisible(true);
 	}
 	
 	private void initialiseReceivers() {
 		receiverPanel = new JPanel();
 		
-		recChooser = new JTextField("Reciever Email: ");
+		recLabel = new JLabel("Reciever Email: ");
+		
+		recChooser = new JTextField();
 		recChooser.setEditable(true);
 		
 		addReceiver = new JButton("Add new reciever");
@@ -125,14 +136,18 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 		receiverLayout = new GroupLayout(receiverPanel);
 		receiverLayout.setHorizontalGroup(
 				receiverLayout.createParallelGroup()
-				.addComponent(recChooser)
+				.addGroup(receiverLayout.createSequentialGroup()
+						.addComponent(recLabel)
+						.addComponent(recChooser))
 				.addComponent(receiverPane)
 				.addGroup(receiverLayout.createSequentialGroup()
 						.addComponent(addReceiver)
 						.addComponent(removeReceiver)));
 		receiverLayout.setVerticalGroup(
 				receiverLayout.createSequentialGroup()
-				.addComponent(recChooser)
+				.addGroup(receiverLayout.createParallelGroup()
+						.addComponent(recLabel)
+						.addComponent(recChooser))
 				.addComponent(receiverPane)
 				.addGroup(receiverLayout.createParallelGroup()
 						.addComponent(addReceiver)
@@ -142,6 +157,7 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 
 	private void initialiseAttachements() {
 		attPanel = new JPanel();
+		attLabel = new JLabel("Attachements:");
 		
 		chooser = new JFileChooser();
 		
@@ -162,6 +178,7 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
     	attLayout = new GroupLayout(attPanel);
     	attLayout.setHorizontalGroup(
     			attLayout.createParallelGroup()
+    			.addComponent(attLabel)
     			.addComponent(attPane)
     			.addGroup(attLayout.createSequentialGroup()
     					.addComponent(addAttachement)
@@ -169,6 +186,7 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
     			);
     	attLayout.setVerticalGroup(
     			attLayout.createSequentialGroup()
+    			.addComponent(attLabel)
     			.addComponent(attPane)
     			.addGroup(attLayout.createParallelGroup()
     					.addComponent(addAttachement)
@@ -234,6 +252,8 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 	
 	private void initialiseTextArea() {
 		textPanel = new JPanel();
+		textPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+		
 		
 		send = new JButton("Send");
     	send.addActionListener(this);
@@ -275,39 +295,73 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
     					.addComponent(save)));
     	textPanel.setLayout(textLayout);
 	}
-	
-	private void initialiseFrame() {
-		frame.add(this);
-		frame.setResizable(true);
-		frame.addWindowListener(new java.awt.event.WindowAdapter() {
-    	    @Override
-    	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-    	        try {
-					area.write(new PrintWriter(mail.getBody()));
-					mail.updateDate();
-					mail.saveMail();
-					frame.setVisible(false);
-					//closed = true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	    }
-    	});
-		
-		frame.pack();
-    	frame.setVisible(true);
-	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if(source == send) {
-			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-			a.compose(mail);
+			sendTask = new SwingWorker<Void,Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					 try {
+							area.write(new PrintWriter(mail.getBody()));
+							mail.setSubject(subject.getText());
+							mail.updateDate();
+							mail.saveMail();
+							a.compose(mail);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					return null;
+				}
+				
+				@Override
+				public void done() {
+					frame.remove(self);
+					
+					previousPanel.setEnabled(true);
+					previousPanel.setVisible(true);
+				}
+			};
+			
+			
+			sendTask.execute();
+			
+			if(sendTask.isDone())
+				sendTask = null; //for garbage collection
 		}
 		else if(source == save) {
-			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+			saveTask = new SwingWorker<Void,Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					 try {
+							area.write(new PrintWriter(mail.getBody()));
+							mail.setSubject(subject.getText());
+							mail.updateDate();
+							mail.saveMail();
+							//closed = true;
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					return null;
+				}
+				
+				@Override
+				public void done() {
+					frame.remove(self);
+					previousPanel.setEnabled(true);
+					previousPanel.setVisible(true);
+				}
+			};
+			
+			saveTask.execute();
+			if(saveTask.isDone())
+				saveTask = null; //for garbage collection
 		}
 		else if(source == addAttachement) {
 			int returnVal = chooser.showOpenDialog(frame);
@@ -329,7 +383,6 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 				recListModel.add(email);
 				receiverList.setSelectedIndex(recListModel.getSize()==0?0:recListModel.getSize()-1);
 			}
-			recChooser.setText("Receiver Email: ");
 		}
 		else if(source == removeReceiver) {
 			int index = receiverList.getSelectedIndex();
@@ -342,10 +395,6 @@ public class EditMail extends JPanel implements ActionListener, Closeable {
 		}
 	}
 
-	@Override
-	public void close() throws IOException {
-		frame.dispose();
-	}
 
 }
 
@@ -357,12 +406,19 @@ class AttList implements ListModel<Attachement>{
 	private Mail mail;
 	
 	AttList(Mail mail){
+		this.mail = mail;
 		this.list = (SLinkedList)mail.getAttachements();
 	}
 	
 	public void add(Attachement o) {
 		if(list.contains(o))
 			return;
+		try {
+			o.copy(new File(mail.getDirectory()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		mail.addAttachement(o);//includes adding to list and its copy
 		if(listener != null)
 			listener.intervalAdded(new ListDataEvent(this,ListDataEvent.INTERVAL_ADDED,this.getSize()-1,this.getSize()-1));

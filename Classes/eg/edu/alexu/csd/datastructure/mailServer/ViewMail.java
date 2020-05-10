@@ -24,7 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
 @SuppressWarnings("serial")
-public class ViewMail extends JPanel implements ActionListener, Closeable{
+public class ViewMail extends JPanel implements ActionListener{
 	
 	final private Mail mail;
 	private JDialog frame;
@@ -37,7 +37,7 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
 	
 	private AttList attListModel;
 	private JList<Attachement> attList;
-	private JButton viewAtt;
+	private JButton viewAtt, back;
 	
 	private JList<String> recList;
 	private ReceiverList recListModel;
@@ -52,20 +52,21 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
 		this.mail = m;
 		
 		selfLayout = new GroupLayout(this);
-		frame = new JDialog(f);
-
 
     	initialiseTextFields();
     	initialiseTextArea();
     	initialiseAttachements();
     	initialiseReceivers();
-    	initialiseFrame();
     	
     	
     	subjectLabel = new JLabel("Subject: ");
     	dateLabel = new JLabel("Date Modified: ");
     	priorityLabel = new JLabel("Priority: ");
     	fromLabel = new JLabel("From: ");
+    	
+    	back = new JButton("Back");
+    	back.addActionListener(this);
+    	back.setBounds(frame.getWidth()-50, frame.getHeight()-50, 50, 50);
     	
     	selfLayout.setHorizontalGroup(
     			selfLayout.createParallelGroup()
@@ -84,7 +85,8 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
     			.addGroup(selfLayout.createSequentialGroup()
     					.addComponent(recPanel)
     					.addComponent(textPanel)
-    					.addComponent(attPanel)));
+    					.addComponent(attPanel))
+    			.addComponent(back));
     	selfLayout.setVerticalGroup(
     			selfLayout.createSequentialGroup()
     			.addGroup(selfLayout.createParallelGroup()
@@ -102,17 +104,10 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
     			.addGroup(selfLayout.createParallelGroup()
     					.addComponent(recPanel)
     					.addComponent(textPanel)
-    					.addComponent(attPanel)));
+    					.addComponent(attPanel))
+    			.addComponent(back));
     	this.setLayout(selfLayout);
-	}
-	
-	
-	private void initialiseFrame() {
-		frame.add(this);
-		frame.setResizable(true);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		
-		frame.pack();
+    	
     	frame.setVisible(true);
 	}
 
@@ -220,12 +215,6 @@ public class ViewMail extends JPanel implements ActionListener, Closeable{
     	
     	priority = new JTextField(mail.getPriority().toString());
     	priority.setEditable(false);
-	}
-
-
-	@Override
-	public void close() throws IOException {
-		frame.dispose();
 	}
 
 	@Override

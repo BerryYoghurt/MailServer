@@ -14,16 +14,21 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 
-public class OptionWindow extends JFrame {
+public class OptionWindow extends JPanel {
 
-	private JPanel contentPane;
 	private App app;
-
+	private JPanel previousPanel;
+	private JPanel self = this;
+	private JFrame frame;
 	/**
 	 * Launch the application.
 	 */
@@ -43,91 +48,139 @@ public class OptionWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public OptionWindow(App app) {
+	public OptionWindow(App app,JFrame frame, JPanel previousPanel) {
+		this.frame = frame;
+		
+		SwingWorker<Mail, Void> mailViewer = new SwingWorker<Mail,Void>(){
+
+			@Override
+			protected Mail doInBackground() throws Exception {
+				//Mail m = Mail.loadMail(thisMailFolder, numberOfReceivers)
+				return null;
+			}
+			
+			@Override
+			public void done() {
+				try {
+					setEnabled(false);
+					setVisible(false);
+					frame.add(new ViewMail(get(), app,frame));
+				}catch(InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+			
+		};
+		
+		
 		this.app = app;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.previousPanel = previousPanel;
+		
+		frame.setTitle("Options");
 		setBounds(100, 100, 798, 579);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
 		
 		JLabel nameLabel = new JLabel(app.signedInUser.getName());
 		nameLabel.setForeground(new Color(0, 0, 51));
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		nameLabel.setBounds(23, 131, 226, 37);
-		contentPane.add(nameLabel);
+		add(nameLabel);
 		
 		JLabel addressLabel = new JLabel(app.signedInUser.getAddresses()[0]);
 		addressLabel.setForeground(new Color(0, 0, 51));
 		addressLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		addressLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		addressLabel.setBounds(23, 178, 226, 37);
-		contentPane.add(addressLabel);
+		add(addressLabel);
 		
 		JLabel genderLabel = new JLabel(app.signedInUser.getGender());
 		genderLabel.setForeground(new Color(0, 0, 51));
 		genderLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		genderLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		genderLabel.setBounds(23, 223, 226, 37);
-		contentPane.add(genderLabel);
+		add(genderLabel);
 		
 		JLabel birthDateLabel = new JLabel(app.signedInUser.getBirthDate());
 		birthDateLabel.setForeground(new Color(0, 0, 51));
 		birthDateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		birthDateLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		birthDateLabel.setBounds(23, 277, 226, 37);
-		contentPane.add(birthDateLabel);
+		add(birthDateLabel);
 		
 		JButton LogOutButton = new JButton("log out");
 		LogOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      	dispose();
-				Welcome newWindow = new Welcome();
-				newWindow.app = null;
-				newWindow.frame.setVisible(true);
+				setEnabled(false);
+				setVisible(false);
+				
+				previousPanel.setEnabled(true);
+				previousPanel.setVisible(true);
 			}
 		});
 		LogOutButton.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		LogOutButton.setBounds(23, 497, 121, 35);
-		contentPane.add(LogOutButton);
+		add(LogOutButton);
 		
 		JButton editPasswordButton = new JButton("edit password");
 		editPasswordButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		/* new window >> write new password 
-           String >> take text 
-      		if(!app.signedInUser.setPassword()){
-          		JOptionPane.showMessageDialog(null, "Invalid password");
-          }
-          app.signedInUser.writeToFile(); //will be edited in data base?*/
+				setEnabled(false);
+				setVisible(false);
+				
+	      		frame.add(new passwordEdit(app,frame,self));
 			}
 		});
 		editPasswordButton.setForeground(new Color(0, 0, 51));
 		editPasswordButton.setBackground(Color.WHITE);
 		editPasswordButton.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		editPasswordButton.setBounds(58, 338, 312, 35);
-		contentPane.add(editPasswordButton);
+		add(editPasswordButton);
 		
 		JLabel profileLabel = new JLabel("profile");
 		profileLabel.setForeground(new Color(0, 0, 51));
 		profileLabel.setFont(new Font("Century Gothic", Font.BOLD, 55));
 		profileLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		profileLabel.setBounds(108, 10, 246, 84);
-		contentPane.add(profileLabel);
+		add(profileLabel);
 		
 		JButton compose = new JButton("Compose +");
 		compose.setBackground(new Color(224, 224, 224));
 		compose.setForeground(new Color(219, 112, 147));
 		compose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				
+				SwingWorker<Mail, Void> mailMaker = new SwingWorker<Mail,Void>(){
+
+					@Override
+					protected Mail doInBackground() throws Exception {
+						Mail m = new Mail(app.signedInUser);
+						m.saveMail();
+						return m;
+					}
+					
+					@Override
+					public void done() {
+						try {
+							setEnabled(false);
+							setVisible(false);
+							
+							frame.add(new EditMail(get(), app,frame, self));
+						}catch(InterruptedException | ExecutionException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+					
+				};
+				mailMaker.execute();
 			}
 		});
 		compose.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		compose.setBounds(587, 10, 187, 56);
-		contentPane.add(compose);
+		add(compose);
 		
 		JButton inbox = new JButton("Inbox");
 		inbox.addActionListener(new ActionListener() {
@@ -139,7 +192,7 @@ public class OptionWindow extends JFrame {
 		inbox.setForeground(new Color(199, 21, 133));
 		inbox.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		inbox.setBounds(587, 98, 187, 56);
-		contentPane.add(inbox);
+		add(inbox);
 		
 		JButton sent = new JButton("Sent");
 		sent.addActionListener(new ActionListener() {
@@ -151,7 +204,7 @@ public class OptionWindow extends JFrame {
 		sent.setForeground(new Color(199, 21, 133));
 		sent.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		sent.setBounds(587, 189, 187, 56);
-		contentPane.add(sent);
+		add(sent);
 		
 		JButton draft = new JButton("Draft");
 		draft.addActionListener(new ActionListener() {
@@ -163,7 +216,7 @@ public class OptionWindow extends JFrame {
 		draft.setForeground(new Color(199, 21, 133));
 		draft.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		draft.setBounds(587, 287, 187, 56);
-		contentPane.add(draft);
+		add(draft);
 		
 		JButton trash = new JButton("Trash");
 		trash.addActionListener(new ActionListener() {
@@ -175,7 +228,7 @@ public class OptionWindow extends JFrame {
 		trash.setForeground(new Color(199, 21, 133));
 		trash.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		trash.setBounds(587, 380, 187, 56);
-		contentPane.add(trash);
+		add(trash);
 		
 		JButton contacts = new JButton("Contacts");
 		contacts.addActionListener(new ActionListener() {
@@ -187,11 +240,14 @@ public class OptionWindow extends JFrame {
 		contacts.setForeground(new Color(199, 21, 133));
 		contacts.setFont(new Font("Century Gothic", Font.BOLD, 25));
 		contacts.setBounds(587, 476, 187, 56);
-		contentPane.add(contacts);
+		add(contacts);
 		
 		JButton nameEdit = new JButton("edit");
 		nameEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				nameEdit editWindow = new nameEdit(app, frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
       		/* new window >> write new name
           String >> take text 
       		if(!app.signedInUser.setName(first,last)){
@@ -203,7 +259,7 @@ public class OptionWindow extends JFrame {
 		nameEdit.setForeground(new Color(0, 0, 51));
 		nameEdit.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		nameEdit.setBounds(295, 132, 75, 34);
-		contentPane.add(nameEdit);
+		add(nameEdit);
 		
 		JButton addressButton = new JButton("edit");
 		addressButton.addActionListener(new ActionListener() {
@@ -219,7 +275,7 @@ public class OptionWindow extends JFrame {
 		addressButton.setForeground(new Color(0, 0, 51));
 		addressButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		addressButton.setBounds(295, 180, 75, 34);
-		contentPane.add(addressButton);
+		add(addressButton);
 		
 		JButton genderButton = new JButton("edit");
 		genderButton.addActionListener(new ActionListener() {
@@ -234,7 +290,7 @@ public class OptionWindow extends JFrame {
 		genderButton.setForeground(new Color(0, 0, 51));
 		genderButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		genderButton.setBounds(295, 228, 75, 34);
-		contentPane.add(genderButton);
+		add(genderButton);
 		
 		JButton birthDateButton = new JButton("edit");
 		birthDateButton.addActionListener(new ActionListener() {
@@ -249,16 +305,45 @@ public class OptionWindow extends JFrame {
 		birthDateButton.setForeground(new Color(0, 0, 51));
 		birthDateButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		birthDateButton.setBounds(295, 276, 75, 34);
-		contentPane.add(birthDateButton);
+		add(birthDateButton);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(173, 216, 230));
 		panel.setBounds(10, 10, 451, 418);
-		contentPane.add(panel);
+		add(panel);
+		
+		setEnabled(true);
+		setVisible(true);
 	}
 	
 	public void setApp(App app) {
 		this.app = app;
+	}
+	
+	@Override
+	public void setEnabled(boolean e) {
+		super.setEnabled(e);
+		for(Component c : this.getComponents()) {
+			if(c instanceof Container) {
+				recSetEnabled((Container)c, e);
+			}else
+				c.setEnabled(e);
+		}
+		if(e) {
+			frame.setBounds(100, 100, 798, 579);
+			frame.setVisible(true);
+		}
+	}
+	
+	private void recSetEnabled(Container c, boolean e) {
+		for(Component comp : c.getComponents()) {
+			if(comp instanceof Container) {
+				recSetEnabled((Container)comp,e);
+			}
+			else
+				comp.setEnabled(e);
+		}
+		c.setEnabled(e);
 	}
 
 }

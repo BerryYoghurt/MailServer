@@ -96,7 +96,7 @@ public class Index implements IIndex {
         // we need key sort >> take a copy ??
         KeySort k = new KeySort();
         k.applySort(this.list);
-        int ind = (int)find(item);
+        int ind = (int)find(m);
         if(ind != -1) {
 			list.remove(ind);
 			list.add(ind, item);

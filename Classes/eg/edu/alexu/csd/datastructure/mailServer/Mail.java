@@ -358,7 +358,7 @@ public class Mail implements IMail, Cloneable{
 	/**
 	 * updates the date to the instance at which it was called*/
 	public void updateDate() {
-		if(containingFolder.getParent().equals("draft")) {//in draft
+		if(containingFolder.getParentFile().getName().equals("draft")) {//in draft
 			this.date = new Date();
 		}
 		else {
@@ -390,6 +390,7 @@ public class Mail implements IMail, Cloneable{
 	@Override
 	public Mail clone() {
 		Mail m = Mail.loadMail(this.containingFolder, this.receivers.size());
+		m.composer = this.composer;
 		return m;
 	}
 	

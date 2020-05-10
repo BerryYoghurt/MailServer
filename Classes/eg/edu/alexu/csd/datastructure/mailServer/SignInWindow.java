@@ -14,21 +14,27 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 
-public class SignInWindow extends JFrame {
+public class SignInWindow extends JPanel {
 
-	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
 	private App app;
-
+	private JPanel self = this;
+	private JPanel previousPanel;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -48,42 +54,73 @@ public class SignInWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public SignInWindow(App app) {
+	public SignInWindow(App app,JFrame frame, JPanel previousPanel) {
+		frame.setBounds(100, 100, 549, 359);
+
+		SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean,Void>(){
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				boolean check = app.signin(textField.getText(), passwordField.getText());
+				return check;
+			}
+			@Override
+			public void done() {
+				boolean check;
+				try {
+					check = get();
+					if (check) {
+						setEnabled(false);
+						setVisible(false);
+						frame.add(new OptionWindow(app,frame,previousPanel));//the panel which should be returned to;
+					} else {
+						JOptionPane.showMessageDialog(null, "Wronge UserName OR Password.");
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		
 		this.app = app;
-		setTitle("Sign in");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.previousPanel = previousPanel;
+		
+		frame.setTitle("Sign in");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 506, 353);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		frame.add(this);
+		setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("User address");
 		lblNewLabel.setForeground(new Color(30, 144, 255));
 		lblNewLabel.setFont(new Font("Century Gothic", Font.PLAIN, 17));
 		lblNewLabel.setBounds(36, 57, 115, 29);
-		contentPane.add(lblNewLabel);
+		add(lblNewLabel);
 
 		JLabel lblPassword = new JLabel("password");
 		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPassword.setForeground(new Color(30, 144, 255));
 		lblPassword.setFont(new Font("Century Gothic", Font.PLAIN, 17));
 		lblPassword.setBounds(46, 113, 105, 29);
-		contentPane.add(lblPassword);
+		add(lblPassword);
 
 		JLabel lblNewLabel_1 = new JLabel("@system.com");
 		lblNewLabel_1.setFont(new Font("Century Gothic", Font.ITALIC, 15));
 		lblNewLabel_1.setBounds(350, 58, 105, 29);
-		contentPane.add(lblNewLabel_1);
+		add(lblNewLabel_1);
 
 		textField = new JTextField();
 		textField.setBounds(161, 61, 186, 27);
-		contentPane.add(textField);
+		add(textField);
 		textField.setColumns(10);
 
 		passwordField = new JPasswordField();
 		passwordField.setBounds(161, 117, 186, 27);
-		contentPane.add(passwordField);
+		add(passwordField);
 
 		JButton button = new JButton("reset");
 		button.addActionListener(new ActionListener() {
@@ -96,50 +133,65 @@ public class SignInWindow extends JFrame {
 		button.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		button.setBackground(new Color(216, 191, 216));
 		button.setBounds(192, 178, 99, 29);
-		contentPane.add(button);
+		add(button);
 
 		JButton btnSignIn = new JButton("sign in");
 		btnSignIn.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
-				boolean check = app.signin(textField.getText(), passwordField.getText());
-				if (check) {
-					dispose();
-					OptionWindow o = new OptionWindow(app);
-					//o.setApp(app);
-					o.setVisible(true);
-				} else {
-					JOptionPane.showMessageDialog(null, "Wronge UserName OR Password.");
-				}
+				worker.execute();
 			}
 		});
 		btnSignIn.setForeground(new Color(255, 20, 147));
 		btnSignIn.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		btnSignIn.setBackground(new Color(216, 191, 216));
 		btnSignIn.setBounds(192, 217, 99, 29);
-		contentPane.add(btnSignIn);
+		add(btnSignIn);
 
 		JButton btnBack = new JButton("back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					App.db.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				dispose();
-				Welcome newWindow = new Welcome();
-				newWindow.app = null;
-				newWindow.frame.setVisible(true);
+				setEnabled(false);
+				setVisible(false);
+				
+				previousPanel.setEnabled(true);
+				previousPanel.setVisible(true);
+				
+				frame.setVisible(true);
 			}
 		});
 		btnBack.setForeground(new Color(255, 20, 147));
 		btnBack.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		btnBack.setBackground(new Color(216, 191, 216));
 		btnBack.setBounds(192, 256, 99, 29);
-		contentPane.add(btnBack);
+		add(btnBack);
+		
+		frame.setVisible(true);
 	}
 
 	public void setApp(App app) {
 		this.app = app;
+	}
+	
+	@Override
+	public void setEnabled(boolean e) {
+		super.setEnabled(e);
+		for(Component c : this.getComponents()) {
+			if(c instanceof Container) {
+				recSetEnabled((Container)c, e);
+			}else
+				c.setEnabled(e);
+		}
+	}
+	
+	private void recSetEnabled(Container c, boolean e) {
+		for(Component comp : c.getComponents()) {
+			if(comp instanceof Container) {
+				recSetEnabled((Container)comp,e);
+			}
+			else
+				comp.setEnabled(e);
+		}
+		c.setEnabled(e);
 	}
 }

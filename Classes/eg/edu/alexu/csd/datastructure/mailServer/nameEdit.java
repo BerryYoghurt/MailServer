@@ -45,7 +45,8 @@ public class nameEdit extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public nameEdit(App app) {
+	public nameEdit(App app, JFrame mainFrame) {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 369, 236);
 		contentPane = new JPanel();
@@ -79,8 +80,10 @@ public class nameEdit extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(app.signedInUser.setName(textField.getText(), textField_1.getText())) {
-			   app.signedInUser.writeToFile();
-			   dispose();
+					app.signedInUser.writeToFile();
+					dispose();
+					mainFrame.setEnabled(true);
+					mainFrame.setVisible(true);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Invalid Name");	
@@ -98,12 +101,16 @@ public class nameEdit extends JFrame {
 		btnCancel.setForeground(new Color(0, 206, 209));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mainFrame.setEnabled(true);
+				mainFrame.setVisible(true);
 				dispose();
 			}
 		});
 		btnCancel.setFont(new Font("Century Gothic", Font.PLAIN, 20));
 		btnCancel.setBounds(182, 147, 113, 29);
 		contentPane.add(btnCancel);
+		
+		setVisible(true);
 	}
 
 }
