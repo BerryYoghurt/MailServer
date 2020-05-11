@@ -320,10 +320,13 @@ public class EditMail extends JPanel implements ActionListener {
 				
 				@Override
 				public void done() {
-					frame.remove(self);
-					
-					previousPanel.setEnabled(true);
-					previousPanel.setVisible(true);
+					if(previousPanel instanceof ViewMail) {
+						frame.dispose();
+					}else {
+						frame.remove(self);
+						previousPanel.setEnabled(true);
+						previousPanel.setVisible(true);
+					}
 				}
 			};
 			
@@ -353,9 +356,13 @@ public class EditMail extends JPanel implements ActionListener {
 				
 				@Override
 				public void done() {
-					frame.remove(self);
-					previousPanel.setEnabled(true);
-					previousPanel.setVisible(true);
+					if(previousPanel instanceof ViewMail) {
+						frame.dispose();
+					}else {
+						frame.remove(self);
+						previousPanel.setEnabled(true);
+						previousPanel.setVisible(true);
+					}
 				}
 			};
 			

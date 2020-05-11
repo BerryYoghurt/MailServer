@@ -180,9 +180,16 @@ public class MailBox extends JFrame {
 				Object[] temp = list.getSelectedValues();
 				//JFrame[] frameArr;
 				for(Object o : temp) {
-					Mail m = (Mail)o;
-					JFrame view = new JFrame();
-					view.add(new ViewMail(m,app,view));
+					Mail mail = (Mail)o;
+					JFrame viewFrame = new JFrame();
+					JPanel viewPanel = new ViewMail(mail,app,viewFrame);
+					viewFrame.add(viewPanel);
+					if(m.getKind() == MailFolder.Kind.DRAFT) {
+						viewPanel.setEnabled(false);
+						viewPanel.setVisible(false);
+						
+						viewFrame.add(new EditMail(mail, app,viewFrame, viewPanel));
+					}
 				}
 				
 			}

@@ -218,6 +218,7 @@ public class Mail implements IMail, Cloneable{
 		if(m.attachements == null) {
 			m.attachements = new SLinkedList();
 		}
+		m.composer = App.db.loadUser(m.composerAddress);
 		//if(trash)
 		//	m.containingFolder.setLastModified(lastModified);//ensure last modified is not changed for the sake of deletion
 		return m;
