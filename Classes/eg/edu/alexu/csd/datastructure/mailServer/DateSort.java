@@ -17,7 +17,7 @@ public class DateSort implements ISort{
 
 		int low = 0;
 		int high = list.size() - 1;
-		String pivot = (String) list.get((low + high) / 2);
+		String pivot = (String)((MailInfo)list.get((low + high) / 2)).date;
 		Stack s = new Stack();
 		s.push(low);
 		s.push(pivot);
@@ -59,12 +59,12 @@ public class DateSort implements ISort{
 			// low >> j , i >> high
 			if (low < j) {
 				s.push(low);
-				s.push(list.get((low + j) / 2));
+				s.push(((MailInfo)list.get((low + j) / 2)).date);
 				s.push(j);
 			}
 			if (high > i) {
 				s.push(i);
-				s.push(list.get((i + high) / 2));
+				s.push(((MailInfo)list.get((i + high) / 2)).date);
 				s.push(high);
 			}
 		}

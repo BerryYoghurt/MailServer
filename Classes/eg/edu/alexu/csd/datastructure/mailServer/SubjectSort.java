@@ -1,22 +1,20 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-import java.util.Stack;
-
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
+import eg.edu.alexu.csd.datastructure.stack.Stack;
 
 
 public class SubjectSort implements ISort{
 
 	@Override
-	public void applySort(DLinkedList list) {
-	 	
+	public void applySort(DLinkedList list) {    //LinkedList of MailInfo
 		if (list == null || list.size() == 0)
 			return;
 
 		int low = 0;
 		int high = list.size() - 1;
-		String pivot = (String) list.get((low + high) / 2);
-		Stack<Object> s = new Stack<Object>();
+		String pivot = (String) ((MailInfo)list.get((low + high) / 2)).subject;
+		Stack s = new Stack();
 		s.push(low);
 		s.push(pivot);
 		s.push(high);
@@ -47,12 +45,12 @@ public class SubjectSort implements ISort{
 			// low >> j , i >> high
 			if (low < j) {
 				s.push(low);
-				s.push(list.get((low + j) / 2));
+				s.push(((MailInfo)list.get((low + j) / 2)).subject);
 				s.push(j);
 			}
 			if (high > i) {
 				s.push(i);
-				s.push(list.get((i + high) / 2));
+				s.push(((MailInfo)list.get((i + high) / 2)).subject);
 				s.push(high);
 			}
 		}
