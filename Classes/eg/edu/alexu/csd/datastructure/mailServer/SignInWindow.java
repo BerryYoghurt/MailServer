@@ -57,33 +57,7 @@ public class SignInWindow extends JPanel {
 	public SignInWindow(App app,JFrame frame, JPanel previousPanel) {
 		frame.setBounds(100, 100, 549, 359);
 
-		SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean,Void>(){
-			@Override
-			protected Boolean doInBackground() throws Exception {
-				boolean check = app.signin(textField.getText(), passwordField.getText());
-				return check;
-			}
-			@Override
-			public void done() {
-				boolean check;
-				try {
-					check = get();
-					if (check) {
-						setEnabled(false);
-						setVisible(false);
-						frame.add(new OptionWindow(app,frame,previousPanel));//the panel which should be returned to;
-					} else {
-						JOptionPane.showMessageDialog(null, "Wronge UserName OR Password.");
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
+		
 		
 		this.app = app;
 		this.previousPanel = previousPanel;
@@ -139,6 +113,33 @@ public class SignInWindow extends JPanel {
 		btnSignIn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
+				SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean,Void>(){
+					@Override
+					protected Boolean doInBackground() throws Exception {
+						boolean check = app.signin(textField.getText(), passwordField.getText());
+						return check;
+					}
+					@Override
+					public void done() {
+						boolean check;
+						try {
+							check = get();
+							if (check) {
+								setEnabled(false);
+								setVisible(false);
+								frame.add(new OptionWindow(app,frame,previousPanel));//the panel which should be returned to;
+							} else {
+								JOptionPane.showMessageDialog(null, "Wronge UserName OR Password.");
+							}
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				};
 				worker.execute();
 			}
 		});

@@ -27,7 +27,7 @@ import javax.swing.WindowConstants;
 public class ViewMail extends JPanel implements ActionListener{
 	
 	final private Mail mail;
-	private JDialog frame;
+	private JFrame frame;
 	
 	private GroupLayout selfLayout, textLayout, attLayout, recLayout;
 	
@@ -50,6 +50,7 @@ public class ViewMail extends JPanel implements ActionListener{
 	public ViewMail(Mail m, App a, JFrame f) {
 		super();
 		this.mail = m;
+		this.frame = f;
 		
 		selfLayout = new GroupLayout(this);
 
@@ -66,7 +67,7 @@ public class ViewMail extends JPanel implements ActionListener{
     	
     	back = new JButton("Back");
     	back.addActionListener(this);
-    	back.setBounds(frame.getWidth()-50, frame.getHeight()-50, 50, 50);
+    	//back.setBounds(frame.getWidth()-50, frame.getHeight()-50, 50, 50);
     	
     	selfLayout.setHorizontalGroup(
     			selfLayout.createParallelGroup()
@@ -108,6 +109,7 @@ public class ViewMail extends JPanel implements ActionListener{
     			.addComponent(back));
     	this.setLayout(selfLayout);
     	
+    	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     	frame.setVisible(true);
 	}
 
@@ -210,7 +212,7 @@ public class ViewMail extends JPanel implements ActionListener{
     	date.setName("date");//here, modified.. in view, only edit
     	date.setEditable(false);
     	
-    	from = new JTextField(mail.getSenderName()+"<"+mail.getSenderAddress()+">");
+    	from = new JTextField(mail.getSenderName()+"<"+mail.getSenderAddress()+"@system.com>");
     	from.setEditable(false);
     	
     	priority = new JTextField(mail.getPriority().toString());

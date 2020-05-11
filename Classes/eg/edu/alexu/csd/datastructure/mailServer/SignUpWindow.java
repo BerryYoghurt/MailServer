@@ -280,10 +280,11 @@ public class SignUpWindow extends JPanel {
 					}
 					return;
 				}/* else */
+				user.setGender(gender);
 				if (!passwordField.getText().equals(passwordField_1.getText())) { 		//passwords >> check match
 					JOptionPane.showMessageDialog(null, "passwords do not match");
-					System.out.println(passwordField.getPassword().toString());
-					System.out.println(passwordField_1.getPassword().toString());
+					System.out.println(passwordField.getText());
+					System.out.println(passwordField_1.getText());
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {

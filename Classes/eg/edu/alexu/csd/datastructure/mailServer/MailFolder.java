@@ -36,7 +36,17 @@ public class MailFolder implements IFolder {
 		}
 		this.path = folder;
 		index = new Index(folder,isNew); // fpath >>> folder path
-
+		
+		if(!isNew) {
+			if(name == Kind.TRASH) {
+				try {
+					clearInTrash((DLinkedList)index.readIndex());
+				} catch (ParseException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public MailFolder(File pathToLoadFrom) {
@@ -62,7 +72,7 @@ public class MailFolder implements IFolder {
 		}
 		if (item instanceof IMail) {
 			Mail m = (Mail) item;
-			File thisMail = new File(this.path, m.toString());
+			File thisMail = new File(this.path, m.getIdentifier());
 			thisMail.mkdir();
 			index.add(item);
 			index.writeToIndex();

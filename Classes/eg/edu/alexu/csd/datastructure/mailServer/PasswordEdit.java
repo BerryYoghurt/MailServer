@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class passwordEdit extends JPanel {
+public class PasswordEdit extends JPanel {
 
 	private final JLabel CurrentPassword = new JLabel("Current PassWord");
 	private JPasswordField passwordField;
@@ -51,7 +51,7 @@ public class passwordEdit extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public passwordEdit(App app, JFrame frame, JPanel previousPanel) {
+	public PasswordEdit(App app, JFrame frame, JPanel previousPanel) {
 		
 		SwingWorker<Void, Void> userEditor = new SwingWorker<Void,Void>(){
 

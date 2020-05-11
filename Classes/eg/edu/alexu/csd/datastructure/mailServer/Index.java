@@ -18,6 +18,7 @@ public class Index implements IIndex {
     //constructor
     public Index(File path, boolean isNew){
     	//create index file itself and keep its path
+    	list = new DLinkedList();
     	File index = new File(path, "index.txt");
     	try {
     		if(isNew){
@@ -31,8 +32,6 @@ public class Index implements IIndex {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	this.path  = index;
-        readIndex();
     }
     
     
@@ -91,7 +90,7 @@ public class Index implements IIndex {
         item.sender = m.getSenderAddress(); //we need a function in IContact to get the sender email address as a string
         item.receivers = m.getReceivers().size();
         item.subject = m.getSubject();
-        item.directory = m.toString();
+        item.directory = m.getIdentifier();
         item.priority = m.getPriority().toString();
         // we need key sort >> take a copy ??
         KeySort k = new KeySort();
@@ -100,8 +99,8 @@ public class Index implements IIndex {
         if(ind != -1) {
 			list.remove(ind);
 			list.add(ind, item);
-		}
-        list.add(item);
+		}else
+			list.add(item);
 	}
 
 	@Override
@@ -114,10 +113,11 @@ public class Index implements IIndex {
         item.sender = ((IMail) o).getSenderAddress();
         item.receivers = ((IMail) o).getReceivers().size();
         item.subject = ((IMail) o).getSubject();
-        item.directory = ((IMail) o).toString();
+        item.directory = ((IMail) o).getIdentifier();
         item.priority = ((IMail) o).getPriority().toString();
         Integer foundIndex = (Integer)find(o);
         list.remove(foundIndex);
+        //writeToIndex();
 		return foundIndex;
 	}
 
@@ -139,10 +139,10 @@ public class Index implements IIndex {
 			
 			middle = (high + low)/2;
 			MailInfo i =(MailInfo)list.get(middle);
-			if(i.directory.equals(((Mail)o).toString())) {
+			if(i.directory.equals(((Mail)o).getIdentifier())) {
 				stack.push(middle);
 				found = true;
-			}else if(i.directory.compareTo(((Mail)o).toString()) > 0) { //sorted by ??
+			}else if(i.directory.compareTo(((Mail)o).getIdentifier()) > 0) { //sorted by ??
 				stack.push(low);
 				stack.push(middle-1);
 			}else {

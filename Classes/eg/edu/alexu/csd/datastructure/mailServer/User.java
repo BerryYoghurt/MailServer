@@ -27,7 +27,7 @@ public class User implements IContact { // needs a filter folder
 	private ContactFolder contacts;
 
 	public User(String address, boolean isNew) {
-		File folder = new File(App.systemFile, address);
+		File folder = new File(App.systemFile, address.toLowerCase());
 
 		if (!isNew) {
 			this.path = folder;

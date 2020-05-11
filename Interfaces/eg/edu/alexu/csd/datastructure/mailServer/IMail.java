@@ -72,5 +72,7 @@ public interface IMail{
 	String getSenderAddress();
 
 	boolean delete();
+
+	String getIdentifier();
 	
 }

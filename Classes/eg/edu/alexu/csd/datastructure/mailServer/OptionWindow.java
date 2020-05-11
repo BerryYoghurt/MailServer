@@ -7,9 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import eg.edu.alexu.csd.datastructure.mailServer.App;
-import eg.edu.alexu.csd.datastructure.mailServer.User;
-
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -51,7 +48,7 @@ public class OptionWindow extends JPanel {
 	public OptionWindow(App app,JFrame frame, JPanel previousPanel) {
 		this.frame = frame;
 		
-		SwingWorker<Mail, Void> mailViewer = new SwingWorker<Mail,Void>(){
+		/*SwingWorker<Mail, Void> mailViewer = new SwingWorker<Mail,Void>(){
 
 			@Override
 			protected Mail doInBackground() throws Exception {
@@ -71,7 +68,7 @@ public class OptionWindow extends JPanel {
 				return;
 			}
 			
-		};
+		};*/
 		
 		
 		this.app = app;
@@ -86,14 +83,14 @@ public class OptionWindow extends JPanel {
 		nameLabel.setForeground(new Color(0, 0, 51));
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		nameLabel.setBounds(23, 131, 226, 37);
+		nameLabel.setBounds(23, 176, 226, 37);
 		add(nameLabel);
 		
-		JLabel addressLabel = new JLabel(app.signedInUser.getAddresses()[0]);
+		JLabel addressLabel = new JLabel(app.signedInUser.getAddresses()[0] + "@system.com");
 		addressLabel.setForeground(new Color(0, 0, 51));
 		addressLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		addressLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		addressLabel.setBounds(23, 178, 226, 37);
+		addressLabel.setBounds(58, 109, 312, 37);
 		add(addressLabel);
 		
 		JLabel genderLabel = new JLabel(app.signedInUser.getGender());
@@ -130,7 +127,7 @@ public class OptionWindow extends JPanel {
 				setEnabled(false);
 				setVisible(false);
 				
-	      		frame.add(new passwordEdit(app,frame,self));
+	      		frame.add(new PasswordEdit(app,frame,self));
 			}
 		});
 		editPasswordButton.setForeground(new Color(0, 0, 51));
@@ -185,7 +182,9 @@ public class OptionWindow extends JPanel {
 		JButton inbox = new JButton("Inbox");
 		inbox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				MailBox m = new MailBox(app,(MailFolder)app.signedInUser.getInboxPath(),frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		inbox.setBackground(new Color(224, 224, 224));
@@ -197,7 +196,9 @@ public class OptionWindow extends JPanel {
 		JButton sent = new JButton("Sent");
 		sent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				MailBox m = new MailBox(app,(MailFolder)app.signedInUser.getSentPath(),frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		sent.setBackground(new Color(224, 224, 224));
@@ -209,7 +210,9 @@ public class OptionWindow extends JPanel {
 		JButton draft = new JButton("Draft");
 		draft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				MailBox m = new MailBox(app,(MailFolder)app.signedInUser.getDraftPath(),frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		draft.setBackground(new Color(224, 224, 224));
@@ -221,7 +224,9 @@ public class OptionWindow extends JPanel {
 		JButton trash = new JButton("Trash");
 		trash.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				MailBox m = new MailBox(app,(MailFolder)app.signedInUser.getTrashPath(),frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		trash.setBackground(new Color(224, 224, 224));
@@ -233,7 +238,9 @@ public class OptionWindow extends JPanel {
 		JButton contacts = new JButton("Contacts");
 		contacts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		// open new compose window
+				Contacts editWindow = new Contacts(app, frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		contacts.setBackground(new Color(224, 224, 224));
@@ -245,46 +252,22 @@ public class OptionWindow extends JPanel {
 		JButton nameEdit = new JButton("edit");
 		nameEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				nameEdit editWindow = new nameEdit(app, frame);
+				NameEdit editWindow = new NameEdit(app, frame);
 				frame.setEnabled(false);
 				frame.setVisible(false);
-      		/* new window >> write new name
-          String >> take text 
-      		if(!app.signedInUser.setName(first,last)){
-          		JOptionPane.showMessageDialog(null, "Invalid name");
-          }
-          app.signedInUser.writeToFile(); //will be edited in data base?*/
 			}
 		});
 		nameEdit.setForeground(new Color(0, 0, 51));
 		nameEdit.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		nameEdit.setBounds(295, 132, 75, 34);
+		nameEdit.setBounds(295, 177, 75, 34);
 		add(nameEdit);
-		
-		JButton addressButton = new JButton("edit");
-		addressButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-      		/* new window >> write new address
-          String >> take text 
-      		if(!app.signedInUser.setAddress(address)){
-          		JOptionPane.showMessageDialog(null, "Invalid name");
-          }
-          app.signedInUser.writeToFile(); //will be edited in data base?*/
-			}
-		});
-		addressButton.setForeground(new Color(0, 0, 51));
-		addressButton.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		addressButton.setBounds(295, 180, 75, 34);
-		add(addressButton);
 		
 		JButton genderButton = new JButton("edit");
 		genderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      /* new window >> select new gender 
-      		if(!app.signedInUser.setGender()){
-          		JOptionPane.showMessageDialog(null, "Invalid name");
-          }
-          app.signedInUser.writeToFile(); //will be edited in data base?*/
+				GenderEdit editWindow = new GenderEdit(app, frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		genderButton.setForeground(new Color(0, 0, 51));
@@ -295,11 +278,9 @@ public class OptionWindow extends JPanel {
 		JButton birthDateButton = new JButton("edit");
 		birthDateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-      		/* new window >>get new date 
-      		if(!app.signedInUser.setBirthDate(first,last)){
-          		JOptionPane.showMessageDialog(null, "Invalid name");
-          }
-          app.signedInUser.writeToFile(); //will be edited in data base?*/
+				DateEdit editWindow = new DateEdit(app, birthDateLabel ,frame);
+				frame.setEnabled(false);
+				frame.setVisible(false);
 			}
 		});
 		birthDateButton.setForeground(new Color(0, 0, 51));
@@ -309,7 +290,7 @@ public class OptionWindow extends JPanel {
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(173, 216, 230));
-		panel.setBounds(10, 10, 451, 418);
+		panel.setBounds(0, 18, 451, 418);
 		add(panel);
 		
 		setEnabled(true);

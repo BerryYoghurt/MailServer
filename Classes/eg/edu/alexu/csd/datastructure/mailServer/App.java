@@ -68,6 +68,10 @@ public class App implements IApp{
 	@Override
 	public IMail[] listEmails(int page) {
 		
+		if(index.size() == 0) {
+			return new IMail[] {};
+		}
+		
 	    int begin , end;
 	    if(page == 1){
 	        begin = 0;
@@ -86,7 +90,7 @@ public class App implements IApp{
 	    int j = 0;
 	    for(Object o : sublist){
 	        MailInfo f = (MailInfo)o;
-	        arr[j++] = Mail.loadMail(new File(f.directory), f.receivers);
+	        arr[j++] = Mail.loadMail(new File(currentFolder.getPath(),f.directory), f.receivers);
 	    }
 		return arr;
 	}

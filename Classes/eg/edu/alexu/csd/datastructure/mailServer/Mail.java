@@ -378,7 +378,7 @@ public class Mail implements IMail, Cloneable{
 	}
 	
 	@Override
-	public String toString() {//done	
+	public String getIdentifier() {//done	
 		return this.identifier;
 	}
 
@@ -394,4 +394,8 @@ public class Mail implements IMail, Cloneable{
 		return m;
 	}
 	
+	@Override 
+	public String toString() {
+		return "priority: " + this.p + " | " + this.date + " | " + "subject: " + this.subject + " | " +  "From: " + this.composerName + " | " + "to: " + Integer.toString(this.receivers.size()) + " receivers";
+	}
 }
