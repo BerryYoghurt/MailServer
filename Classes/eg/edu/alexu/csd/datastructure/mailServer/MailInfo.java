@@ -37,5 +37,10 @@ public class MailInfo {
         priority = arr[5];
         inTrash = arr[6];
     }
-    //deal with queue & contact & date
+    
+    
+    @Override
+    public String toString() {
+		return "priority: " + this.priority + " | " + this.date + " | " + "subject: " + this.subject + " | " +  "From: " + this.sender + " | " + "to: " + Integer.toString(this.receivers) + " receivers";
+    }
 }

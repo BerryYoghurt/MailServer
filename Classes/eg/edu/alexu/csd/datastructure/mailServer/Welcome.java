@@ -1,4 +1,4 @@
-package eg.edu.alexu.csd.datastructure.mailServer;
+package gui;
 
 import java.awt.EventQueue;
 
