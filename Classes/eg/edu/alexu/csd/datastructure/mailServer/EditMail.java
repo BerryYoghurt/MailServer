@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -11,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
@@ -58,7 +60,7 @@ public class EditMail extends JPanel implements ActionListener {
 	
 	private GroupLayout selfLayout, textLayout, attLayout, receiverLayout, priorityLayout;
 	
-	private SwingWorker<Void,Void> saveTask, sendTask;
+	private SwingWorker<Boolean,Void> saveTask, sendTask;
 	
 	public EditMail(Mail m, App a, JFrame f, JPanel previousPanel) {
 		super();
@@ -78,7 +80,9 @@ public class EditMail extends JPanel implements ActionListener {
     	
     	
     	subjectLabel = new JLabel("Subject: ");
+    	subjectLabel.setMaximumSize(new Dimension(100,25));
     	dateLabel = new JLabel("Date Modified: ");
+    	dateLabel.setMaximumSize(new Dimension(100,25));
     	
     	selfLayout.setHorizontalGroup(
     			selfLayout.createParallelGroup()
@@ -108,6 +112,7 @@ public class EditMail extends JPanel implements ActionListener {
     					.addComponent(attPanel)));
     	this.setLayout(selfLayout);
     	
+    	frame.setMaximumSize(new Dimension(800,400));
     	frame.setVisible(true);
 	}
 	
@@ -115,9 +120,11 @@ public class EditMail extends JPanel implements ActionListener {
 		receiverPanel = new JPanel();
 		
 		recLabel = new JLabel("Reciever Email: ");
+		recLabel.setMaximumSize(new Dimension(50,25));
 		
 		recChooser = new JTextField();
 		recChooser.setEditable(true);
+		recChooser.setMaximumSize(new Dimension(150,25));
 		
 		addReceiver = new JButton("Add new reciever");
 		addReceiver.addActionListener(this);
@@ -129,6 +136,7 @@ public class EditMail extends JPanel implements ActionListener {
 		receiverList = new JList<String>(recListModel);
 		receiverList.setSelectedIndex(recListModel.getSize()==0?0:recListModel.getSize()-1);
 		receiverList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		receiverList.setMaximumSize(new Dimension(200,200));
 		
 		receiverPane = new JScrollPane(receiverList);
 		receiverPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -158,6 +166,7 @@ public class EditMail extends JPanel implements ActionListener {
 	private void initialiseAttachements() {
 		attPanel = new JPanel();
 		attLabel = new JLabel("Attachements:");
+		attLabel.setMaximumSize(new Dimension(200,25));
 		
 		chooser = new JFileChooser();
 		
@@ -171,6 +180,7 @@ public class EditMail extends JPanel implements ActionListener {
     	attList = new JList<Attachement>(attListModel);
     	attList.setSelectedIndex(0);
     	attList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    	attList.setMaximumSize(new Dimension(200,200));
     	
     	attPane = new JScrollPane(attList);
     	attPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -196,13 +206,15 @@ public class EditMail extends JPanel implements ActionListener {
 
 	private void initialiseTextFields() {
 		subject = new JTextField(mail.getSubject() == ""?"Subject":mail.getSubject(),25);
-    	subject.setBounds(0, 0, 50, 50);
+    	//subject.setBounds(0, 0, 50, 50);
     	subject.setName("subject");
     	subject.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+    	subject.setMaximumSize(new Dimension(700,25));
     	    	
     	date = new JTextField(mail.getDate().toString());
     	date.setName("date");//here, modified.. in view, only edit
     	date.setEditable(false);
+    	date.setMaximumSize(new Dimension(700,25));
     	
     	priority = new ButtonGroup();
     	
@@ -229,8 +241,10 @@ public class EditMail extends JPanel implements ActionListener {
     	
     	priorityPanel = new JPanel();
     	priorityPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+    	priorityPanel.setMaximumSize(new Dimension(800,25));
     	
     	priorityLabel = new JLabel("Priority: ");
+    	priorityLabel.setMaximumSize(new Dimension(100,25));
     	
     	priorityLayout = new GroupLayout(priorityPanel);
     	priorityLayout.setVerticalGroup(
@@ -279,6 +293,7 @@ public class EditMail extends JPanel implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	area.setMaximumSize(new Dimension(400,400));
     	
     	textLayout = new GroupLayout(textPanel);
     	textLayout.setHorizontalGroup(
@@ -301,31 +316,45 @@ public class EditMail extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if(source == send) {
-			sendTask = new SwingWorker<Void,Void>(){
+			sendTask = new SwingWorker<Boolean,Void>(){
 
 				@Override
-				protected Void doInBackground() throws Exception {
+				protected Boolean doInBackground() throws Exception {
 					 try {
 							area.write(new PrintWriter(mail.getBody()));
+							if(subject.getText().contains(",")) {
+								JOptionPane.showMessageDialog(null, "Invalid Character \",\" in Subject");
+								return false;
+							}
 							mail.setSubject(subject.getText());
 							mail.updateDate();
 							mail.saveMail();
-							a.compose(mail);
+							if(!a.compose(mail)) {
+								JOptionPane.showMessageDialog(null, "One or more receivers are not in system");
+								return false;
+							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					return null;
+					return true;
 				}
 				
 				@Override
 				public void done() {
-					if(previousPanel instanceof ViewMail) {
-						frame.dispose();
-					}else {
-						frame.remove(self);
-						previousPanel.setEnabled(true);
-						previousPanel.setVisible(true);
+					try {
+						if(get()) {
+							if(previousPanel instanceof ViewMail) {
+								frame.dispose();
+							}else {
+								frame.remove(self);
+								previousPanel.setEnabled(true);
+								previousPanel.setVisible(true);
+							}
+						}
+					} catch (InterruptedException | ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			};
@@ -337,12 +366,16 @@ public class EditMail extends JPanel implements ActionListener {
 				sendTask = null; //for garbage collection
 		}
 		else if(source == save) {
-			saveTask = new SwingWorker<Void,Void>(){
+			saveTask = new SwingWorker<Boolean,Void>(){
 
 				@Override
-				protected Void doInBackground() throws Exception {
+				protected Boolean doInBackground() throws Exception {
 					 try {
 							area.write(new PrintWriter(mail.getBody()));
+							if(subject.getText().contains(",")) {
+								JOptionPane.showMessageDialog(null, "Invalid Character \",\" in Subject");
+								return false;
+							}
 							mail.setSubject(subject.getText());
 							mail.updateDate();
 							mail.saveMail();
@@ -356,12 +389,19 @@ public class EditMail extends JPanel implements ActionListener {
 				
 				@Override
 				public void done() {
-					if(previousPanel instanceof ViewMail) {
-						frame.dispose();
-					}else {
-						frame.remove(self);
-						previousPanel.setEnabled(true);
-						previousPanel.setVisible(true);
+					try {
+						if(get()) {
+							if(previousPanel instanceof ViewMail) {
+								frame.dispose();
+							}else {
+								frame.remove(self);
+								previousPanel.setEnabled(true);
+								previousPanel.setVisible(true);
+							}
+						}
+					} catch (InterruptedException | ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			};

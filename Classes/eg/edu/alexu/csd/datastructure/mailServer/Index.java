@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
@@ -14,7 +16,7 @@ public class Index implements IIndex {
 	
 	protected DLinkedList list;
     private File path;
-
+    private MailInfo currentLine;
     //constructor
     public Index(File path, boolean isNew){
     	//create index file itself and keep its path
@@ -85,22 +87,21 @@ public class Index implements IIndex {
 	        throw new RuntimeException();
 	    }
 		Mail m = (Mail)mail;
-		MailInfo item = new MailInfo();
-        item.date = m.getDate().toString(); // string
-        item.sender = m.getSenderAddress(); //we need a function in IContact to get the sender email address as a string
-        item.receivers = m.getReceivers().size();
-        item.subject = m.getSubject();
-        item.directory = m.getIdentifier();
-        item.priority = m.getPriority().toString();
-        // we need key sort >> take a copy ??
+		currentLine = new MailInfo();
+		currentLine.date = m.getDate().toString(); // string
+		currentLine.sender = m.getSenderAddress(); //we need a function in IContact to get the sender email address as a string
+		currentLine.receivers = m.getReceivers().size();
+		currentLine.subject = m.getSubject();
+		currentLine.directory = m.getIdentifier();
+		currentLine.priority = m.getPriority().toString();
         KeySort k = new KeySort();
         k.applySort(this.list);
         int ind = (int)find(m);
         if(ind != -1) {
 			list.remove(ind);
-			list.add(ind, item);
+			list.add(ind, currentLine);
 		}else
-			list.add(item);
+			list.add(currentLine);
 	}
 
 	@Override
@@ -156,5 +157,10 @@ public class Index implements IIndex {
 	@Override
 	public int getSize() {
 		return list.size();
+	}
+
+
+	public void setInTrash() {
+		currentLine.inTrash = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
 	}
 }

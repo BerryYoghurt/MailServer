@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -61,13 +62,16 @@ public class ViewMail extends JPanel implements ActionListener{
     	
     	
     	subjectLabel = new JLabel("Subject: ");
+    	subjectLabel.setMaximumSize(new Dimension(100,25));
     	dateLabel = new JLabel("Date Modified: ");
+    	dateLabel.setMaximumSize(new Dimension(100,25));
     	priorityLabel = new JLabel("Priority: ");
+    	priorityLabel.setMaximumSize(new Dimension(100,25));
     	fromLabel = new JLabel("From: ");
+    	fromLabel.setMaximumSize(new Dimension(100,25));
     	
     	back = new JButton("Back");
     	back.addActionListener(this);
-    	//back.setBounds(frame.getWidth()-50, frame.getHeight()-50, 50, 50);
     	
     	selfLayout.setHorizontalGroup(
     			selfLayout.createParallelGroup()
@@ -142,6 +146,7 @@ public class ViewMail extends JPanel implements ActionListener{
 	private void initialiseAttachements() {
 		attPanel = new JPanel();
 		viewAtt = new JButton("View Attachement");
+		viewAtt.addActionListener(this);
 		attLabel = new JLabel("Attachements");
 		
     	attListModel = new AttList(mail);

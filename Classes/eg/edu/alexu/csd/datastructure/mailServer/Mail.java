@@ -283,8 +283,8 @@ public class Mail implements IMail, Cloneable{
 	}
 	
 	@Override
-	public boolean delete() {
-		IFolder to = new MailFolder(new File(this.containingFolder.getParentFile(),"trash"));
+	public boolean delete() { 
+		IFolder to = new MailFolder(new File(this.containingFolder.getParentFile().getParentFile(),"trash"));
 		return move(to);
 	}
 

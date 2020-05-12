@@ -101,7 +101,7 @@ public class App implements IApp{
 		for(Object o : m) {
 			((Mail)o).delete();
 		}
-		
+		index = currentFolder.getIndex();//update the index because it has changed
 	}
 
 	@Override

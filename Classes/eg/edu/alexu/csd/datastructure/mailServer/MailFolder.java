@@ -15,7 +15,7 @@ import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 
 public class MailFolder implements IFolder {
 
-	private IIndex index;
+	private Index index;
 	private File path;
 	private Kind type;
 	enum Kind{
@@ -75,6 +75,7 @@ public class MailFolder implements IFolder {
 			File thisMail = new File(this.path, m.getIdentifier());
 			thisMail.mkdir();
 			index.add(item);
+			index.setInTrash();
 			index.writeToIndex();
 			return thisMail;
 		}
