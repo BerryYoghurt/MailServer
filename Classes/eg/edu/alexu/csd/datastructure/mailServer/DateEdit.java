@@ -132,5 +132,7 @@ public class DateEdit extends JFrame {
 		btnCansel.setBackground(new Color(245, 245, 245));
 		btnCansel.setBounds(250, 171, 111, 35);
 		contentPane.add(btnCansel);
+		
+		setVisible(true);
 	}
 }

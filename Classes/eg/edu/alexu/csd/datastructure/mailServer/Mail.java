@@ -49,7 +49,7 @@ public class Mail implements IMail, Cloneable{
 		StringBuilder s = new StringBuilder(this.composerAddress);
 		s.append(this.date.toString());
 		this.identifier = s.toString();
-		this.identifier = this.identifier.replaceAll("[\\s\\\\.@:]", "");
+		this.identifier = this.identifier.replaceAll("[\\s\\\\.@:_]", "");
 		containingFolder = new File(from.getDraftPath().getPath(), this.identifier);
 		containingFolder.mkdir();
 		bodyTxt = new File(containingFolder, "bodyTxt.txt");
@@ -74,17 +74,16 @@ public class Mail implements IMail, Cloneable{
 			System.out.println("EML file not created");
 			//e1.printStackTrace();
 		}
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(eml);
+		
+		try (FileOutputStream fos = new FileOutputStream(eml)){
+			
 			
 			try(Writer s = new OutputStreamWriter(fos, Charset.forName("US-ASCII"))){
-				//StringBuilder s = new StringBuilder();
 				s.append("Subject: "); s.append(this.subject == null? "": this.subject);
 				s.append("\r\n");
 				s.append("From: "); s.append("\""); s.append(this.composerName); 
 				s.append("\""); s.append('<');
-				s.append(this.composerAddress); /*s.append("@this.server");*/ s.append('>');
+				s.append(this.composerAddress); s.append("@this.server"); s.append('>');
 				s.append("\r\n");
 				SimpleDateFormat d = new SimpleDateFormat("EEE dd MMM yyyy hh:mm:ss zzz");
 				s.append("Date: ");s.append(d.format(this.date)); s.append("\r\n");
@@ -105,6 +104,9 @@ public class Mail implements IMail, Cloneable{
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
 		}
 	}
 	
@@ -169,7 +171,7 @@ public class Mail implements IMail, Cloneable{
 									s.append(arr[j]);
 							}
 							m.composerName = s.toString();
-							m.composerAddress = readEmails(arr, 1)[0];
+							m.composerAddress = readEmails(arr, 1)[0].replaceAll("@([A-Za-z0-9_\\\\-\\\\.].*)", "");//because all addresses are inside the system
 							break;
 						case "Subject":
 							i++;
@@ -226,7 +228,7 @@ public class Mail implements IMail, Cloneable{
 	
 	@Override
 	public void setSubject(String s) {//done
-		if(s.length() > 20)
+		if(s.length() > 40)
 			throw new IllegalArgumentException("subject too long");
 		this.subject = s;
 	}

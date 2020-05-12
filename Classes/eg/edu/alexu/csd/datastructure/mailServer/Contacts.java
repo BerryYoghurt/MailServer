@@ -106,9 +106,9 @@ public class Contacts extends JFrame {
 		JButton btnDelete = new JButton("delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CInfo[] selected = (CInfo[]) list.getSelectedValues();	
-				for(CInfo j:selected) {
-					folder.remove(j.name);
+				Object[] selected = list.getSelectedValues();	
+				for(Object j:selected) {
+					folder.remove(((CInfo)j).name);
 				}
 			}
 		});
@@ -147,9 +147,11 @@ public class Contacts extends JFrame {
 		JButton btnView = new JButton("view");
 		btnView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CInfo[] selected = (CInfo[]) list.getSelectedValues();	
-				label.setText(selected[0].name);
-				Contact v = new Contact(new File(selected[0].directory));
+				Object[] selected = list.getSelectedValues();
+				if(selected.length == 0)
+					return;
+				label.setText(((CInfo)selected[0]).name);
+				Contact v = new Contact(new File(((CInfo)selected[0]).directory));
 				list_1.setListData(v.emails);
 			}
 		});
@@ -167,6 +169,6 @@ public class Contacts extends JFrame {
 		lblAddress.setBounds(35, 414, 62, 31);
 		contentPane.add(lblAddress);
 		
-		
+		setVisible(true);
 	}
 }
