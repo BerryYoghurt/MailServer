@@ -128,7 +128,6 @@ public class SignInWindow extends JFrame {
 				}
 				dispose();
 				Welcome newWindow = new Welcome();
-				newWindow.app = null;
 				newWindow.frame.setVisible(true);
 			}
 		});

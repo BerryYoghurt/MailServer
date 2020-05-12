@@ -38,7 +38,6 @@ public class GenderEdit extends JFrame {
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 */

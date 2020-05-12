@@ -39,7 +39,6 @@ public class DateEdit extends JFrame {
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -89,6 +88,7 @@ public class DateEdit extends JFrame {
 		
 		JComboBox yearCB = new JComboBox(years);
 		yearCB.setBounds(292, 81, 62, 21);
+		yearCB.setSelectedIndex(79);
 		contentPane.add(yearCB);
 		
 		JLabel yearLabel = new JLabel("year");

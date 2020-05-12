@@ -9,8 +9,6 @@ import eg.edu.alexu.csd.datastructure.mailServer.App;
 import eg.edu.alexu.csd.datastructure.mailServer.IFilter;
 import eg.edu.alexu.csd.datastructure.mailServer.IMail;
 import eg.edu.alexu.csd.datastructure.mailServer.ISort;
-import eg.edu.alexu.csd.datastructure.mailServer.Kind;
-import eg.edu.alexu.csd.datastructure.mailServer.Mail;
 import eg.edu.alexu.csd.datastructure.mailServer.MailFolder;
 import eg.edu.alexu.csd.datastructure.mailServer.PrioritySort;
 import eg.edu.alexu.csd.datastructure.mailServer.SenderFilter;
@@ -57,30 +55,7 @@ public class MailBox extends JFrame {
 		}
 		
 	}
-	/*
-	 private class MyListModel extends AbstractListModel<Object>{
-		
-		private DLinkedList myList;
-		
-		public MyListModel(DLinkedList list) {
-			this.myList = list;
-		}
-
-		@Override
-		public int getSize() {
-			if(myList != null) return this.myList.size();
-			return 0;
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			if(myList != null) return this.myList.get(index);
-			return null;
-		}
-		
-	}
-	 */
-
+	
 	private JPanel contentPane;
 	private App app;
 	private DLinkedList indexList;
@@ -107,7 +82,6 @@ public class MailBox extends JFrame {
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -131,18 +105,7 @@ public class MailBox extends JFrame {
 		JList<Object> list = new JList<Object>();
 		list.setToolTipText("");
 		list.setFont(new Font("Century Gothic", Font.PLAIN, 23));
-		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		//DLinkedList l = new DLinkedList();
-		//DLinkedList l = this.app.signedInUser.getInboxPath().getIndex();
-		/*l.add("manar");
-		l.add("nour");
-		MailInfo f = new MailInfo();
-		f.date = "05-10-2020";
-		f.priority = "HIGH";
-		f.sender = "shHolmes@system.com";
-		f.receivers = 3;
-		f.subject = "Info trial";
-		l.add(f);*/
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);		
 		list.setModel(new MyListModel(app.listEmails(currentPage)));
 		scrollPane.setViewportView(list);
 		
@@ -204,6 +167,7 @@ public class MailBox extends JFrame {
 		JButton btnBack = new JButton("back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 				OptionWindow o = new OptionWindow(app);
 				o.setVisible(true);
 			}
@@ -232,6 +196,7 @@ public class MailBox extends JFrame {
 		
 		
 		filterTextField = new JTextField();
+		filterTextField.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		filterTextField.setBounds(197, 10, 128, 31);
 		contentPane.add(filterTextField);
 		filterTextField.setColumns(10);
@@ -324,6 +289,7 @@ public class MailBox extends JFrame {
 		contentPane.add(page);
 		
 		JButton rightPage = new JButton(">");
+		rightPage.setBackground(new Color(245, 245, 245));
 		rightPage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if( (!viewed && currentPage < maxPages1) || (viewed && currentPage < maxPages2) ) {
@@ -335,10 +301,11 @@ public class MailBox extends JFrame {
 			}
 		});
 		rightPage.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		rightPage.setBounds(434, 430, 47, 30);
+		rightPage.setBounds(434, 430, 56, 30);
 		contentPane.add(rightPage);
 		
 		JButton leftPage = new JButton("<");
+		leftPage.setBackground(new Color(245, 245, 245));
 		leftPage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(currentPage > 1) {
@@ -350,7 +317,7 @@ public class MailBox extends JFrame {
 			}
 		});
 		leftPage.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		leftPage.setBounds(335, 431, 47, 30);
+		leftPage.setBounds(326, 431, 56, 30);
 		contentPane.add(leftPage);
 		
 		/*new AbstractListModel<Object>() {

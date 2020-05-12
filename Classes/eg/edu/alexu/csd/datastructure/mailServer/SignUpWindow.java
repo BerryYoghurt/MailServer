@@ -257,8 +257,14 @@ public class SignUpWindow extends JFrame {
 				// System.out.println(date);
 				boolean gender = true;
 
-				User user;
-				user = new User(textField_2.getText(), true);
+				User user = null;
+				try {
+					user = new User(textField_2.getText(), true);
+				}catch(Exception e2) {
+					JOptionPane.showMessageDialog(null, "this address is used");
+					return;
+				}
+				
 				user.setGender(gender);
 
 				if (rdbtnNewRadioButton.isSelected()) {
