@@ -28,7 +28,7 @@ public class SenderFilter implements IFilter {
 					filtered.add(item);
 					String newDirectory = this.folder.getAbsolutePath() +item.directory;
 					try {
-						MailFolder.copyFolder(new File(filteredFolder.getPath(), item.directory), new File(newDirectory));
+						MailFolder.copyFolder(new File(filteredFolder.getPath(), item.directory), new File(this.folder,item.directory));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

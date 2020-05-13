@@ -26,29 +26,6 @@ public class EditContact extends JFrame {
 	private JTextField nameTextField;
 	private JTextField textField;
 
-	protected class MyListModel extends AbstractListModel<Object> {
-		
-		private DLinkedList myList = null;
-
-		public MyListModel(DLinkedList list) {
-			this.myList = list;
-		}
-
-		@Override
-		public int getSize() {
-			if (myList != null)
-				return this.myList.size();
-			return 0;
-		}
-
-		@Override
-		public Object getElementAt(int index) {
-			if (myList != null)
-				return this.myList.get(index);
-			return null;
-		}
-
-	}
 
 
 	/**
@@ -105,16 +82,11 @@ public class EditContact extends JFrame {
 				String address = textField.getText();
 				if(address.length() != 0) {
 					current.setAddress(address);
+					if(!current.setAddress(address)) {
+						JOptionPane.showMessageDialog(null, "existing address");
+					}
 				}
-				//current.writeToFile();
-				String[] arr = current.getAddresses();
-				for(String str : arr) {
-					System.out.println(str);
-				}
-				System.out.println();
-				//list.setListData(current.getAddresses());
-			}
-		});
+		}});
 		addButton.setFont(new Font("Century Gothic", Font.PLAIN, 18));
 		addButton.setBounds(425, 276, 160, 36);
 		contentPane.add(addButton);
@@ -127,12 +99,6 @@ public class EditContact extends JFrame {
 					current.removeAddress(selected);
 					list.setListData(current.getAddresses());
 				}
-				//current.writeToFile();
-				String[] arr = current.getAddresses();
-				for(String str : arr) {
-					System.out.println(str);
-				}
-				System.out.println();
 			}
 		});
 		btnDeleteSelected.setFont(new Font("Century Gothic", Font.PLAIN, 14));
