@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.SLinkedList;
 
-public class Contact implements IContact{  //remove uncommon methods ?????
+public class Contact implements IContact{  
     
     String name;
     String[] emails;
@@ -56,9 +56,9 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 
 	@Override
-	public String[] getAddresses() {    //linked lists of strings
+	public String[] getAddresses() {    
 	    if(this.emails != null && this.emails.length != 0){
-	        return this.emails.clone();            // the copy method returns a copy of the current linked list
+	        return this.emails.clone();            
 	    }
 		Scanner reader;
 		try {
@@ -137,11 +137,10 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 			writer = new PrintWriter(this.path);
 
 			for (String s : emails) {
-				writer.println(s); // we need the traverse method in SinglyLinkedList ?
+				writer.println(s); 
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
