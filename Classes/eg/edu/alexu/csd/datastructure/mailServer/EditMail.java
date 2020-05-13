@@ -383,7 +383,7 @@ public class EditMail extends JPanel implements ActionListener {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					return null;
+					return true;
 				}
 				
 				@Override
