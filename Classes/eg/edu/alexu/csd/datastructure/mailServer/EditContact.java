@@ -1,4 +1,4 @@
-package gui;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -8,9 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
-import eg.edu.alexu.csd.datastructure.mailServer.CInfo;
 import eg.edu.alexu.csd.datastructure.mailServer.Contact;
-import gui.Contacts.MyListModel;
+import eg.edu.alexu.csd.datastructure.mailServer.ContactFolder;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -21,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.awt.event.ActionEvent;
 
 public class EditContact extends JFrame {
@@ -29,28 +27,15 @@ public class EditContact extends JFrame {
 	private JPanel contentPane;
 	private JTextField nameTextField;
 	private JTextField textField;
+	private App app;
 
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EditContact frame = new EditContact();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public EditContact(Contact current) {
+	public EditContact(Contact current, App app) {
+		this.app = app;
 		String[] arr = current.getAddresses();
 		for(String str : arr) {
 			System.out.println(str);
@@ -100,12 +85,12 @@ public class EditContact extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String address = textField.getText();
 				if(address.length() != 0) {
+					current.setAddress(address);
 					if(!current.setAddress(address)) {
 						JOptionPane.showMessageDialog(null, "existing address");
 					}
 				}
-			}
-		});
+		}});
 		addButton.setFont(new Font("Century Gothic", Font.PLAIN, 18));
 		addButton.setBounds(425, 276, 160, 36);
 		contentPane.add(addButton);
@@ -137,6 +122,20 @@ public class EditContact extends JFrame {
 		JButton btnConfirm = new JButton("confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String newName = nameTextField.getText();
+				if(newName.length() == 0) {
+					JOptionPane.showMessageDialog(null, "Invalid name");
+					return;
+				}
+				if(!current.getName().equals(newName)) {
+					String[] emails = current.getAddresses();
+					ContactFolder folder = (ContactFolder) app.signedInUser.getContactsPath();
+					folder.remove(current.getName());
+					Contact c = new Contact(newName,emails[0],folder);
+					for(int i = 1; i< emails.length; i++) {
+						c.setAddress(emails[i]);
+					}
+				}
 				dispose();
 			}
 		});
