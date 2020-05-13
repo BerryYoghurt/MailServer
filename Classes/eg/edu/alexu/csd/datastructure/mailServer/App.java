@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
@@ -15,7 +16,12 @@ public class App implements IApp{
 	protected IFolder currentFolder;
 	
 	App(){
-		systemFile = new File(App.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+		try {
+			systemFile = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		db = new DataBase();
 	}
 	
