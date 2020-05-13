@@ -20,6 +20,8 @@ import javax.swing.JList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -49,23 +51,6 @@ public class Contacts extends JFrame {
 		}
 		
 	}
-
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Contacts frame = new Contacts(app);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-*/
 	/**
 	 * Create the frame.
 	 */
@@ -79,14 +64,15 @@ public class Contacts extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		
 		JList list = new JList();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setModel(new MyListModel(folder.getIndex()));
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(10, 10, 493, 305);
 		contentPane.add(scrollPane_1);
 		scrollPane_1.setViewportView(list);
 		JLabel label = new JLabel("");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		label.setBounds(126, 352, 205, 31);
 		contentPane.add(label);
@@ -96,7 +82,8 @@ public class Contacts extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// window
-				//folder.add(IContact);
+				AddContact c = new AddContact(app);
+				c.setVisible(true);
 			}
 		});
 		btnNewButton.setFont(new Font("Century Gothic", Font.PLAIN, 17));
@@ -106,12 +93,15 @@ public class Contacts extends JFrame {
 		JButton btnDelete = new JButton("delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Object[] selected = list.getSelectedValues();	
-				for(Object j:selected) {
-					folder.remove(((CInfo)j).name);
-				}
+				int selected = list.getSelectedIndex();
+				if(selected != -1) {
+					CInfo i = (CInfo)folder.getIndex().get(selected);
+					folder.remove(i.name);
+					list.setModel(new MyListModel(folder.getIndex()));
+				}	
 			}
 		});
+		
 		btnDelete.setFont(new Font("Century Gothic", Font.PLAIN, 17));
 		btnDelete.setBounds(556, 73, 141, 39);
 		contentPane.add(btnDelete);
@@ -119,7 +109,13 @@ public class Contacts extends JFrame {
 		JButton btnEditContact = new JButton("edit contact");
 		btnEditContact.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				int selected = list.getSelectedIndex();
+				if(selected != -1) {
+					CInfo i = (CInfo)folder.getIndex().get(selected);
+					Contact c = new Contact(new File(i.directory));
+					EditContact x = new EditContact(c);
+					x.setVisible(true);
+				}
 			}
 		});
 		btnEditContact.setFont(new Font("Century Gothic", Font.PLAIN, 17));
@@ -139,7 +135,7 @@ public class Contacts extends JFrame {
 		contentPane.add(btnBack);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(124, 413, 470, 118);
+		scrollPane.setBounds(124, 413, 239, 96);
 		contentPane.add(scrollPane);
 		JList list_1 = new JList();
 		scrollPane.setViewportView(list_1);
@@ -147,12 +143,13 @@ public class Contacts extends JFrame {
 		JButton btnView = new JButton("view");
 		btnView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Object[] selected = list.getSelectedValues();
-				if(selected.length == 0)
-					return;
-				label.setText(((CInfo)selected[0]).name);
-				Contact v = new Contact(new File(((CInfo)selected[0]).directory));
-				list_1.setListData(v.emails);
+				int selected = list.getSelectedIndex();
+				if(selected != -1) {
+					CInfo i = (CInfo)folder.getIndex().get(selected);
+					label.setText(i.name);
+					Contact v = new Contact(new File(i.directory));
+					list_1.setListData(v.getAddresses());
+				}
 			}
 		});
 		btnView.setFont(new Font("Century Gothic", Font.PLAIN, 17));
@@ -169,6 +166,17 @@ public class Contacts extends JFrame {
 		lblAddress.setBounds(35, 414, 62, 31);
 		contentPane.add(lblAddress);
 		
+		JButton btnRefresh = new JButton("refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				list.setModel(new MyListModel(folder.getIndex()));
+			}
+		});
+		btnRefresh.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+		btnRefresh.setBounds(556, 276, 141, 39);
+		contentPane.add(btnRefresh);
+		
 		setVisible(true);
 	}
+	
 }

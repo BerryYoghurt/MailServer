@@ -1,16 +1,19 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import eg.edu.alexu.csd.datastructure.mailServer.App;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
+
 
 import java.awt.Font;
 import javax.swing.JPasswordField;
@@ -33,22 +36,6 @@ public class PasswordEdit extends JPanel {
 	private App app;
 
 	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					passwordEdit frame = new passwordEdit(app);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
-
-	/**
 	 * Create the frame.
 	 */
 	public PasswordEdit(App app, JFrame frame, JPanel previousPanel) {
@@ -63,6 +50,7 @@ public class PasswordEdit extends JPanel {
 		};
 		
 		this.app = app;
+		frame.setTitle("Password edit");
 		setBounds(100, 100, 521, 357);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
@@ -111,6 +99,8 @@ public class PasswordEdit extends JPanel {
 			        	    
 			        	    setEnabled(false);
 							setVisible(false);
+							
+							frame.setTitle("Options");
 							
 							previousPanel.setEnabled(true);
 							previousPanel.setVisible(true);
@@ -164,4 +154,5 @@ public class PasswordEdit extends JPanel {
 		}
 		c.setEnabled(e);
 	}
+
 }

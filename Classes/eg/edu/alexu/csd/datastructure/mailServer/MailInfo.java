@@ -43,3 +43,4 @@ public class MailInfo {
 		return "priority: " + this.priority + " | " + this.date + " | " + "subject: " + this.subject + " | " +  "From: " + this.sender + " | " + "to: " + Integer.toString(this.receivers) + " receivers";
     }
 }
+

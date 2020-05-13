@@ -8,8 +8,9 @@ public class PrioritySort implements ISort{
     
     public void applySort(DLinkedList list){
 		for (Object o : list){
-           	sorted.insert(o,((Mail)o).getPriority().ordinal());
+           	sorted.insert(o,Priority.valueOf(((MailInfo)o).priority).ordinal());
 		}   
     }
 
 }
+

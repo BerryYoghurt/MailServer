@@ -14,9 +14,11 @@ public class SubjectFilter implements IFilter {
 	
 	File folder;
 	private String field;
-
-	SubjectFilter(File path) {
+	private IFolder filteredFolder;
+	
+	SubjectFilter(File path, IFolder filteredFolder) {
 		this.folder = path;
+		this.filteredFolder = filteredFolder;
 	}
 
 	@Override
@@ -27,14 +29,13 @@ public class SubjectFilter implements IFilter {
 			while (item != null) {
 				if (item.subject.contains(field)) {
 					filtered.add(item);
-					String newDirectory = this.folder.getAbsolutePath() + Paths.get(item.directory).getFileName();
+					//String newDirectory = this.folder.getAbsolutePath() +item.directory;
 					try {
-						MailFolder.copyFolder(new File(item.directory), new File(newDirectory));
+						MailFolder.copyFolder(new File(filteredFolder.getPath(), item.directory), new File(this.folder,item.directory));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					item.directory = newDirectory;
 				}
 			}
 		}

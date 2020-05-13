@@ -45,27 +45,6 @@ public class MailBox extends JFrame {
 		}
 		
 	}
-	/*
-	 private class MyListModel extends AbstractListModel<Object>{
-		
-		private DLinkedList myList;
-		
-		public MyListModel(DLinkedList list) {
-			this.myList = list;
-		}
-		@Override
-		public int getSize() {
-			if(myList != null) return this.myList.size();
-			return 0;
-		}
-		@Override
-		public Object getElementAt(int index) {
-			if(myList != null) return this.myList.get(index);
-			return null;
-		}
-		
-	}
-	 */
 
 	private JPanel contentPane;
 	private App app;
@@ -78,27 +57,8 @@ public class MailBox extends JFrame {
 	private boolean viewed = false; // true >> the viewed mails are filtered & sorted     false >> the viewed mail are neither filtered nor sorted  
 	private JFrame self;
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Inbox frame = new Inbox();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	/**
-	 * Create the frame.
-	 */
 	public MailBox(App app, MailFolder m, JFrame mainFrame) {
 		this.app = app;
-		//this.indexList = app.signedInUser.getInboxPath().getIndex();
 		maxPages1 = m.getIndex().size()/10 + 1; 
 		app.setViewingOptions(m, null, null);
 		
@@ -117,18 +77,6 @@ public class MailBox extends JFrame {
 		list.setToolTipText("");
 		list.setFont(new Font("Century Gothic", Font.PLAIN, 23));
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		//DLinkedList l = new DLinkedList();
-		//DLinkedList l = this.app.signedInUser.getInboxPath().getIndex();
-		/*l.add("manar");
-		l.add("nour");
-		MailInfo f = new MailInfo();
-		f.date = "05-10-2020";
-		f.priority = "HIGH";
-		f.sender = "shHolmes@system.com";
-		f.receivers = 3;
-		f.subject = "Info trial";
-		l.add(f);*/
-		//list.setModel(new MyListModel(app.listEmails(currentPage)));
 		scrollPane.setViewportView(list);
 		
 		JLabel filterLabel = new JLabel("Filter by :");
@@ -136,7 +84,7 @@ public class MailBox extends JFrame {
 		filterLabel.setBounds(10, 10, 100, 26);
 		contentPane.add(filterLabel);
 		
-		String[] filters = {"non","subject","sender"};
+		String[] filters = {"none","subject","sender"};
 		
 		JComboBox filterCB = new JComboBox(filters);
 		filterCB.setForeground(new Color(25, 25, 112));
@@ -161,6 +109,8 @@ public class MailBox extends JFrame {
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Object[] temp = list.getSelectedValues();
+				if(temp.length == 0)
+					return;
 				DLinkedList d = new DLinkedList();
 				for(Object o : temp) {
 					d.add(o);
@@ -178,7 +128,8 @@ public class MailBox extends JFrame {
 		btnView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Object[] temp = list.getSelectedValues();
-				//JFrame[] frameArr;
+				if(temp.length == 0)
+					return;
 				for(Object o : temp) {
 					Mail mail = (Mail)o;
 					JFrame viewFrame = new JFrame();
@@ -219,7 +170,8 @@ public class MailBox extends JFrame {
 				currentPage = 1;
 				viewed = false;
 				maxPages1 = m.getIndex().size()/10 + 1; 
-				app.setViewingOptions(m, null, null);
+				MailFolder mailFolder = new MailFolder(m.getPath());//reload
+				app.setViewingOptions(mailFolder, null, null);
 				filterCB.setSelectedIndex(0);
 				sortCB.setSelectedIndex(0);
 				list.setModel(new MyListModel(app.listEmails(currentPage)));
@@ -243,7 +195,7 @@ public class MailBox extends JFrame {
 				String sort = (String) sortCB.getSelectedItem();
 				
 				try {
-					MailFolder.cleanDir(new File("system\\FILTER FOLDER"));
+					MailFolder.cleanDir(new File(app.systemFile,"FILTER FOLDER"));
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -252,10 +204,10 @@ public class MailBox extends JFrame {
 				IFilter sf = null;
 				
 				if(filter.equals("subject")) {
-					sf = new SubjectFilter(new File("system\\FILTER FOLDER"));
+					sf = new SubjectFilter(new File(app.signedInUser.getPath(),"FILTER FOLDER"), m);
 					sf.setParameter(filterTextField.getText());
 				}else if (filter.equals("sender")) {
-					sf = new SenderFilter(new File("system\\FILTER FOLDER"));
+					sf = new SenderFilter(new File(app.signedInUser.getPath(),"FILTER FOLDER"),m);
 					sf.setParameter(filterTextField.getText());
 				}
 				
@@ -291,7 +243,8 @@ public class MailBox extends JFrame {
 				
 				viewed = false;
 				currentPage = 1;
-				app.setViewingOptions(m, null, null);
+				MailFolder mailFolder = new MailFolder(m.getPath());
+				app.setViewingOptions(mailFolder, null, null);
 				filterCB.setSelectedIndex(0);
 				sortCB.setSelectedIndex(0);
 				list.setModel(new MyListModel(app.listEmails(currentPage)));
@@ -307,7 +260,14 @@ public class MailBox extends JFrame {
 		JButton btnMove = new JButton("move");
 		btnMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				Object[] temp = list.getSelectedValues();
+				if(temp.length == 0)
+					return;
+				DLinkedList d = new DLinkedList();
+				for(Object o : temp) {
+					d.add(o);
+				}
+				app.moveEmails(d,null);
 			}
 		});
 		btnMove.setForeground(new Color(0, 206, 209));
@@ -353,15 +313,7 @@ public class MailBox extends JFrame {
 		leftPage.setBounds(335, 431, 47, 30);
 		contentPane.add(leftPage);
 		
-		/*new AbstractListModel<Object>() {
-			String[] values = new String[] {"manar", "roaa", "adham", "amr", "samah", "amal", "amany", "mohammed", "abeer", "ola", "azza", "grandma", "grandpa"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		}*/
 		setVisible(true);
 	}
 }
+

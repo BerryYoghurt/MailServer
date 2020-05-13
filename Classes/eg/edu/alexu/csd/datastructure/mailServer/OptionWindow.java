@@ -1,11 +1,9 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -29,18 +27,12 @@ public class OptionWindow extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					OptionWindow frame = new OptionWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	/*
+	 * public static void main(String[] args) { EventQueue.invokeLater(new
+	 * Runnable() { public void run() { try { OptionWindow frame = new
+	 * OptionWindow(); frame.setVisible(true); } catch (Exception e) {
+	 * e.printStackTrace(); } } }); }
+	 */
 
 	/**
 	 * Create the frame.
@@ -85,7 +77,7 @@ public class OptionWindow extends JPanel {
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		nameLabel.setBounds(23, 176, 226, 37);
 		add(nameLabel);
-		
+
 		JLabel addressLabel = new JLabel(app.signedInUser.getAddresses()[0] + "@system.com");
 		addressLabel.setForeground(new Color(0, 0, 51));
 		addressLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -115,6 +107,7 @@ public class OptionWindow extends JPanel {
 				
 				previousPanel.setEnabled(true);
 				previousPanel.setVisible(true);
+
 			}
 		});
 		LogOutButton.setFont(new Font("Tahoma", Font.PLAIN, 22));
@@ -252,7 +245,7 @@ public class OptionWindow extends JPanel {
 		JButton nameEdit = new JButton("edit");
 		nameEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				NameEdit editWindow = new NameEdit(app, frame);
+				NameEdit editWindow = new NameEdit(app,nameLabel, frame);
 				frame.setEnabled(false);
 				frame.setVisible(false);
 			}
@@ -265,7 +258,7 @@ public class OptionWindow extends JPanel {
 		JButton genderButton = new JButton("edit");
 		genderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				GenderEdit editWindow = new GenderEdit(app, frame);
+				GenderEdit editWindow = new GenderEdit(app, genderLabel, frame);
 				frame.setEnabled(false);
 				frame.setVisible(false);
 			}
@@ -296,7 +289,7 @@ public class OptionWindow extends JPanel {
 		setEnabled(true);
 		setVisible(true);
 	}
-	
+
 	public void setApp(App app) {
 		this.app = app;
 	}

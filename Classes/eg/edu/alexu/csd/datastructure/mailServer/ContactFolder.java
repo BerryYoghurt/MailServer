@@ -10,43 +10,34 @@ import java.util.Comparator;
 
 import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 
+public class ContactFolder implements IFolder {
 
-public class ContactFolder implements IFolder{
-    
-    public CIndex index;
+	public CIndex index;
 	private File path;
-	//private boolean isNew;
 
 	// constructor
-	public ContactFolder(File path , boolean isNew){ //path of the user folder in both cases
+	public ContactFolder(File path, boolean isNew) { // path of the user folder in both cases
 		File folder = new File(path, "contacts");
-	    if(isNew){ //new contact folder
-	        //this.isNew = true;
-	        // create IFolder
-  		    if (!folder.mkdir()) {
-		    	throw new RuntimeException("folder is not created!");
-		    }
-		    this.path = folder;
-		    try {
-				index = new CIndex(folder,true);
+		if (isNew) { // new contact folder
+			if (!folder.mkdir()) {
+				throw new RuntimeException("folder is not created!");
+			}
+			this.path = folder;
+			try {
+				index = new CIndex(folder, true);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-		    // fpath >>> folder path
-	    }else{ //existing contact folder
-	        //this.isNew = false;
-	        this.path = folder;
-	        //upload existing index
-	        try {
-				index = new CIndex(folder,false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	    }
+		} else { // existing contact folder
+			this.path = folder;
+			// upload existing index
+			try {
+				index = new CIndex(folder, false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
 
 	@Override
 	public File getPath() {
@@ -55,57 +46,51 @@ public class ContactFolder implements IFolder{
 
 	@Override
 	public boolean isEmpty() {
-	    return index.getSize() == 0;
+		return index.getSize() == 0;
 	}
 
 	@Override
-	public File add(Object item){
+	public File add(Object item) {
 		if (!this.path.exists() || item == null || !(item instanceof Contact)) {
 			throw new RuntimeException("folder does not exists!");
 		}
-		File file = new File(this.path , ((Contact) item).getName() + ".txt");
+		File file = new File(this.path, ((Contact) item).getName() + ".txt");
 		try {
-		if (!file.createNewFile()) {
-			throw new RuntimeException("file is not created!");
-		}
-		PrintWriter writer = new PrintWriter(file);
-		writer.println(((Contact) item).emails[0]);
-		writer.close();
-		index.add(item);
-		return file;
-		}catch (IOException e) {
+			if (!file.createNewFile()) {
+				throw new RuntimeException("file is not created!");
+			}
+			PrintWriter writer = new PrintWriter(file);
+			writer.println(((Contact) item).emails[0]);
+			writer.close();
+			index.add(item);
+			return file;
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-     /**
-       *search index
-       *remove from index and folder
-       * @return found folder directory
-     * @throws IOException 
-       */
+
 	@Override
-	public Object remove(Object item){ 
-        if(item instanceof String){ //contact name
-            CInfo temp = (CInfo)index.remove(item);
-            if(temp != null){
-                File found = new File(temp.directory);
-                try {
+	public Object remove(Object item) {
+		if (item instanceof String) { // contact name
+			CInfo temp = (CInfo) index.remove(item); // search index
+			if (temp != null) {
+				File found = new File(temp.directory);
+				try {
 					removeDir(found);
 				} catch (IOException e) {
-					System.out.println(e);
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
-                return found;
-            }
-        }
+				return found;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public boolean delete() {
 		if (!this.path.exists()) { // Not found
-		return false;
+			return false;
 		}
 		try {
 			removeDir(this.path);
@@ -120,7 +105,7 @@ public class ContactFolder implements IFolder{
 	public int getSize() {
 		return index.getSize();
 	}
-	
+
 	public void removeDir(File folder) throws IOException {
 		Files.walk(folder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 	}
@@ -136,10 +121,10 @@ public class ContactFolder implements IFolder{
 			}
 		}
 	}
-	
+
 	@Override
 	public DLinkedList getIndex() {
-		return (DLinkedList)index.readIndex();
+		return (DLinkedList) index.readIndex();
 	}
 
 }

@@ -1,4 +1,4 @@
-package test;
+package eg.edu.alexu.csd.datastructure.mailServer;
 
 import static org.junit.jupiter.api.Assertions.*;
 

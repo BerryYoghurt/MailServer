@@ -6,97 +6,110 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import eg.edu.alexu.csd.datastructure.linkedList.Classes.DLinkedList;
 import eg.edu.alexu.csd.datastructure.linkedList.Interfaces.ILinkedList;
 import eg.edu.alexu.csd.datastructure.stack.Stack;
 
-public class CIndex extends Index{
-     
-	public CIndex(File path,boolean isNew) throws IOException {
-		super(path,isNew);
+public class CIndex extends Index {
+
+	public CIndex(File path, boolean isNew) throws IOException {
+		super(path, isNew);
 	}
-	
-	public ILinkedList readIndex(){
+
+	public ILinkedList readIndex() {
 		try {
-			Scanner reader = new Scanner(getPath()); 
-	        while (reader.hasNextLine()){ 
-	            CInfo item = new CInfo();
-	            item.stringToInfo(reader.nextLine());
-	            list.add(item);
-	        }
-	        reader.close();
-		}catch (FileNotFoundException e) {
+			list = new DLinkedList();
+			Scanner reader = new Scanner(getPath());
+			while (reader.hasNextLine()) {
+				CInfo item = new CInfo();
+				item.stringToInfo(reader.nextLine());
+				list.add(item);
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	    return list/*.copy(*/;
+		return list;
 	}
-	
-	public void writeToIndex(){
+
+	public void writeToIndex() {
 		try {
 			PrintWriter writer = new PrintWriter(getPath());
-			for(Object o :list){
-				 CInfo item = (CInfo)o; 
-			  if(item!=null){
-			    writer.println(item.infoToString());
-			  }
+			for (Object o : list) {
+				CInfo item = (CInfo) o;
+				if (item != null) {
+					writer.println(item.infoToString());
+				}
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public void add(Object item) {
-		if(item == null || !(item instanceof Contact)){
-	        throw new RuntimeException();
-	    }
-        CInfo i = new CInfo();
-        i.name = ((Contact)item).getName(); // string
-        i.directory = ((Contact) item).getPath().getAbsolutePath();
-        list.add(i);
-	}
-	
-	public Object remove(Object o) {    //remove it from the linked list  //we only need contact name
-	    if( !(o instanceof String) || o == null || ((String) o).length() ==0 ){
-	        throw new RuntimeException();
-	    }else{
-		    int found = (Integer)find(o);
-		    if(found != -1) {
-		        CInfo temp = (CInfo)list.get(found);
-		        list.remove(found);
-		        return temp;
-		    }
-		    return null;
-	    }
+		if (item == null || !(item instanceof Contact)) {
+			throw new RuntimeException();
+		}
+		CInfo i = new CInfo();
+		i.name = ((Contact) item).getName(); // string
+		i.directory = ((Contact) item).getPath().getAbsolutePath();
+		//list.add(i);
+		int count = 0;
+		for(Object o : list) {
+			if((i.name).compareTo(((CInfo)o).name) < 0) {
+				list.add(count, i);
+				break;
+			}
+			count++;
+		}
+		if(list.size() == count || list.size() == 0) list.add(i);
+		writeToIndex();
 	}
 
+	public Object remove(Object o) { // remove it from the linked list //we only need contact name
+		if (!(o instanceof String) || o == null || ((String) o).length() == 0) {
+			throw new RuntimeException();
+		} else {
+			int found = (Integer) find(o);
+			if (found != -1) {
+				CInfo temp = (CInfo) list.get(found);
+				list.remove(found);
+				writeToIndex();
+				return temp;
+			}
+			return null;
+		}
+	}
 
-	public Object find(Object o) {     //find it in the linked list by name  //return index of the found element , -1 if not found
-	    if( !(o instanceof String) || o == null || ((String) o).length() == 0 ){
-	        throw new RuntimeException();
-	    }
-	    int middle, high, low;
+	public Object find(Object o) { // find it in the linked list by name //return index of the found element , -1
+									// if not found
+		if (!(o instanceof String) || o == null || ((String) o).length() == 0) {
+			throw new RuntimeException();
+		}
+		int middle, high, low;
 		boolean found = false;
 		Stack stack = new Stack();
 		stack.push(0);
-		stack.push(list.size()-1);
-		while(!found) {
+		stack.push(list.size() - 1);
+		while (!found) {
 			high = (int) stack.pop();
 			low = (int) stack.pop();
-			if(high < low) {
+			if (high < low) {
 				stack.push(-1);
 				break;
 			}
-			middle = (high + low)/2;
-			String s = ( (CInfo) list.get(middle) ).name;
-			if(s.equals(o)) {
+			middle = (high + low) / 2;
+			String s = ((CInfo) list.get(middle)).name;
+			if (s.equals(o)) {
 				stack.push(middle);
 				found = true;
-			}else if(s.compareTo((String) o) > 0) { //sorted by ??
+			} else if (s.compareTo((String) o) > 0) { // sorted by ??
 				stack.push(low);
-				stack.push(middle-1);
-			}else {
-				stack.push(middle+1);
+				stack.push(middle - 1);
+			} else {
+				stack.push(middle + 1);
 				stack.push(high);
 			}
 		}

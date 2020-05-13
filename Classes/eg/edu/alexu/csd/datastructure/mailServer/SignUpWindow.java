@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 
+
 @SuppressWarnings("serial")
 public class SignUpWindow extends JPanel {
 
@@ -43,21 +44,6 @@ public class SignUpWindow extends JPanel {
 	private App app;
 	private JPanel self = this;
 		
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SignUpWindow frame = new SignUpWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
 
 	/**
 	 * Create the frame.
@@ -253,9 +239,8 @@ public class SignUpWindow extends JPanel {
 			public void actionPerformed(ActionEvent e) { // 1-Fname 2-Lname 3-address 4-date 5-gender 6-password 7-salt
 				String date = comboBox_1.getSelectedItem() + "-" + comboBox.getSelectedItem() + "-"
 						+ comboBox_2.getSelectedItem();
-				//System.out.println(date);
+				// System.out.println(date);
 				boolean gender = true;
-
 				User user;
 				try {
 					user = new User(textField_2.getText(),true);
@@ -269,19 +254,19 @@ public class SignUpWindow extends JPanel {
 					gender = true;
 				} else if (rdbtnFemale.isSelected()) {
 					gender = false;
-				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) {  //gender setting
+				} else if (!rdbtnNewRadioButton.isSelected() && !rdbtnFemale.isSelected()) { // gender setting
 					JOptionPane.showMessageDialog(null, "Set Gender.");
-
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
 				}/* else */
 				user.setGender(gender);
 				if (!passwordField.getText().equals(passwordField_1.getText())) { 		//passwords >> check match
+
 					JOptionPane.showMessageDialog(null, "passwords do not match");
 					System.out.println(passwordField.getText());
 					System.out.println(passwordField_1.getText());
@@ -289,46 +274,50 @@ public class SignUpWindow extends JPanel {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
-				} /*else*/ if (!user.setName(textField.getText(),textField_1.getText())) {	//name setting
+				}
+				if (!user.setName(textField.getText(), textField_1.getText())) { // name setting
 					JOptionPane.showMessageDialog(null, "Invalid name");
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
-				} /*else*/ if (!user.setBirthDate(date)) {		//date setting
+				}
+				if (!user.setBirthDate(date)) { // date setting
 					JOptionPane.showMessageDialog(null, "Invalid date");
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
-				} /*else*/ if (!user.setAddress(textField_2.getText())) {		//address setting
+				}
+				if (!user.setAddress(textField_2.getText())) { // address setting
 					JOptionPane.showMessageDialog(null, "Invalid address");
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
-				} /*else*/ if (!user.setPassword(passwordField.getText())) {	//password setting
+				}
+				if (!user.setPassword(passwordField.getText())) { // password setting
 					JOptionPane.showMessageDialog(null, "Invalid password");
 					try {
 						MailFolder.removeDir(user.getPath());
 					} catch (IOException e1) {
 						System.out.println("problem");
-						//e1.printStackTrace();
+						// e1.printStackTrace();
 					}
 					return;
-				} /*else {*/
+				}
 					user.writeToFile();
 					if(!app.signup(user)) {
 						//there is a problem >> user is not signed up >> what kind of problems?
@@ -338,7 +327,6 @@ public class SignUpWindow extends JPanel {
 					//o.setApp(app);
 					//o.setVisible(true);
 				//}
-
 			}
 		});
 		btnSignUp.setForeground(new Color(255, 20, 147));

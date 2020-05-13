@@ -1,13 +1,18 @@
 package eg.edu.alexu.csd.datastructure.mailServer;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
-
-import eg.edu.alexu.csd.datastructure.mailServer.App;
 
 import javax.swing.JRadioButton;
 import java.awt.Color;
@@ -23,7 +28,8 @@ public class GenderEdit extends JFrame {
 	private JPanel contentPane;
 	private final JRadioButton rdbtnNewRadioButton = new JRadioButton("Male");
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-    private App app;
+	private App app;
+
 	/**
 	 * Launch the application.
 	 */
@@ -31,25 +37,28 @@ public class GenderEdit extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					gender frame = new gender(app);
+					GenderEdit frame = new GenderEdit();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-	}*/
-
+	}
 	/**
 	 * Create the frame.
 	 */
-	public GenderEdit(App app, JFrame mainFrame) {
+	public GenderEdit(App app, JLabel genderLabel, JFrame mainFrame) {
+		setTitle("Gender edit");
+		this.app = app;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 323, 167);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
 		buttonGroup.add(rdbtnNewRadioButton);
 		rdbtnNewRadioButton.setFont(new Font("Century Gothic", Font.PLAIN, 26));
 		rdbtnNewRadioButton.setForeground(new Color(0, 139, 139));
@@ -67,11 +76,12 @@ public class GenderEdit extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rdbtnNewRadioButton.isSelected()) {
-					app.signedInUser.setGender(true); 
+					app.signedInUser.setGender(true);
 				}
 				else if(rdbtnFemale.isSelected()) {
 					app.signedInUser.setGender(false);
 				}
+				genderLabel.setText(app.signedInUser.getGender());
 				app.signedInUser.writeToFile();
 				mainFrame.setEnabled(true);
 				mainFrame.setVisible(true);
@@ -100,4 +110,5 @@ public class GenderEdit extends JFrame {
 		
 		setVisible(true);
 	}
+
 }
