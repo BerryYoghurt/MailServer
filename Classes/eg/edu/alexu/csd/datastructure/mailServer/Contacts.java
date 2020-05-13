@@ -69,12 +69,12 @@ public class Contacts extends JFrame {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setModel(new MyListModel(folder.getIndex()));
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 10, 493, 305);
+		scrollPane_1.setBounds(10, 10, 493, 378);
 		contentPane.add(scrollPane_1);
 		scrollPane_1.setViewportView(list);
 		JLabel label = new JLabel("");
 		label.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		label.setBounds(126, 352, 205, 31);
+		label.setBounds(126, 391, 205, 31);
 		contentPane.add(label);
 		
 		
@@ -113,7 +113,7 @@ public class Contacts extends JFrame {
 				if(selected != -1) {
 					CInfo i = (CInfo)folder.getIndex().get(selected);
 					Contact c = new Contact(new File(i.directory));
-					EditContact x = new EditContact(c);
+					EditContact x = new EditContact(c,app);
 					x.setVisible(true);
 				}
 			}
@@ -135,7 +135,7 @@ public class Contacts extends JFrame {
 		contentPane.add(btnBack);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(124, 413, 239, 96);
+		scrollPane.setBounds(124, 453, 239, 96);
 		contentPane.add(scrollPane);
 		JList list_1 = new JList();
 		scrollPane.setViewportView(list_1);
@@ -156,16 +156,6 @@ public class Contacts extends JFrame {
 		btnView.setBounds(556, 213, 141, 39);
 		contentPane.add(btnView);
 		
-		JLabel lblNewLabel = new JLabel("Name");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel.setBounds(35, 352, 51, 31);
-		contentPane.add(lblNewLabel);
-		
-		JLabel lblAddress = new JLabel("address");
-		lblAddress.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAddress.setBounds(35, 414, 62, 31);
-		contentPane.add(lblAddress);
-		
 		JButton btnRefresh = new JButton("refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -173,8 +163,20 @@ public class Contacts extends JFrame {
 			}
 		});
 		btnRefresh.setFont(new Font("Century Gothic", Font.PLAIN, 17));
-		btnRefresh.setBounds(556, 276, 141, 39);
+		btnRefresh.setBounds(556, 330, 141, 39);
 		contentPane.add(btnRefresh);
+		
+		JLabel lblNewLabel = new JLabel("Name");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setBounds(35, 391, 51, 31);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblAddress = new JLabel("address");
+		lblAddress.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblAddress.setBounds(35, 453, 62, 31);
+		contentPane.add(lblAddress);
+		
+		
 		
 		setVisible(true);
 	}

@@ -25,13 +25,14 @@ public class EditContact extends JFrame {
 	private JPanel contentPane;
 	private JTextField nameTextField;
 	private JTextField textField;
-
+	private App app;
 
 
 	/**
 	 * Create the frame.
 	 */
-	public EditContact(Contact current) {
+	public EditContact(Contact current, App a) {
+		this.app = a;
 		String[] arr = current.getAddresses();
 		for(String str : arr) {
 			System.out.println(str);
@@ -81,7 +82,6 @@ public class EditContact extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String address = textField.getText();
 				if(address.length() != 0) {
-					current.setAddress(address);
 					if(!current.setAddress(address)) {
 						JOptionPane.showMessageDialog(null, "existing address");
 					}
@@ -96,7 +96,9 @@ public class EditContact extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selected = list.getSelectedIndex();
 				if(selected != -1) {
-					current.removeAddress(selected);
+					if(current.removeAddress(selected) == null) {
+						JOptionPane.showMessageDialog(null, "a contact should have at least one email");
+					}
 					list.setListData(current.getAddresses());
 				}
 			}
@@ -118,7 +120,20 @@ public class EditContact extends JFrame {
 		JButton btnConfirm = new JButton("confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//current.setName(s, "");
+				String newName = nameTextField.getText();
+				if(newName.length() == 0) {
+					JOptionPane.showMessageDialog(null, "Invalid name");
+					return;
+				}
+				if(!current.getName().equals(newName)) {
+					String[] emails = current.getAddresses();
+					ContactFolder folder = (ContactFolder) app.signedInUser.getContactsPath();
+					folder.remove(current.getName());
+					Contact c = new Contact(newName,emails[0],folder);
+					for(int i = 1; i< emails.length; i++) {
+						c.setAddress(emails[i]);
+					}
+				}
 				dispose();
 			}
 		});

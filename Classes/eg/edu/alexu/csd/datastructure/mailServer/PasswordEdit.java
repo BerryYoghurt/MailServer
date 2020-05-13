@@ -86,25 +86,24 @@ public class PasswordEdit extends JPanel {
 		JButton ok = new JButton("Confirm");
 		ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if (!passwordField_1.getPassword().equals(passwordField_2.getText())) {
+					if (!passwordField_1.getText().equals(passwordField_2.getText())) {
 			          	JOptionPane.showMessageDialog(null, "passwords do not match");
-			         }
-			         if(!app.signedInUser.matchPassword(passwordField.getText())){
-			          	JOptionPane.showMessageDialog(null, "wrong password");
-			         }
-			         else if (!app.signedInUser.setPassword(passwordField_1.getText())){
-			           JOptionPane.showMessageDialog(null, "Invalid password");
-			         } else {
-			        	    userEditor.execute();
-			        	    
-			        	    setEnabled(false);
-							setVisible(false);
-							
-							frame.setTitle("Options");
-							
-							previousPanel.setEnabled(true);
-							previousPanel.setVisible(true);
-			         }
+			         }else if(!app.signedInUser.matchPassword(passwordField.getText())){
+				          	JOptionPane.showMessageDialog(null, "wrong password");
+				         }
+				         else if (!app.signedInUser.setPassword(passwordField_1.getText())){
+				           JOptionPane.showMessageDialog(null, "Invalid password");
+				         } else {
+				        	    userEditor.execute();
+				        	    
+				        	    setEnabled(false);
+								setVisible(false);
+								
+								frame.setTitle("Options");
+								
+								previousPanel.setEnabled(true);
+								previousPanel.setVisible(true);
+				         }
 					}
 		});
 		ok.setBackground(new Color(255, 255, 255));
