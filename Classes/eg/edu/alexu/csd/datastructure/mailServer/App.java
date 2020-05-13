@@ -121,6 +121,8 @@ public class App implements IApp{
 	@Override
 	public boolean compose(IMail email) {
 		IQueue q = email.getReceivers();
+		if(q.size() == 0)
+			return false;
 		while(!q.isEmpty()) {
 			//check if receiver is in database, if one is not valid, return false
 			String m = (String)q.dequeue();
