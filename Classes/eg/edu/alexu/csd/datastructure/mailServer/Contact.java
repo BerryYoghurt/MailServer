@@ -46,9 +46,12 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 				if(e.equals(address))
 					return false; //already exists
 			}
-			emails = Arrays.copyOfRange(emails, 0, emails.length);
+			emails = Arrays.copyOfRange(emails, 0, emails.length + 1);
 		}
 		this.emails[emails.length-1] = address;
+		if(this.emails.length > 1) {
+			writeToFile();
+		}
 		return true;
 	}
 
@@ -87,11 +90,13 @@ public class Contact implements IContact{  //remove uncommon methods ?????
         }
         else{
         	String[] temp = new String[emails.length-1];
+        	int j = 0;
             for(int i = 0; i < emails.length; i++) {
             	if(i == order) {
             		continue;
             	}
-            	temp[i] = emails[i];
+            	temp[j] = emails[i];
+            	j++;
             }
             emails = temp;
             return temp[order];
@@ -124,16 +129,17 @@ public class Contact implements IContact{  //remove uncommon methods ?????
 	}
 	
 	public void writeToFile(){
-	    if(this.emails == null){
-            throw new RuntimeException();
-	    }
+		if (this.emails == null) {
+			throw new RuntimeException();
+		}
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter(this.path);
-		
-		for (String s : emails) {
-			writer.println(s);      // we need the traverse method in SinglyLinkedList ?
-		}
+
+			for (String s : emails) {
+				writer.println(s); // we need the traverse method in SinglyLinkedList ?
+			}
+			writer.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

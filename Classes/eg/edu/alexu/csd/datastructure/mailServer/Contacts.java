@@ -163,10 +163,12 @@ public class Contacts extends JFrame {
 		btnView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selected = list.getSelectedIndex();
-				CInfo i = (CInfo)folder.getIndex().get(selected);
-				label.setText(i.name);
-				Contact v = new Contact(new File(i.directory));
-				list_1.setListData(v.getAddresses());
+				if(selected != -1) {
+					CInfo i = (CInfo)folder.getIndex().get(selected);
+					label.setText(i.name);
+					Contact v = new Contact(new File(i.directory));
+					list_1.setListData(v.getAddresses());
+				}
 			}
 		});
 		btnView.setFont(new Font("Century Gothic", Font.PLAIN, 17));
