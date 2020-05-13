@@ -369,8 +369,8 @@ public class EditMail extends JPanel implements ActionListener {
 
 				@Override
 				protected Boolean doInBackground() throws Exception {
-					 try {
-							area.write(new PrintWriter(mail.getBody()));
+					 try (PrintWriter pw =new PrintWriter(mail.getBody()) ){
+							area.write(pw);
 							if(subject.getText().contains(",")) {
 								JOptionPane.showMessageDialog(null, "Invalid Character \",\" in Subject");
 								return false;
